@@ -13,8 +13,8 @@ import { eq, asc } from "drizzle-orm";
 import { Sparkles } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Katalog Menu Kuliner | Nusantara Artisan Kitchen & Lounge",
-  description: "Jelajahi aneka hidangan signature nusantara, woodfired grill, nasi aromatik, bakmi artisanal, dan minuman rempah segar.",
+  title: "Artisan Menu Catalog | Nusantara Artisan Kitchen & Lounge",
+  description: "Explore our signature archipelago specialties, woodfired grills, fragrant heirloom rice, artisan noodles, and native herbal beverages.",
 };
 
 // Fallback seed catalog when offline or in initial dev state
@@ -33,18 +33,18 @@ const fallbackProducts: CatalogProduct[] = [
     categoryId: "c1",
     categorySlug: "signature-mains",
     categoryName: "Signature Mains",
-    name: "Rendang Daging Sapi Wagyu 12 Jam",
+    name: "12-Hour Wagyu Beef Rendang",
     slug: "rendang-wagyu-12-jam",
-    description: "Daging Wagyu MB5 dimasak perlahan 12 jam dengan 18 rempah Minang & santan kelapa sawit murni caramelised.",
+    description: "MB5 Wagyu beef slow-cooked for 12 hours with 18 Minang herbs & caramelized artisan coconut reduction.",
     priceMinor: 95000,
     currency: "IDR",
     imageUrl: "https://images.unsplash.com/photo-1544025162-d76694265947?w=800&auto=format&fit=crop&q=80",
     isAvailable: true,
     sortOrder: 1,
     options: [
-      { id: "opt1", name: "Tingkat Pedas: Sedang", priceDeltaMinor: 0 },
-      { id: "opt2", name: "Tingkat Pedas: Ekstra Pedas Cabe Rawit", priceDeltaMinor: 5000 },
-      { id: "opt3", name: "Ekstra Kuah Rendang Kental", priceDeltaMinor: 10000 },
+      { id: "opt1", name: "Spice Level: Medium", priceDeltaMinor: 0 },
+      { id: "opt2", name: "Spice Level: Extra Bird's Eye Chili", priceDeltaMinor: 5000 },
+      { id: "opt3", name: "Extra Thick Rendang Gravy", priceDeltaMinor: 10000 },
     ],
   },
   {
@@ -52,18 +52,18 @@ const fallbackProducts: CatalogProduct[] = [
     categoryId: "c1",
     categorySlug: "signature-mains",
     categoryName: "Signature Mains",
-    name: "Ayam Betutu Gilimanuk Panggang",
+    name: "Balinese Roasted Betutu Duck",
     slug: "ayam-betutu-gilimanuk",
-    description: "Ayam kampung utuh dipanggang dalam balutan bumbu genep Bali, daun singkong muda, dan kacang renyah.",
+    description: "Whole farm duck slowly wood-roasted with aromatic Balinese bumbu genep, young cassava greens, and crispy peanuts.",
     priceMinor: 78000,
     currency: "IDR",
     imageUrl: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=800&auto=format&fit=crop&q=80",
     isAvailable: true,
     sortOrder: 2,
     options: [
-      { id: "opt4", name: "Pilihan Sambal: Sambal Matah Kecombrang", priceDeltaMinor: 0 },
-      { id: "opt5", name: "Pilihan Sambal: Sambal Mbe Klungkung", priceDeltaMinor: 0 },
-      { id: "opt6", name: "Ekstra Kacang Goreng & Daun Singkong", priceDeltaMinor: 6000 },
+      { id: "opt4", name: "Sambal: Torch Ginger Sambal Matah", priceDeltaMinor: 0 },
+      { id: "opt5", name: "Sambal: Fried Shallot Sambal Mbe", priceDeltaMinor: 0 },
+      { id: "opt6", name: "Extra Spiced Peanuts & Cassava Greens", priceDeltaMinor: 6000 },
     ],
   },
   {
@@ -71,19 +71,19 @@ const fallbackProducts: CatalogProduct[] = [
     categoryId: "c2",
     categorySlug: "artisan-rice-noodles",
     categoryName: "Artisan Rice & Noodles",
-    name: "Nasi Goreng Kecombrang Cumi Asin",
+    name: "Salted Squid & Torch Ginger Fried Rice",
     slug: "nasi-goreng-kecombrang-cumi",
-    description: "Nasi pulen wok-fried dengan aroma bunga kecombrang segar, cumi asin crispy, telur mata sapi & kerupuk udang.",
+    description: "Wok-tossed fragrant jasmine rice with fresh torch ginger blossom, crispy salted baby squid, fried egg & prawn crackers.",
     priceMinor: 52000,
     currency: "IDR",
     imageUrl: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=800&auto=format&fit=crop&q=80",
     isAvailable: true,
     sortOrder: 1,
     options: [
-      { id: "opt7", name: "Telur: Setengah Matang", priceDeltaMinor: 0 },
-      { id: "opt8", name: "Telur: Matang Sempurna", priceDeltaMinor: 0 },
-      { id: "opt9", name: "Tambah Telur Dadar Krispi", priceDeltaMinor: 7000 },
-      { id: "opt10", name: "Ekstra Kerupuk Udang Premium", priceDeltaMinor: 5000 },
+      { id: "opt7", name: "Egg: Sunny Side Up (Runny)", priceDeltaMinor: 0 },
+      { id: "opt8", name: "Egg: Well Done", priceDeltaMinor: 0 },
+      { id: "opt9", name: "Add Crispy Herb Omelette", priceDeltaMinor: 7000 },
+      { id: "opt10", name: "Extra Premium Prawn Crackers", priceDeltaMinor: 5000 },
     ],
   },
   {
@@ -91,19 +91,19 @@ const fallbackProducts: CatalogProduct[] = [
     categoryId: "c2",
     categorySlug: "artisan-rice-noodles",
     categoryName: "Artisan Rice & Noodles",
-    name: "Bakmi Ayam Jamur Truffle Oil",
+    name: "Truffle Chicken & Mushroom Bakmi",
     slug: "bakmi-ayam-jamur-truffle",
-    description: "Bakmi karet kenyal homemade disajikan dengan potongan ayam kampung kecap, jamur shiitake, dan tetesan minyak truffle alami.",
+    description: "Handcrafted chewy rubber noodles tossed in sweet soy braised chicken, shiitake mushrooms, and infused white truffle essence.",
     priceMinor: 58000,
     currency: "IDR",
     imageUrl: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800&auto=format&fit=crop&q=80",
     isAvailable: true,
     sortOrder: 2,
     options: [
-      { id: "opt11", name: "Pilihan Mie: Bakmi Karet Tebal", priceDeltaMinor: 0 },
-      { id: "opt12", name: "Pilihan Mie: Bakmi Halus Keriting", priceDeltaMinor: 0 },
-      { id: "opt13", name: "Tambah Pangsit Goreng Krispi (2 pcs)", priceDeltaMinor: 12000 },
-      { id: "opt14", name: "Tambah Bakso Sapi Urat (2 pcs)", priceDeltaMinor: 14000 },
+      { id: "opt11", name: "Noodle Style: Thick Chewy Noodles", priceDeltaMinor: 0 },
+      { id: "opt12", name: "Noodle Style: Thin Curly Noodles", priceDeltaMinor: 0 },
+      { id: "opt13", name: "Add Crispy Golden Wontons (2 pcs)", priceDeltaMinor: 12000 },
+      { id: "opt14", name: "Add Beef Meatballs (2 pcs)", priceDeltaMinor: 14000 },
     ],
   },
   {
@@ -111,18 +111,18 @@ const fallbackProducts: CatalogProduct[] = [
     categoryId: "c3",
     categorySlug: "woodfired-grill",
     categoryName: "Woodfired & Grill",
-    name: "Ikan Bakar Jimbaran Bumbu Bakar Madu",
+    name: "Jimbaran Honey Spiced Grilled Barramundi",
     slug: "ikan-bakar-jimbaran",
-    description: "Fillet kakap laut segar dipanggang di atas arang batok kelapa dengan olesan bumbu bakar madu Bali dan sambal dabu-dabu.",
+    description: "Fresh sea barramundi fillet grilled over coconut husks brushed with Balinese honey spice glaze and tomato dabu-dabu salsa.",
     priceMinor: 88000,
     currency: "IDR",
     imageUrl: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=800&auto=format&fit=crop&q=80",
     isAvailable: true,
     sortOrder: 1,
     options: [
-      { id: "opt15", name: "Tingkat Kematangan: Standard Grilled Juicy", priceDeltaMinor: 0 },
-      { id: "opt16", name: "Ekstra Sambal Dabu-Dabu Mangga", priceDeltaMinor: 8000 },
-      { id: "opt17", name: "Nasi Putih Organik Bakar Daun", priceDeltaMinor: 10000 },
+      { id: "opt15", name: "Doneness: Standard Grilled Juicy", priceDeltaMinor: 0 },
+      { id: "opt16", name: "Extra Mango Dabu-Dabu Relish", priceDeltaMinor: 8000 },
+      { id: "opt17", name: "Organic Banana Leaf Steamed Rice", priceDeltaMinor: 10000 },
     ],
   },
   {
@@ -130,17 +130,17 @@ const fallbackProducts: CatalogProduct[] = [
     categoryId: "c4",
     categorySlug: "small-plates-bites",
     categoryName: "Small Plates & Bites",
-    name: "Tahu Gejrot Cirebon Artisan",
+    name: "Artisan Tahu Gejrot Cirebon",
     slug: "tahu-gejrot-artisan",
-    description: "Tahu pong renyah garing dengan kuah asam manis gula aren Jawa & ulekan bawang merah cabe rawit hijau segar.",
+    description: "Golden crispy airy tofu puffs tossed in sweet-tangy Javanese palm nectar infusion and crushed shallots with green chili.",
     priceMinor: 28000,
     currency: "IDR",
     imageUrl: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800&auto=format&fit=crop&q=80",
     isAvailable: true,
     sortOrder: 1,
     options: [
-      { id: "opt18", name: "Tingkat Pedas: 5 Cabe Rawit (Sedang)", priceDeltaMinor: 0 },
-      { id: "opt19", name: "Tingkat Pedas: 15 Cabe Rawit (Ekstra Pedas)", priceDeltaMinor: 3000 },
+      { id: "opt18", name: "Spice Level: 5 Chilies (Medium)", priceDeltaMinor: 0 },
+      { id: "opt19", name: "Spice Level: 15 Chilies (Extra Spicy)", priceDeltaMinor: 3000 },
     ],
   },
   {
@@ -148,19 +148,19 @@ const fallbackProducts: CatalogProduct[] = [
     categoryId: "c5",
     categorySlug: "specialty-beverages",
     categoryName: "Specialty Beverages",
-    name: "Kopi Susu Gula Aren Pandan",
+    name: "Pandan Palm Sugar Iced Latte",
     slug: "kopi-susu-gula-aren-pandan",
-    description: "Double espresso arabika Kintamani, fresh milk, sirup gula aren organik, dan ekstraksi daun pandan wangi.",
+    description: "Double espresso from highland Kintamani beans, fresh organic milk, organic palm nectar, and aromatic fragrant pandan.",
     priceMinor: 32000,
     currency: "IDR",
     imageUrl: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=800&auto=format&fit=crop&q=80",
     isAvailable: true,
     sortOrder: 1,
     options: [
-      { id: "opt20", name: "Susu: Fresh Milk", priceDeltaMinor: 0 },
-      { id: "opt21", name: "Susu: Oat Milk Plant-Based", priceDeltaMinor: 8000 },
-      { id: "opt22", name: "Gula: Normal (100%)", priceDeltaMinor: 0 },
-      { id: "opt23", name: "Gula: Less Sugar (50%)", priceDeltaMinor: 0 },
+      { id: "opt20", name: "Milk: Fresh Organic Milk", priceDeltaMinor: 0 },
+      { id: "opt21", name: "Milk: Plant-Based Oat Milk", priceDeltaMinor: 8000 },
+      { id: "opt22", name: "Sweetness: Regular (100%)", priceDeltaMinor: 0 },
+      { id: "opt23", name: "Sweetness: Less Sweet (50%)", priceDeltaMinor: 0 },
     ],
   },
   {
@@ -168,17 +168,17 @@ const fallbackProducts: CatalogProduct[] = [
     categoryId: "c6",
     categorySlug: "traditional-desserts",
     categoryName: "Traditional Desserts",
-    name: "Klepon Cake Melted Aren",
+    name: "Melted Palm Sugar Klepon Cake",
     slug: "klepon-cake-melted-aren",
-    description: "Sponge cake pandan suji lembut dengan lapisan parutan kelapa muda sangrai dan lelehan saus gula aren cair.",
+    description: "Delicate pandan sponge cake layered with toasted young coconut flakes and molten liquid gula aren center.",
     priceMinor: 38000,
     currency: "IDR",
     imageUrl: "https://images.unsplash.com/photo-1587314168485-3236d6710814?w=800&auto=format&fit=crop&q=80",
     isAvailable: true,
     sortOrder: 1,
     options: [
-      { id: "opt24", name: "Suhu Penyajian: Dingin / Chilled", priceDeltaMinor: 0 },
-      { id: "opt25", name: "Tambah 1 Scoop Es Krim Kelapa Kopyor", priceDeltaMinor: 15000 },
+      { id: "opt24", name: "Serving Temp: Chilled", priceDeltaMinor: 0 },
+      { id: "opt25", name: "Add 1 Scoop Kopyor Coconut Gelato", priceDeltaMinor: 15000 },
     ],
   },
 ];
@@ -258,13 +258,13 @@ export default async function MenuPage() {
         <div className="mb-8 text-center sm:text-left">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary-100 text-primary text-xs font-semibold mb-3">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Katalog Menu Artisan Nusantara</span>
+            <span>Nusantara Artisan Culinary Catalog</span>
           </div>
           <h1 className="font-heading text-3xl sm:text-4xl font-extrabold text-stone-900 tracking-tight">
-            Pilihan Kuliner Istimewa
+            Curated Specialty Dishes
           </h1>
           <p className="text-stone-600 text-sm sm:text-base mt-1.5 max-w-2xl">
-            Setiap hidangan diracik menggunakan bahan segar harian dengan bumbu khas daerah kepulauan Indonesia.
+            Each recipe is prepared from scratch using farm-fresh ingredients and native spices from across the Indonesian archipelago.
           </p>
         </div>
 

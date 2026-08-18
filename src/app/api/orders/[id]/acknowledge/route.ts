@@ -23,7 +23,7 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
             success: false,
             error: {
               code: "FORBIDDEN",
-              message: "Akses ditolak.",
+              message: "Access denied.",
             },
           },
           { status: 403 }
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
           success: false,
           error: {
             code: "NOT_FOUND",
-            message: "Pesanan tidak ditemukan.",
+            message: "Order not found.",
           },
         },
         { status: 404 }
@@ -90,7 +90,7 @@ export async function POST(req: NextRequest, { params }: RouteParams) {
         success: false,
         error: {
           code: "INTERNAL_SERVER_ERROR",
-          message: "Gagal mengonfirmasi pesanan dapur.",
+          message: "Failed to acknowledge kitchen order.",
         },
       },
       { status: 500 }

@@ -4,8 +4,8 @@ import Footer from "@/components/layout/Footer";
 import CartPageClient from "@/components/cart/CartPageClient";
 
 export const metadata: Metadata = {
-  title: "Keranjang Belanja & Checkout | Nusantara Artisan Kitchen & Lounge",
-  description: "Tinjau pesanan hidangan nusantara Anda, tentukan opsi makan di tempat atau bawa pulang, dan lanjutkan ke pembayaran.",
+  title: "Dining Basket & Checkout | Nusantara Artisan Kitchen & Lounge",
+  description: "Review your selected archipelago dishes, choose dine-in or takeaway, and proceed to secure checkout.",
 };
 
 export default function CartPage() {

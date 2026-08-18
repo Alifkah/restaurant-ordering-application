@@ -8,8 +8,8 @@ interface OrderTrackingPageProps {
 }
 
 export const metadata: Metadata = {
-  title: "Pelacakan Pesanan Live | Nusantara Artisan Kitchen & Lounge",
-  description: "Pantau status pesanan dan proses memasak dapur Anda secara realtime.",
+  title: "Live Order Tracking | Nusantara Artisan Kitchen & Lounge",
+  description: "Track your kitchen order status and cooking progress in real-time.",
 };
 
 export default async function OrderTrackingPage({

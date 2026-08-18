@@ -9,7 +9,7 @@ export default function FloatingCartPill() {
   if (totalItems === 0) return null;
 
   return (
-    <aside aria-label="Ringkasan Keranjang Belanja" className="fixed bottom-6 right-6 z-40 animate-slide-up">
+    <aside aria-label="Dining Basket Summary" className="fixed bottom-6 right-6 z-40 animate-slide-up">
       <button
         type="button"
         onClick={() => setIsCartOpen(true)}
@@ -26,7 +26,7 @@ export default function FloatingCartPill() {
 
         <div className="text-left pr-1">
           <p className="text-[11px] text-stone-300 font-medium leading-none">
-            Keranjang Anda
+            Your Basket
           </p>
           <p className="font-heading font-bold text-sm text-white leading-tight mt-0.5">
             {formattedSubtotal}

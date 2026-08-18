@@ -36,7 +36,7 @@ export async function POST() {
   } catch (error) {
     console.error("Error generating media signature:", error);
     return NextResponse.json(
-      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Gagal membuat tanda tangan upload." } },
+      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to generate media upload signature." } },
       { status: 500 }
     );
   }

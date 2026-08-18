@@ -59,7 +59,7 @@ export async function GET() {
   } catch (error) {
     console.error("Error generating reports:", error);
     return NextResponse.json(
-      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Gagal memuat laporan." } },
+      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to generate analytics reports." } },
       { status: 500 }
     );
   }

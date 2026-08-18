@@ -98,16 +98,16 @@ export default function SettingsClient() {
       if (res.ok && json.success) {
         setFeedback({
           type: "success",
-          message: "Pengaturan restoran dan mata uang berhasil diperbarui!",
+          message: "Restaurant and currency configuration saved successfully!",
         });
       } else {
         setFeedback({
           type: "error",
-          message: json.error?.message || "Gagal menyimpan pengaturan.",
+          message: json.error?.message || "Failed to save configuration.",
         });
       }
     } catch {
-      setFeedback({ type: "error", message: "Terjadi gangguan jaringan." });
+      setFeedback({ type: "error", message: "Network communication error." });
     } finally {
       setSaving(false);
     }
@@ -117,7 +117,7 @@ export default function SettingsClient() {
     return (
       <div className="max-w-xl mx-auto my-16 p-8 glass-card bg-white rounded-card text-center space-y-3">
         <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" />
-        <p className="text-xs text-stone-600">Memuat konfigurasi restoran...</p>
+        <p className="text-xs text-stone-600">Loading restaurant settings...</p>
       </div>
     );
   }
@@ -130,10 +130,10 @@ export default function SettingsClient() {
           System Configuration
         </span>
         <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-stone-900 mt-1">
-          Pengaturan Restoran & Mata Uang
+          Restaurant Settings & Currency
         </h1>
         <p className="text-xs sm:text-sm text-stone-600 mt-0.5">
-          Atur status buka toko, mata uang multi-currency Stripe, jam operasional, dan info kontak.
+          Configure store operational status, multi-currency Stripe rules, operating timezone, and contact details.
         </p>
       </div>
 
@@ -164,10 +164,10 @@ export default function SettingsClient() {
               </div>
               <div>
                 <h2 className="font-heading font-bold text-sm sm:text-base text-stone-900">
-                  Status Penerimaan Pesanan Online
+                  Online Ordering Reception
                 </h2>
                 <p className="text-xs text-stone-500">
-                  Master switch untuk membuka atau menghentikan pesanan baru dari website publik.
+                  Master switch to accept or temporarily pause new incoming orders from the public website.
                 </p>
               </div>
             </div>
@@ -186,7 +186,7 @@ export default function SettingsClient() {
                   : "bg-stone-200 text-stone-600 border-stone-300"
               }`}
             >
-              {config.isAcceptingOrders ? "🟢 Menerima Pesanan" : "🔴 Toko Tutup Sementara"}
+              {config.isAcceptingOrders ? "🟢 Accepting Orders" : "🔴 Temporarily Closed"}
             </button>
           </div>
         </div>
@@ -199,10 +199,10 @@ export default function SettingsClient() {
             </div>
             <div>
               <h2 className="font-heading font-bold text-sm text-stone-900">
-                Konfigurasi Mata Uang & Pembayaran Stripe
+                Currency & Payment Settings
               </h2>
               <p className="text-xs text-stone-500">
-                Sistem secara otomatis menyesuaikan aturan zero-decimal vs standard subunit Stripe.
+                The application automatically adjusts zero-decimal vs standard subunit Stripe calculation rules.
               </p>
             </div>
           </div>
@@ -210,7 +210,7 @@ export default function SettingsClient() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-bold text-stone-700 mb-1">
-                Pilihan Mata Uang *
+                Active Currency *
               </label>
               <select
                 value={config.currency}
@@ -227,7 +227,7 @@ export default function SettingsClient() {
 
             <div>
               <label className="block text-xs font-bold text-stone-700 mb-1">
-                Simbol Mata Uang
+                Currency Symbol
               </label>
               <input
                 type="text"
@@ -241,7 +241,7 @@ export default function SettingsClient() {
 
             <div>
               <label className="block text-xs font-bold text-stone-700 mb-1">
-                Desimal Minor
+                Minor Subunit Decimals
               </label>
               <input
                 type="number"
@@ -266,10 +266,10 @@ export default function SettingsClient() {
             </div>
             <div>
               <h2 className="font-heading font-bold text-sm text-stone-900">
-                Informasi & Kontak Restoran
+                Restaurant Profile & Hospitality Contacts
               </h2>
               <p className="text-xs text-stone-500">
-                Data publik yang ditampilkan pada nota pesanan dan footer website.
+                Public business details rendered across digital receipts, invoices, and customer footers.
               </p>
             </div>
           </div>
@@ -277,7 +277,7 @@ export default function SettingsClient() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-stone-700 mb-1">
-                Nama Restoran *
+                Restaurant Name *
               </label>
               <input
                 type="text"
@@ -292,7 +292,7 @@ export default function SettingsClient() {
 
             <div>
               <label className="block text-xs font-bold text-stone-700 mb-1">
-                Zona Waktu Operasional
+                Operating Timezone
               </label>
               <input
                 type="text"
@@ -306,7 +306,7 @@ export default function SettingsClient() {
 
             <div>
               <label className="block text-xs font-bold text-stone-700 mb-1">
-                Email Kontak Layanan
+                Guest Services Email
               </label>
               <input
                 type="email"
@@ -320,7 +320,7 @@ export default function SettingsClient() {
 
             <div>
               <label className="block text-xs font-bold text-stone-700 mb-1">
-                Nomor Telepon / WhatsApp
+                Telephone / WhatsApp Line
               </label>
               <input
                 type="text"
@@ -335,7 +335,7 @@ export default function SettingsClient() {
 
           <div>
             <label className="block text-xs font-bold text-stone-700 mb-1">
-              Alamat Lengkap Outlet
+              Outlet Physical Address
             </label>
             <textarea
               rows={2}
@@ -358,12 +358,12 @@ export default function SettingsClient() {
             {saving ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Menyimpan Pengaturan...</span>
+                <span>Saving Settings...</span>
               </>
             ) : (
               <>
                 <Save className="w-4 h-4" />
-                <span>Simpan Seluruh Pengaturan</span>
+                <span>Save All Settings</span>
               </>
             )}
           </button>

@@ -131,7 +131,7 @@ export default function ProductsClient() {
   const addOption = () => {
     setOptions([
       ...options,
-      { name: "Opsi Baru", priceDeltaMinor: 0, isAvailable: true },
+      { name: "New Option", priceDeltaMinor: 0, isAvailable: true },
     ]);
   };
 
@@ -194,14 +194,14 @@ export default function ProductsClient() {
       const json = await res.json();
 
       if (!res.ok || !json.success) {
-        setFormError(json.error?.message || "Gagal menyimpan data produk.");
+        setFormError(json.error?.message || "Failed to save product data.");
       } else {
         setIsModalOpen(false);
         fetchData();
       }
     } catch (err) {
       console.error("Save product error:", err);
-      setFormError("Terjadi kesalahan jaringan.");
+      setFormError("Network communication error.");
     } finally {
       setSubmitting(false);
     }
@@ -209,7 +209,7 @@ export default function ProductsClient() {
 
   // Delete Product
   const handleDeleteProduct = async (id: string, prodName: string) => {
-    if (!confirm(`Apakah Anda yakin ingin menonaktifkan hidangan "${prodName}"?`)) return;
+    if (!confirm(`Are you sure you want to deactivate "${prodName}"?`)) return;
 
     try {
       await fetch(`/api/products/${id}`, { method: "DELETE" });
@@ -236,10 +236,10 @@ export default function ProductsClient() {
             Menu Engineering
           </span>
           <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-stone-900 mt-1">
-            Katalog Menu & Hidangan
+            Menu & Culinary Catalog
           </h1>
           <p className="text-xs sm:text-sm text-stone-600 mt-0.5">
-            Kelola daftar masakan nusantara, varian kustomisasi koki, dan ketersediaan harian.
+            Manage archipelago cuisine dishes, chef modifiers, and daily stock availability.
           </p>
         </div>
 
@@ -249,7 +249,7 @@ export default function ProductsClient() {
           className="px-4 py-2.5 rounded-button bg-primary hover:bg-primary-hover text-white text-xs sm:text-sm font-semibold shadow-elevation-1 transition-all flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
-          <span>Tambah Menu Baru</span>
+          <span>Add New Dish</span>
         </button>
       </div>
 
@@ -262,7 +262,7 @@ export default function ProductsClient() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Cari hidangan berdasarkan nama..."
+              placeholder="Search dishes by name or keyword..."
               className="w-full pl-9 pr-3 py-2 text-xs rounded-button bg-sand-50/60 border border-sand-300 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
             />
           </div>
@@ -272,7 +272,7 @@ export default function ProductsClient() {
             onChange={(e) => setSelectedCategory(e.target.value)}
             className="py-2 px-3 text-xs rounded-button bg-sand-50/60 border border-sand-300 focus:border-primary outline-none transition-all"
           >
-            <option value="all">Semua Kategori</option>
+            <option value="all">All Categories</option>
             {categoriesList.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -282,7 +282,7 @@ export default function ProductsClient() {
         </div>
 
         <span className="text-xs font-semibold text-stone-500">
-          Total {filteredProducts.length} Hidangan
+          Total {filteredProducts.length} Dishes
         </span>
       </div>
 
@@ -292,13 +292,13 @@ export default function ProductsClient() {
           <table className="w-full text-left text-xs">
             <thead className="bg-sand-50 text-stone-600 font-bold uppercase tracking-wider border-b border-sand-200">
               <tr>
-                <th className="p-4">Foto</th>
-                <th className="p-4">Nama Hidangan</th>
-                <th className="p-4">Kategori</th>
-                <th className="p-4">Harga Pokok</th>
-                <th className="p-4">Varian Opsi</th>
+                <th className="p-4">Photo</th>
+                <th className="p-4">Dish Name</th>
+                <th className="p-4">Category</th>
+                <th className="p-4">Base Price</th>
+                <th className="p-4">Modifiers</th>
                 <th className="p-4 text-center">Status</th>
-                <th className="p-4 text-center">Aksi</th>
+                <th className="p-4 text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-sand-200">
@@ -306,13 +306,13 @@ export default function ProductsClient() {
                 <tr>
                   <td colSpan={7} className="p-8 text-center text-stone-500">
                     <Loader2 className="w-6 h-6 animate-spin mx-auto text-primary mb-2" />
-                    Memuat katalog produk...
+                    Loading dishes catalog...
                   </td>
                 </tr>
               ) : filteredProducts.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="p-8 text-center text-stone-400">
-                    Tidak ada hidangan yang cocok dengan kriteria pencarian.
+                    No dishes matched your search criteria.
                   </td>
                 </tr>
               ) : (
@@ -341,7 +341,7 @@ export default function ProductsClient() {
                       </td>
                       <td className="p-4">
                         <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-sand-100 text-stone-700 border border-sand-200">
-                          {cat?.name || "Kategori"}
+                          {cat?.name || "Category"}
                         </span>
                       </td>
                       <td className="p-4 font-bold text-stone-900">
@@ -349,7 +349,7 @@ export default function ProductsClient() {
                       </td>
                       <td className="p-4">
                         <span className="text-[11px] font-medium text-stone-600">
-                          {prod.options?.length || 0} modifier
+                          {prod.options?.length || 0} modifiers
                         </span>
                       </td>
                       <td className="p-4 text-center">
@@ -362,7 +362,7 @@ export default function ProductsClient() {
                               : "bg-red-50 text-red-700 border-red-300 hover:bg-red-100"
                           }`}
                         >
-                          {prod.isAvailable ? "Tersedia" : "Habis"}
+                          {prod.isAvailable ? "Available" : "Sold Out"}
                         </button>
                       </td>
                       <td className="p-4 text-center">
@@ -371,7 +371,7 @@ export default function ProductsClient() {
                             type="button"
                             onClick={() => openEditModal(prod)}
                             className="p-1.5 rounded bg-sand-100 hover:bg-sand-200 text-stone-700 transition-colors"
-                            title="Edit Hidangan"
+                            title="Edit Dish"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
@@ -379,7 +379,7 @@ export default function ProductsClient() {
                             type="button"
                             onClick={() => handleDeleteProduct(prod.id, prod.name)}
                             className="p-1.5 rounded bg-red-50 hover:bg-red-100 text-red-600 transition-colors"
-                            title="Nonaktifkan"
+                            title="Deactivate"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -400,7 +400,7 @@ export default function ProductsClient() {
           <div className="glass-card bg-white rounded-card w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-sand-300 shadow-elevation-3 p-6 sm:p-8 space-y-6 animate-scale-up custom-scrollbar">
             <div className="flex items-center justify-between pb-3 border-b border-sand-200">
               <h2 className="font-heading font-bold text-lg text-stone-900">
-                {editingProduct ? "Edit Hidangan" : "Tambah Hidangan Baru"}
+                {editingProduct ? "Edit Dish" : "Add New Dish"}
               </h2>
               <button
                 type="button"
@@ -422,21 +422,21 @@ export default function ProductsClient() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-stone-700 mb-1">
-                    Nama Hidangan *
+                    Dish Name *
                   </label>
                   <input
                     type="text"
                     required
                     value={name}
                     onChange={(e) => handleNameChange(e.target.value)}
-                    placeholder="Contoh: Rendang Wagyu 12 Jam"
+                    placeholder="e.g., 12-Hour Wagyu Rendang"
                     className="w-full p-2.5 text-xs rounded-button bg-sand-50/70 border border-sand-300 focus:border-primary outline-none"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-bold text-stone-700 mb-1">
-                    Kategori *
+                    Category *
                   </label>
                   <select
                     required
@@ -456,21 +456,21 @@ export default function ProductsClient() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-stone-700 mb-1">
-                    Slug URL *
+                    URL Slug *
                   </label>
                   <input
                     type="text"
                     required
                     value={slug}
                     onChange={(e) => setSlug(e.target.value)}
-                    placeholder="rendang-wagyu-12-jam"
+                    placeholder="12-hour-wagyu-rendang"
                     className="w-full p-2.5 text-xs rounded-button bg-sand-50/70 border border-sand-300 focus:border-primary outline-none font-mono"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-bold text-stone-700 mb-1">
-                    Harga Pokok (IDR) *
+                    Base Price (IDR) *
                   </label>
                   <input
                     type="number"
@@ -485,20 +485,20 @@ export default function ProductsClient() {
 
               <div>
                 <label className="block text-xs font-bold text-stone-700 mb-1">
-                  Deskripsi Hidangan
+                  Dish Description
                 </label>
                 <textarea
                   rows={2}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Ceritakan racikan rempah dan tekstur hidangan ini..."
+                  placeholder="Describe the spice blend, texture, and culinary inspiration..."
                   className="w-full p-2.5 text-xs rounded-button bg-sand-50/70 border border-sand-300 focus:border-primary outline-none resize-none"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-stone-700 mb-1">
-                  URL Foto Produk (Cloudinary / WebP)
+                  Product Image URL (Cloudinary / WebP)
                 </label>
                 <input
                   type="text"
@@ -514,10 +514,10 @@ export default function ProductsClient() {
                 <div className="flex items-center justify-between">
                   <div>
                     <label className="block text-xs font-bold text-stone-800">
-                      Opsi / Varian Kustomisasi ({options.length})
+                      Options & Modifiers ({options.length})
                     </label>
                     <p className="text-[11px] text-stone-500">
-                      Tingkat pedas, jenis mie, sambal, atau topping ekstra
+                      Spice level, side dishes, sauces, or premium add-ons
                     </p>
                   </div>
                   <button
@@ -526,7 +526,7 @@ export default function ProductsClient() {
                     className="px-2.5 py-1 rounded bg-sand-100 hover:bg-sand-200 text-stone-800 text-xs font-semibold flex items-center gap-1"
                   >
                     <Plus className="w-3 h-3" />
-                    <span>Tambah Opsi</span>
+                    <span>Add Option</span>
                   </button>
                 </div>
 
@@ -540,7 +540,7 @@ export default function ProductsClient() {
                         type="text"
                         value={opt.name}
                         onChange={(e) => updateOption(idx, { name: e.target.value })}
-                        placeholder="Nama opsi (misal: Ekstra Sambal)"
+                        placeholder="Option name (e.g., Extra Sambal Matah)"
                         className="flex-1 p-2 text-xs rounded bg-white border border-sand-300 outline-none"
                       />
                       <input
@@ -549,7 +549,7 @@ export default function ProductsClient() {
                         onChange={(e) =>
                           updateOption(idx, { priceDeltaMinor: Number(e.target.value) })
                         }
-                        placeholder="+Harga"
+                        placeholder="+Price"
                         className="w-24 p-2 text-xs rounded bg-white border border-sand-300 outline-none font-mono"
                       />
                       <button
@@ -571,7 +571,7 @@ export default function ProductsClient() {
                   onClick={() => setIsModalOpen(false)}
                   className="px-4 py-2 text-xs font-semibold rounded-button bg-sand-100 hover:bg-sand-200 text-stone-700"
                 >
-                  Batal
+                  Cancel
                 </button>
                 <button
                   type="submit"
@@ -579,7 +579,7 @@ export default function ProductsClient() {
                   className="px-5 py-2 text-xs font-semibold rounded-button bg-primary hover:bg-primary-hover text-white shadow-sm disabled:opacity-60 flex items-center gap-1.5"
                 >
                   {submitting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-                  <span>{editingProduct ? "Simpan Perubahan" : "Buat Hidangan"}</span>
+                  <span>{editingProduct ? "Save Changes" : "Create Dish"}</span>
                 </button>
               </div>
             </form>

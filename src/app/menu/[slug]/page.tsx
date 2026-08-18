@@ -37,7 +37,7 @@ export async function generateMetadata({
   }
 
   return {
-    title: "Detail Hidangan | Nusantara Artisan Kitchen & Lounge",
+    title: "Dish Details | Nusantara Artisan Kitchen & Lounge",
   };
 }
 
@@ -69,7 +69,7 @@ export default async function ProductDetailPage({
         .where(eq(categories.id, dbProduct.categoryId))
         .limit(1);
 
-      const options = await db
+      const dbOptions = await db
         .select()
         .from(productOptions)
         .where(
@@ -79,12 +79,6 @@ export default async function ProductDetailPage({
           )
         );
 
-      const related = await db
-        .select()
-        .from(products)
-        .where(eq(products.isAvailable, true))
-        .limit(3);
-
       productData = {
         id: dbProduct.id,
         name: dbProduct.name,
@@ -93,8 +87,8 @@ export default async function ProductDetailPage({
         priceMinor: dbProduct.priceMinor,
         currency: dbProduct.currency,
         imageUrl: dbProduct.imageUrl,
-        categoryName: category?.name || "Signature",
-        options: options.map((o) => ({
+        categoryName: category?.name || "General",
+        options: dbOptions.map((o) => ({
           id: o.id,
           name: o.name,
           description: o.description,
@@ -103,30 +97,48 @@ export default async function ProductDetailPage({
         })),
       };
 
-      relatedProducts = related.filter((p) => p.id !== dbProduct.id);
+      // Load related products in the same category
+      const dbRelated = await db
+        .select({
+          id: products.id,
+          name: products.name,
+          slug: products.slug,
+          priceMinor: products.priceMinor,
+          imageUrl: products.imageUrl,
+        })
+        .from(products)
+        .where(
+          and(
+            eq(products.categoryId, dbProduct.categoryId),
+            eq(products.isAvailable, true)
+          )
+        )
+        .limit(4);
+
+      relatedProducts = dbRelated.filter((p) => p.id !== dbProduct.id);
     }
   } catch (e) {
-    console.warn("DB fetch failed in ProductDetailPage:", e);
+    console.warn("Error loading product detail from DB:", e);
   }
 
-  // Fallback if product not in DB yet
+  // Fallback for demo wagyu
   if (!productData) {
     if (slug === "rendang-wagyu-12-jam") {
       productData = {
         id: "p1",
-        name: "Rendang Daging Sapi Wagyu 12 Jam",
+        name: "12-Hour Wagyu Beef Rendang",
         slug: "rendang-wagyu-12-jam",
         description:
-          "Daging Wagyu MB5 dimasak perlahan 12 jam dengan 18 rempah Minang & santan kelapa sawit murni caramelised.",
+          "MB5 Wagyu beef slow-cooked for 12 hours with 18 Minang herbs & caramelized artisan coconut reduction.",
         priceMinor: 95000,
         currency: "IDR",
         imageUrl:
           "https://images.unsplash.com/photo-1544025162-d76694265947?w=800&auto=format&fit=crop&q=80",
         categoryName: "Signature Mains",
         options: [
-          { id: "opt1", name: "Tingkat Pedas: Sedang", priceDeltaMinor: 0 },
-          { id: "opt2", name: "Tingkat Pedas: Ekstra Pedas Cabe Rawit", priceDeltaMinor: 5000 },
-          { id: "opt3", name: "Ekstra Kuah Rendang Kental", priceDeltaMinor: 10000 },
+          { id: "opt1", name: "Spice Level: Medium", priceDeltaMinor: 0 },
+          { id: "opt2", name: "Spice Level: Extra Bird's Eye Chili", priceDeltaMinor: 5000 },
+          { id: "opt3", name: "Extra Thick Rendang Gravy", priceDeltaMinor: 10000 },
         ],
       };
     } else {
@@ -142,7 +154,7 @@ export default async function ProductDetailPage({
         {/* Breadcrumb Navigation */}
         <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-stone-500 mb-6">
           <Link href="/" className="hover:text-primary transition-colors">
-            Beranda
+            Home
           </Link>
           <ChevronRight className="w-3.5 h-3.5" />
           <Link href="/menu" className="hover:text-primary transition-colors">

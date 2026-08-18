@@ -50,12 +50,12 @@ export default function CartPageClient() {
     setErrorMsg(null);
 
     if (items.length === 0) {
-      setErrorMsg("Keranjang belanja Anda masih kosong.");
+      setErrorMsg("Your dining basket is currently empty.");
       return;
     }
 
     if (diningOption === "dine_in" && !tableNumber.trim()) {
-      setErrorMsg("Silakan masukkan Nomor Meja untuk pesanan Makan di Tempat.");
+      setErrorMsg("Please provide a Table Number for Dine-In service.");
       return;
     }
 
@@ -87,7 +87,7 @@ export default function CartPageClient() {
       if (!res.ok || !json.success) {
         setErrorMsg(
           json.error?.message ||
-            "Gagal membuat pesanan. Periksa kembali pilihan menu Anda."
+            "Failed to create order. Please review your basket selection."
         );
         setLoading(false);
         return;
@@ -121,7 +121,7 @@ export default function CartPageClient() {
       setLoading(false);
     } catch (err) {
       console.error("Order creation failed:", err);
-      setErrorMsg("Terjadi gangguan koneksi internet. Silakan coba lagi.");
+      setErrorMsg("Network connection error. Please try again.");
       setLoading(false);
     }
   };
@@ -136,35 +136,34 @@ export default function CartPageClient() {
 
         <div className="space-y-2">
           <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 uppercase tracking-wider">
-            Pesanan Berhasil Dibuat
+            Order Placed Successfully
           </span>
           <h2 className="font-heading text-2xl font-extrabold text-stone-900 mt-2">
-            Terima Kasih atas Pesanan Anda!
+            Thank You for Dining with Us!
           </h2>
           <p className="text-sm text-stone-600">
-            Nomor Pesanan:{" "}
+            Order Reference:{" "}
             <span className="font-bold text-stone-900 font-mono">
               {successOrder.orderNumber}
             </span>
           </p>
           <p className="text-xs text-stone-500 max-w-sm mx-auto">
-            Pesanan Anda telah diteruskan ke stasiun dapur Nusantara Artisan Kitchen untuk segera dipersiapkan.
+            Your ticket has been sent directly to the kitchen display board and preparation is starting shortly.
           </p>
         </div>
 
         <div className="pt-4 border-t border-sand-200 flex flex-col gap-2.5">
           <Link
-            href="/menu"
+            href={`/orders/${successOrder.orderId}`}
             className="w-full py-3 rounded-button bg-primary text-white font-semibold text-xs sm:text-sm hover:bg-primary-hover transition-colors shadow-sm inline-flex items-center justify-center gap-2"
           >
-            <UtensilsCrossed className="w-4 h-4" />
-            <span>Pesan Hidangan Lainnya</span>
+            <span>Track Kitchen Progress</span>
           </Link>
           <Link
-            href="/"
+            href="/menu"
             className="w-full py-2.5 rounded-button bg-sand-100 text-stone-700 font-medium text-xs hover:bg-sand-200 transition-colors"
           >
-            Kembali ke Beranda
+            Order More Dishes
           </Link>
         </div>
       </div>
@@ -180,10 +179,10 @@ export default function CartPageClient() {
         </div>
         <div className="space-y-2">
           <h2 className="font-heading text-2xl font-bold text-stone-900">
-            Keranjang Belanja Anda Kosong
+            Your Dining Basket is Empty
           </h2>
           <p className="text-xs sm:text-sm text-stone-500 max-w-md mx-auto leading-relaxed">
-            Anda belum menambahkan hidangan ke dalam keranjang. Temukan ragam masakan nusantara favorit Anda di katalog menu kami.
+            You haven&apos;t selected any dishes yet. Discover your favorite archipelago flavors in our culinary catalog.
           </p>
         </div>
         <Link
@@ -191,7 +190,7 @@ export default function CartPageClient() {
           className="px-6 py-3 rounded-button bg-primary text-white font-semibold text-xs sm:text-sm shadow-elevation-1 hover:bg-primary-hover transition-all inline-flex items-center gap-2"
         >
           <UtensilsCrossed className="w-4 h-4" />
-          <span>Jelajahi Katalog Menu</span>
+          <span>Explore Menu Catalog</span>
         </Link>
       </div>
     );
@@ -207,10 +206,10 @@ export default function CartPageClient() {
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-stone-500 hover:text-primary transition-colors mb-1"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Lanjut Memilih Menu</span>
+            <span>Continue Selecting Dishes</span>
           </Link>
           <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-stone-900">
-            Keranjang & Rincian Pesanan
+            Review Basket & Order Details
           </h1>
         </div>
 
@@ -220,7 +219,7 @@ export default function CartPageClient() {
           className="text-xs text-red-600 hover:text-red-700 font-semibold p-2 rounded-button hover:bg-red-50 transition-colors flex items-center gap-1"
         >
           <Trash2 className="w-3.5 h-3.5" />
-          <span>Kosongkan</span>
+          <span>Clear Basket</span>
         </button>
       </div>
 
@@ -240,7 +239,7 @@ export default function CartPageClient() {
           <div className="glass-card bg-white rounded-card p-5 border border-sand-300 shadow-elevation-1 space-y-4">
             <h2 className="font-heading font-bold text-sm text-stone-900 uppercase tracking-wider flex items-center gap-2">
               <UtensilsCrossed className="w-4 h-4 text-primary" />
-              <span>Pilihan Tempat Bersantap</span>
+              <span>Dining Preference</span>
             </h2>
 
             <div className="grid grid-cols-2 gap-3">
@@ -254,10 +253,10 @@ export default function CartPageClient() {
                 }`}
               >
                 <span className="font-heading font-bold text-xs sm:text-sm text-stone-900 block">
-                  🍽️ Makan di Tempat
+                  🍽️ Dine-In
                 </span>
                 <span className="text-[11px] text-stone-500 mt-0.5 block">
-                  Dine-in di restoran
+                  Eat at the dining lounge
                 </span>
               </button>
 
@@ -271,10 +270,10 @@ export default function CartPageClient() {
                 }`}
               >
                 <span className="font-heading font-bold text-xs sm:text-sm text-stone-900 block">
-                  🛍️ Bawa Pulang
+                  🛍️ Takeaway
                 </span>
                 <span className="text-[11px] text-stone-500 mt-0.5 block">
-                  Takeaway / Kemasan khusus
+                  Packaged to-go / Pickup
                 </span>
               </button>
             </div>
@@ -282,13 +281,13 @@ export default function CartPageClient() {
             {diningOption === "dine_in" && (
               <div className="pt-2 animate-fade-in">
                 <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1">
-                  Nomor Meja Restoran *
+                  Table Number *
                 </label>
                 <input
                   type="text"
                   value={tableNumber}
                   onChange={(e) => setTableNumber(e.target.value)}
-                  placeholder="Contoh: 12 atau VIP-01"
+                  placeholder="e.g., Table 12 or Booth 04"
                   required
                   className="w-full p-2.5 rounded-button bg-sand-50/50 border border-sand-300 focus:border-primary focus:ring-2 focus:ring-primary/20 text-xs sm:text-sm text-stone-900 placeholder:text-stone-400 outline-none transition-all"
                 />
@@ -299,7 +298,7 @@ export default function CartPageClient() {
           {/* Itemized Basket */}
           <div className="glass-card bg-white rounded-card p-5 border border-sand-300 shadow-elevation-1 space-y-4">
             <h2 className="font-heading font-bold text-sm text-stone-900 uppercase tracking-wider">
-              Daftar Hidangan ({items.length})
+              Selected Dishes ({items.length})
             </h2>
 
             <div className="divide-y divide-sand-200">
@@ -343,7 +342,7 @@ export default function CartPageClient() {
 
                     {item.note && (
                       <p className="text-xs text-primary italic mt-1">
-                        Catatan: &ldquo;{item.note}&rdquo;
+                        Note: &ldquo;{item.note}&rdquo;
                       </p>
                     )}
 
@@ -382,12 +381,12 @@ export default function CartPageClient() {
           {/* Global Order Note */}
           <div className="glass-card bg-white rounded-card p-5 border border-sand-300 shadow-elevation-1 space-y-2">
             <label className="block text-xs font-bold text-stone-800 uppercase tracking-wider">
-              Catatan Keseluruhan Pesanan
+              Overall Order & Kitchen Notes
             </label>
             <textarea
               value={customerNote}
               onChange={(e) => setCustomerNote(e.target.value)}
-              placeholder="Contoh: Tolong disajikan bersamaan, sendok garpu ekstra..."
+              placeholder="e.g., Serve dishes together, extra cutlery, birthday celebration..."
               rows={2}
               className="w-full p-3 rounded-button bg-sand-50/60 border border-sand-300 focus:border-primary focus:ring-2 focus:ring-primary/20 text-xs sm:text-sm text-stone-800 placeholder:text-stone-400 outline-none resize-none transition-all"
             />
@@ -398,25 +397,25 @@ export default function CartPageClient() {
         <div className="lg:col-span-5 space-y-6 sticky top-20">
           <div className="glass-card bg-white rounded-card p-6 border border-sand-300 shadow-elevation-2 space-y-5">
             <h2 className="font-heading font-bold text-base text-stone-900 border-b border-sand-200 pb-3">
-              Ringkasan Pembayaran
+              Payment Summary
             </h2>
 
             <div className="space-y-3 text-xs sm:text-sm">
               <div className="flex justify-between text-stone-600">
-                <span>Subtotal ({items.reduce((s, i) => s + i.quantity, 0)} item)</span>
+                <span>Subtotal ({items.reduce((s, i) => s + i.quantity, 0)} {items.reduce((s, i) => s + i.quantity, 0) === 1 ? "item" : "items"})</span>
                 <span className="font-semibold text-stone-800">{formattedSubtotal}</span>
               </div>
 
               <div className="flex justify-between text-stone-600">
                 <span className="flex items-center gap-1">
-                  <span>Pajak Restoran (PB1 10%)</span>
+                  <span>Restaurant Tax (PB1 10%)</span>
                 </span>
                 <span className="font-semibold text-stone-800">{formattedTax}</span>
               </div>
 
               <div className="pt-3 border-t border-sand-200 flex justify-between items-baseline">
                 <span className="font-heading font-bold text-base text-stone-900">
-                  Total Akhir
+                  Total Due
                 </span>
                 <span className="font-heading font-extrabold text-xl text-primary">
                   {formattedTotal}
@@ -439,11 +438,11 @@ export default function CartPageClient() {
               <div className="p-3 rounded-button bg-amber-50 border border-amber-200 text-xs text-amber-800 flex items-start gap-2">
                 <Info className="w-4 h-4 flex-shrink-0 mt-0.5 text-amber-600" />
                 <span>
-                  Memesan sebagai Tamu. Anda juga dapat{" "}
+                  Ordering as Guest. You may also{" "}
                   <Link href="/login" className="font-bold underline">
-                    Masuk
+                    Sign In
                   </Link>{" "}
-                  untuk menyimpan riwayat pesanan.
+                  to keep your order history.
                 </span>
               </div>
             )}
@@ -458,19 +457,19 @@ export default function CartPageClient() {
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Memproses Pesanan...</span>
+                  <span>Processing Order...</span>
                 </>
               ) : (
                 <>
                   <Lock className="w-4 h-4" />
-                  <span>Buat Pesanan • {formattedTotal}</span>
+                  <span>Place Order • {formattedTotal}</span>
                 </>
               )}
             </button>
 
             <div className="flex items-center justify-center gap-2 text-[11px] text-stone-500 text-center">
               <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              <span>Konfirmasi Dapur Realtime & Pembayaran Aman</span>
+              <span>Realtime Kitchen Notification & Secure Checkout</span>
             </div>
           </div>
         </div>

@@ -114,21 +114,21 @@ export default function CategoriesClient() {
 
       const json = await res.json();
       if (!res.ok || !json.success) {
-        setFormError(json.error?.message || "Gagal menyimpan kategori.");
+        setFormError(json.error?.message || "Failed to save category.");
       } else {
         setIsModalOpen(false);
         fetchCategories();
       }
     } catch (err) {
       console.error("Save category error:", err);
-      setFormError("Terjadi gangguan jaringan.");
+      setFormError("Network communication error.");
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleDelete = async (id: string, catName: string) => {
-    if (!confirm(`Yakin ingin menonaktifkan kategori "${catName}"?`)) return;
+    if (!confirm(`Are you sure you want to deactivate category "${catName}"?`)) return;
     try {
       await fetch(`/api/categories/${id}`, { method: "DELETE" });
       fetchCategories();
@@ -146,10 +146,10 @@ export default function CategoriesClient() {
             Menu Taxonomy
           </span>
           <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-stone-900 mt-1">
-            Kategori Menu
+            Menu Categories
           </h1>
           <p className="text-xs sm:text-sm text-stone-600 mt-0.5">
-            Atur struktur kelompok hidangan, urutan tampilan katalog, dan status aktif.
+            Organize dish groups, catalog display ordering, and category availability.
           </p>
         </div>
 
@@ -159,7 +159,7 @@ export default function CategoriesClient() {
           className="px-4 py-2.5 rounded-button bg-primary hover:bg-primary-hover text-white text-xs sm:text-sm font-semibold shadow-elevation-1 transition-all flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
-          <span>Tambah Kategori</span>
+          <span>Add Category</span>
         </button>
       </div>
 
@@ -168,12 +168,12 @@ export default function CategoriesClient() {
         <table className="w-full text-left text-xs">
           <thead className="bg-sand-50 text-stone-600 font-bold uppercase tracking-wider border-b border-sand-200">
             <tr>
-              <th className="p-4">Urutan</th>
-              <th className="p-4">Nama Kategori</th>
-              <th className="p-4">Slug URL</th>
-              <th className="p-4">Deskripsi</th>
+              <th className="p-4">Sort Order</th>
+              <th className="p-4">Category Name</th>
+              <th className="p-4">URL Slug</th>
+              <th className="p-4">Description</th>
               <th className="p-4 text-center">Status</th>
-              <th className="p-4 text-center">Aksi</th>
+              <th className="p-4 text-center">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-sand-200">
@@ -181,13 +181,13 @@ export default function CategoriesClient() {
               <tr>
                 <td colSpan={6} className="p-8 text-center text-stone-500">
                   <Loader2 className="w-6 h-6 animate-spin mx-auto text-primary mb-2" />
-                  Memuat kategori...
+                  Loading categories...
                 </td>
               </tr>
             ) : categoriesList.length === 0 ? (
               <tr>
                 <td colSpan={6} className="p-8 text-center text-stone-400">
-                  Belum ada kategori yang ditambahkan.
+                  No categories configured yet.
                 </td>
               </tr>
             ) : (
@@ -213,7 +213,7 @@ export default function CategoriesClient() {
                           : "bg-stone-100 text-stone-500 border-stone-300"
                       }`}
                     >
-                      {cat.isActive ? "Aktif" : "Nonaktif"}
+                      {cat.isActive ? "Active" : "Inactive"}
                     </span>
                   </td>
                   <td className="p-4 text-center">
@@ -222,7 +222,7 @@ export default function CategoriesClient() {
                         type="button"
                         onClick={() => openEditModal(cat)}
                         className="p-1.5 rounded bg-sand-100 hover:bg-sand-200 text-stone-700 transition-colors"
-                        title="Edit Kategori"
+                        title="Edit Category"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
@@ -230,7 +230,7 @@ export default function CategoriesClient() {
                         type="button"
                         onClick={() => handleDelete(cat.id, cat.name)}
                         className="p-1.5 rounded bg-red-50 hover:bg-red-100 text-red-600 transition-colors"
-                        title="Nonaktifkan"
+                        title="Deactivate"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -249,7 +249,7 @@ export default function CategoriesClient() {
           <div className="glass-card bg-white rounded-card w-full max-w-md border border-sand-300 shadow-elevation-3 p-6 space-y-5 animate-scale-up">
             <div className="flex items-center justify-between pb-3 border-b border-sand-200">
               <h2 className="font-heading font-bold text-base text-stone-900">
-                {editingCategory ? "Edit Kategori" : "Tambah Kategori Baru"}
+                {editingCategory ? "Edit Category" : "Add New Category"}
               </h2>
               <button
                 type="button"
@@ -270,21 +270,21 @@ export default function CategoriesClient() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-stone-700 mb-1">
-                  Nama Kategori *
+                  Category Name *
                 </label>
                 <input
                   type="text"
                   required
                   value={name}
                   onChange={(e) => handleNameChange(e.target.value)}
-                  placeholder="Contoh: Signature Mains"
+                  placeholder="e.g., Signature Mains"
                   className="w-full p-2.5 text-xs rounded-button bg-sand-50/70 border border-sand-300 focus:border-primary outline-none"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-stone-700 mb-1">
-                  Slug URL *
+                  URL Slug *
                 </label>
                 <input
                   type="text"
@@ -298,13 +298,13 @@ export default function CategoriesClient() {
 
               <div>
                 <label className="block text-xs font-bold text-stone-700 mb-1">
-                  Deskripsi Singkat
+                  Brief Description
                 </label>
                 <textarea
                   rows={2}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Deskripsi singkat hidangan dalam kategori ini..."
+                  placeholder="Brief culinary narrative for dishes in this section..."
                   className="w-full p-2.5 text-xs rounded-button bg-sand-50/70 border border-sand-300 focus:border-primary outline-none resize-none"
                 />
               </div>
@@ -312,7 +312,7 @@ export default function CategoriesClient() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-bold text-stone-700 mb-1">
-                    Urutan Tampilan
+                    Sort Order
                   </label>
                   <input
                     type="number"
@@ -324,15 +324,15 @@ export default function CategoriesClient() {
 
                 <div>
                   <label className="block text-xs font-bold text-stone-700 mb-1">
-                    Status Aktif
+                    Active Status
                   </label>
                   <select
                     value={isActive ? "true" : "false"}
                     onChange={(e) => setIsActive(e.target.value === "true")}
                     className="w-full p-2.5 text-xs rounded-button bg-sand-50/70 border border-sand-300 focus:border-primary outline-none"
                   >
-                    <option value="true">Aktif</option>
-                    <option value="false">Nonaktif</option>
+                    <option value="true">Active</option>
+                    <option value="false">Inactive</option>
                   </select>
                 </div>
               </div>
@@ -343,7 +343,7 @@ export default function CategoriesClient() {
                   onClick={() => setIsModalOpen(false)}
                   className="px-4 py-2 text-xs font-semibold rounded-button bg-sand-100 hover:bg-sand-200 text-stone-700"
                 >
-                  Batal
+                  Cancel
                 </button>
                 <button
                   type="submit"
@@ -351,7 +351,7 @@ export default function CategoriesClient() {
                   className="px-5 py-2 text-xs font-semibold rounded-button bg-primary hover:bg-primary-hover text-white shadow-sm disabled:opacity-60 flex items-center gap-1.5"
                 >
                   {submitting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-                  <span>Simpan Kategori</span>
+                  <span>Save Category</span>
                 </button>
               </div>
             </form>

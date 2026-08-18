@@ -156,7 +156,7 @@ export default function ProductDetailClient({
   >((acc, opt) => {
     const groupName = opt.name.includes(":")
       ? opt.name.split(":")[0].trim()
-      : "Pilihan Tambahan / Topping";
+      : "Add-ons & Options";
 
     if (!acc[groupName]) {
       acc[groupName] = [];
@@ -173,7 +173,7 @@ export default function ProductDetailClient({
         className="inline-flex items-center gap-2 text-xs font-semibold text-stone-600 hover:text-primary transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
-        <span>Kembali ke Katalog Menu</span>
+        <span>Back to Menu Catalog</span>
       </Link>
 
       {/* Main 2-Column Product Showcase */}
@@ -193,7 +193,7 @@ export default function ProductDetailClient({
           <div className="p-4 rounded-card bg-sand-50 border border-sand-200 text-xs text-stone-600 flex items-center gap-3">
             <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0" />
             <span>
-              Dimasak segar saat pesanan masuk. Bebas MSG tambahan dengan bahan-bahan organik lokal.
+              Prepared fresh to order. Free from artificial MSG with locally sourced organic produce.
             </span>
           </div>
         </div>
@@ -215,7 +215,7 @@ export default function ProductDetailClient({
               </span>
               {optionsTotalDelta > 0 && (
                 <span className="text-xs text-stone-500">
-                  (Base: {formatCurrency(product.priceMinor)} + Opsi: {formatCurrency(optionsTotalDelta)})
+                  (Base: {formatCurrency(product.priceMinor)} + Options: {formatCurrency(optionsTotalDelta)})
                 </span>
               )}
             </div>
@@ -237,8 +237,8 @@ export default function ProductDetailClient({
                 </h3>
                 <span className="text-[11px] text-stone-500 font-medium">
                   {options.some((o) => o.name.includes(":"))
-                    ? "Pilih 1 opsi"
-                    : "Opsional"}
+                    ? "Choose 1 option"
+                    : "Optional"}
                 </span>
               </div>
 
@@ -278,7 +278,7 @@ export default function ProductDetailClient({
                       <span className="text-xs font-semibold text-stone-700">
                         {option.priceDeltaMinor > 0
                           ? `+${formatCurrency(option.priceDeltaMinor)}`
-                          : "Gratis"}
+                          : "Free"}
                       </span>
                     </button>
                   );
@@ -290,12 +290,12 @@ export default function ProductDetailClient({
           {/* Kitchen Note */}
           <div className="space-y-2">
             <label className="block text-xs font-bold text-stone-800 uppercase tracking-wider">
-              Instruksi Khusus Dapur
+              Special Kitchen Instructions
             </label>
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="Contoh: Pisahkan kuah, sedikit minyak, jangan pakai daun ketumbar..."
+              placeholder="e.g., Sauce on the side, less oil, allergy warnings..."
               rows={2}
               className="w-full p-3 rounded-button bg-sand-50/70 border border-sand-300 focus:border-primary focus:ring-2 focus:ring-primary/20 text-xs sm:text-sm text-stone-800 placeholder:text-stone-400 outline-none resize-none transition-all"
             />
@@ -339,7 +339,7 @@ export default function ProductDetailClient({
                 ) : (
                   <ShoppingBag className="w-5 h-5" />
                 )}
-                <span>{isAdded ? "Ditambahkan!" : "Tambah ke Keranjang"}</span>
+                <span>{isAdded ? "Added to Basket!" : "Add to Dining Basket"}</span>
               </div>
               <span className="font-bold">{formatCurrency(grandTotal)}</span>
             </button>
@@ -353,10 +353,10 @@ export default function ProductDetailClient({
           <div>
             <h2 className="font-heading font-bold text-xl text-stone-900 flex items-center gap-2">
               <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
-              <span>Ulasan Pelanggan Terverifikasi</span>
+              <span>Verified Diner Reviews</span>
             </h2>
             <p className="text-xs text-stone-500 mt-0.5">
-              Apresiasi jujur dari penikmat hidangan autentik Nusantara
+              Authentic feedback from verified diners
             </p>
           </div>
           <span className="text-xs font-bold text-stone-700 bg-sand-200/80 px-3 py-1.5 rounded-full">
@@ -364,8 +364,8 @@ export default function ProductDetailClient({
               ? `${(
                   reviewsList.reduce((acc, r) => acc + r.rating, 0) /
                   reviewsList.length
-                ).toFixed(1)} / 5.0 (${reviewsList.length} ulasan)`
-              : "5.0 / 5.0 (Rating Koki)"}
+                ).toFixed(1)} / 5.0 (${reviewsList.length} reviews)`
+              : "5.0 / 5.0 (Chef's Rating)"}
           </span>
         </div>
 
@@ -379,15 +379,15 @@ export default function ProductDetailClient({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="w-7 h-7 rounded-full bg-primary/10 text-primary font-bold text-xs flex items-center justify-center">
-                      {rev.customerName?.charAt(0) || "P"}
+                      {rev.customerName?.charAt(0) || "D"}
                     </div>
                     <div>
                       <span className="font-bold text-xs text-stone-900 block">
-                        {rev.customerName || "Pelanggan Terverifikasi"}
+                        {rev.customerName || "Verified Diner"}
                       </span>
                       <span className="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
                         <ShieldCheck className="w-3 h-3" />
-                        <span>Pembeli Terverifikasi</span>
+                        <span>Verified Purchase</span>
                       </span>
                     </div>
                   </div>
@@ -413,7 +413,7 @@ export default function ProductDetailClient({
                 )}
 
                 <span className="text-[10px] text-stone-400 block text-right">
-                  {new Date(rev.createdAt).toLocaleDateString("id-ID", {
+                  {new Date(rev.createdAt).toLocaleDateString("en-US", {
                     day: "numeric",
                     month: "short",
                     year: "numeric",
@@ -425,10 +425,10 @@ export default function ProductDetailClient({
         ) : (
           <div className="p-6 rounded-card bg-sand-50 border border-sand-200 text-center space-y-1">
             <p className="text-xs font-semibold text-stone-700">
-              Belum ada ulasan untuk hidangan ini.
+              No reviews for this dish yet.
             </p>
             <p className="text-[11px] text-stone-500">
-              Pesan dan cicipi hidangan ini untuk membagikan ulasan terverifikasi pertama Anda!
+              Order and taste this dish to leave your first verified review!
             </p>
           </div>
         )}
@@ -438,7 +438,7 @@ export default function ProductDetailClient({
       {relatedProducts.length > 0 && (
         <div className="space-y-6 pt-6 border-t border-sand-300">
           <h2 className="font-heading font-bold text-xl text-stone-900">
-            Rekomendasi Pendamping Lezat
+            Recommended Pairings
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {relatedProducts.map((rel) => (

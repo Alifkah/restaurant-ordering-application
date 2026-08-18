@@ -28,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className={`${inter.variable} ${plusJakarta.variable}`}>
+    <html lang="en" className={`${inter.variable} ${plusJakarta.variable}`}>
       <body className="font-sans antialiased min-h-screen bg-sand-100 text-stone-900 selection:bg-primary-100 selection:text-primary-900">
         <SessionProvider>
           <CartProvider>

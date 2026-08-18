@@ -43,7 +43,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
 
     if (!product) {
       return NextResponse.json(
-        { success: false, error: { code: "NOT_FOUND", message: "Produk tidak ditemukan." } },
+        { success: false, error: { code: "NOT_FOUND", message: "Product not found." } },
         { status: 404 }
       );
     }
@@ -57,7 +57,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
   } catch (error) {
     console.error("Error fetching product detail:", error);
     return NextResponse.json(
-      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Gagal mengambil data produk." } },
+      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to retrieve product details." } },
       { status: 500 }
     );
   }
@@ -95,7 +95,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
 
     if (!updatedProduct) {
       return NextResponse.json(
-        { success: false, error: { code: "NOT_FOUND", message: "Produk tidak ditemukan." } },
+        { success: false, error: { code: "NOT_FOUND", message: "Product not found." } },
         { status: 404 }
       );
     }
@@ -126,7 +126,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
   } catch (error) {
     console.error("Error updating product:", error);
     return NextResponse.json(
-      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Gagal memperbarui produk." } },
+      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to update product." } },
       { status: 500 }
     );
   }
@@ -161,7 +161,7 @@ export async function DELETE(req: NextRequest, { params }: RouteParams) {
   } catch (error) {
     console.error("Error deactivating product:", error);
     return NextResponse.json(
-      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Gagal menonaktifkan produk." } },
+      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to deactivate product." } },
       { status: 500 }
     );
   }

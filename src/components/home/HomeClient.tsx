@@ -27,28 +27,28 @@ export default function HomeClient({ recommendedProducts }: HomeClientProps) {
       name: "Signature Mains",
       slug: "signature-mains",
       icon: "🍲",
-      desc: "Rendang Wagyu 12 Jam & Ayam Betutu",
+      desc: "12-Hour Wagyu Rendang & Balinese Betutu Duck",
       image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=80",
     },
     {
       name: "Artisan Rice & Noodles",
       slug: "artisan-rice-noodles",
       icon: "🍜",
-      desc: "Nasi Kecombrang & Bakmi Truffle",
+      desc: "Torch Ginger Fragrant Rice & Truffle Bakmi",
       image: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=500&auto=format&fit=crop&q=80",
     },
     {
       name: "Woodfired & Grill",
       slug: "woodfired-grill",
       icon: "🔥",
-      desc: "Ikan Bakar Jimbaran Bumbu Madu",
+      desc: "Jimbaran Honey Spiced Grilled Barramundi",
       image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=500&auto=format&fit=crop&q=80",
     },
     {
       name: "Specialty Beverages",
       slug: "specialty-beverages",
       icon: "☕",
-      desc: "Kopi Susu Aren Pandan & Jamu Herbal",
+      desc: "Pandan Palm Sugar Latte & Herbal Elixirs",
       image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500&auto=format&fit=crop&q=80",
     },
   ];
@@ -56,24 +56,24 @@ export default function HomeClient({ recommendedProducts }: HomeClientProps) {
   const testimonials = [
     {
       name: "Dr. Maya Wijaya",
-      role: "Verified Food Enthusiast",
-      comment: "Rendang Wagyu 12 Jam-nya luar biasa lembut! Bumbunya caramelized pekat dan wangi rempahnya otentik banget.",
+      role: "Verified Food Critic",
+      comment: "The 12-Hour Wagyu Rendang is unbelievably tender! The caramelized coconut spice reduction is rich, velvety, and deeply aromatic.",
       rating: 5,
-      dish: "Rendang Wagyu 12 Jam",
+      dish: "12-Hour Wagyu Rendang",
     },
     {
       name: "David Kurniawan",
-      role: "Customer Seminyak",
-      comment: "Ayam Betutu Gilimanuk bumbu genepnya meresap sampai ke serat terdalam. Pemesanan online sangat cepat dan rapi!",
+      role: "Diner from Seminyak",
+      comment: "The Balinese Betutu Roasted Duck infused with bumbu genep is roasted to perfection. The digital ordering and kitchen updates are seamless!",
       rating: 5,
-      dish: "Ayam Betutu Panggang",
+      dish: "Roasted Betutu Duck",
     },
     {
       name: "Sarah Jenkins",
-      role: "Bali Foodie Guide",
-      comment: "The Bakmi Ayam Truffle and Kopi Susu Aren Pandan are my go-to weekly indulgence. Best Indonesian culinary experience!",
+      role: "Bali Culinary Guide",
+      comment: "The Truffle Mushroom Bakmi paired with Pandan Palm Sugar Latte is my weekly comfort dining experience. World-class Indonesian cuisine!",
       rating: 5,
-      dish: "Bakmi Ayam Jamur Truffle",
+      dish: "Truffle Chicken & Mushroom Bakmi",
     },
   ];
 
@@ -95,7 +95,7 @@ export default function HomeClient({ recommendedProducts }: HomeClientProps) {
         <div className="relative z-10 max-w-2xl p-6 sm:p-12 lg:p-16 space-y-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-400/30 text-xs font-semibold backdrop-blur-sm">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>Menerima Pesanan Online • Buka s/d 22:00 WITA</span>
+            <span>Accepting Online Orders • Open until 10:00 PM WITA</span>
           </div>
 
           <h1 className="font-heading text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
@@ -103,7 +103,7 @@ export default function HomeClient({ recommendedProducts }: HomeClientProps) {
           </h1>
 
           <p className="text-sm sm:text-base text-stone-300 leading-relaxed max-w-xl">
-            Cita rasa rempah kepulauan nusantara yang diolah dengan bahan organik segar pilihan dan teknik pemanggangan arang batok kelapa.
+            Heritage spices of the Indonesian archipelago prepared with farm-fresh organic produce and authentic coconut husk woodfire techniques.
           </p>
 
           <div className="flex flex-wrap items-center gap-3.5 pt-2">
@@ -112,14 +112,14 @@ export default function HomeClient({ recommendedProducts }: HomeClientProps) {
               className="px-6 py-3.5 rounded-button bg-primary hover:bg-primary-hover text-white font-semibold text-xs sm:text-sm shadow-elevation-1 transition-all flex items-center gap-2 active:scale-95"
             >
               <UtensilsCrossed className="w-4 h-4" />
-              <span>Jelajahi Menu Digital</span>
+              <span>Explore Digital Menu</span>
             </Link>
 
             <Link
               href="/login"
               className="px-5 py-3.5 rounded-button bg-white/10 hover:bg-white/20 text-white font-medium text-xs sm:text-sm border border-white/20 backdrop-blur-sm transition-all flex items-center gap-2"
             >
-              <span>Lacak Pesanan Saya</span>
+              <span>Track My Order</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -134,10 +134,10 @@ export default function HomeClient({ recommendedProducts }: HomeClientProps) {
           </div>
           <div>
             <h3 className="font-heading font-bold text-sm text-stone-900">
-              Jam Operasional
+              Operating Hours
             </h3>
             <p className="text-xs text-stone-600 mt-0.5 leading-relaxed">
-              Buka setiap hari: 10:00 - 22:00 WITA (Jumat & Sabtu s/d 23:00)
+              Open Daily: 10:00 AM - 10:00 PM WITA (Fri & Sat until 11:00 PM)
             </p>
           </div>
         </div>
@@ -148,7 +148,7 @@ export default function HomeClient({ recommendedProducts }: HomeClientProps) {
           </div>
           <div>
             <h3 className="font-heading font-bold text-sm text-stone-900">
-              Lokasi Restoran
+              Dining Location
             </h3>
             <p className="text-xs text-stone-600 mt-0.5 leading-relaxed">
               Jl. Sunset Road No. 88, Seminyak, Bali 80361
@@ -162,10 +162,10 @@ export default function HomeClient({ recommendedProducts }: HomeClientProps) {
           </div>
           <div>
             <h3 className="font-heading font-bold text-sm text-stone-900">
-              Pembayaran Aman
+              Secure Payments
             </h3>
             <p className="text-xs text-stone-600 mt-0.5 leading-relaxed">
-              Didukung Stripe Cards, Apple Pay, Google Pay, dan QRIS
+              Credit/Debit Cards, Apple Pay, Google Pay, and QRIS enabled
             </p>
           </div>
         </div>
@@ -176,17 +176,17 @@ export default function HomeClient({ recommendedProducts }: HomeClientProps) {
         <div className="flex items-end justify-between">
           <div>
             <span className="text-xs font-bold text-primary uppercase tracking-wider">
-              Kategori Kuliner
+              Culinary Categories
             </span>
             <h2 className="font-heading text-2xl sm:text-3xl font-extrabold text-stone-900 mt-1">
-              Ragam Cita Rasa Nusantara
+              Flavors of the Archipelago
             </h2>
           </div>
           <Link
             href="/menu"
             className="text-xs sm:text-sm font-semibold text-primary hover:text-primary-hover flex items-center gap-1"
           >
-            <span>Lihat Semua</span>
+            <span>View All</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -225,17 +225,17 @@ export default function HomeClient({ recommendedProducts }: HomeClientProps) {
           <div>
             <span className="text-xs font-bold text-primary uppercase tracking-wider flex items-center gap-1.5">
               <ChefHat className="w-4 h-4" />
-              <span>Chef&apos;s Recommendation</span>
+              <span>Chef&apos;s Recommendations</span>
             </span>
             <h2 className="font-heading text-2xl sm:text-3xl font-extrabold text-stone-900 mt-1">
-              Menu Favorit Paling Diminati
+              Most Celebrated Dishes
             </h2>
           </div>
           <Link
             href="/menu"
             className="text-xs sm:text-sm font-semibold text-primary hover:text-primary-hover inline-flex items-center gap-1"
           >
-            <span>Buka Katalog Lengkap</span>
+            <span>View Full Menu</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -255,10 +255,10 @@ export default function HomeClient({ recommendedProducts }: HomeClientProps) {
       <section className="glass-card bg-white rounded-card p-6 sm:p-10 border border-sand-300 shadow-elevation-1 space-y-6">
         <div className="text-center max-w-xl mx-auto space-y-1">
           <span className="text-xs font-bold text-primary uppercase tracking-wider">
-            Ulasan Terverifikasi
+            Verified Reviews
           </span>
           <h2 className="font-heading text-2xl sm:text-3xl font-extrabold text-stone-900">
-            Kata Para Penikmat Kuliner Kami
+            What Our Diners Say
           </h2>
         </div>
 

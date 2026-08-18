@@ -22,12 +22,12 @@ export default function AdminSidebar() {
   const { data: session } = useSession();
 
   const navItems = [
-    { href: "/admin", label: "Dashboard & KPI", icon: LayoutDashboard, exact: true },
-    { href: "/admin/products", label: "Menu & Produk", icon: UtensilsCrossed },
-    { href: "/admin/categories", label: "Kategori Menu", icon: Tags },
-    { href: "/admin/orders", label: "Master Pesanan", icon: ShoppingBag },
-    { href: "/admin/users", label: "Pengguna & RBAC", icon: Users },
-    { href: "/admin/settings", label: "Pengaturan Resto", icon: Settings },
+    { href: "/admin", label: "Dashboard & KPIs", icon: LayoutDashboard, exact: true },
+    { href: "/admin/products", label: "Dishes & Menu", icon: UtensilsCrossed },
+    { href: "/admin/categories", label: "Menu Categories", icon: Tags },
+    { href: "/admin/orders", label: "Order Manager", icon: ShoppingBag },
+    { href: "/admin/users", label: "Users & RBAC", icon: Users },
+    { href: "/admin/settings", label: "Restaurant Settings", icon: Settings },
     { href: "/admin/audit-logs", label: "Audit Trail", icon: FileText },
   ];
 
@@ -118,7 +118,7 @@ export default function AdminSidebar() {
           className="w-full py-2 px-3 rounded-button bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-800/50 text-xs font-semibold transition-colors flex items-center justify-center gap-2"
         >
           <LogOut className="w-3.5 h-3.5" />
-          <span>Keluar Sesi Admin</span>
+          <span>Sign Out</span>
         </button>
       </div>
     </aside>

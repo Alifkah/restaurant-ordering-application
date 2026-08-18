@@ -67,10 +67,10 @@ export default function AuditLogsClient() {
             Security & Governance
           </span>
           <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-stone-900 mt-1">
-            Audit Trail & Log Perubahan
+            Audit Trail & Event Log
           </h1>
           <p className="text-xs sm:text-sm text-stone-600 mt-0.5">
-            Rekaman historis seluruh aktivitas penting, mutasi harga, perubahan role, dan transaksi.
+            Immutable audit record of all administrative operations, price edits, role changes, and payments.
           </p>
         </div>
 
@@ -80,7 +80,7 @@ export default function AuditLogsClient() {
           className="px-3.5 py-2 rounded-button bg-white border border-sand-300 hover:bg-sand-50 text-stone-700 text-xs font-semibold shadow-sm transition-colors flex items-center gap-1.5"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
-          <span>Segarkan Log</span>
+          <span>Refresh Logs</span>
         </button>
       </div>
 
@@ -92,13 +92,13 @@ export default function AuditLogsClient() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Cari aksi (cth: ORDER, USER), aktor..."
+            placeholder="Search action (e.g. ORDER, USER), actor..."
             className="w-full pl-9 pr-3 py-2 text-xs rounded-button bg-sand-50/60 border border-sand-300 focus:border-primary outline-none transition-all"
           />
         </div>
 
         <span className="text-xs font-semibold text-stone-500">
-          Menampilkan {filteredLogs.length} Catatan Log
+          Showing {filteredLogs.length} Log Records
         </span>
       </div>
 
@@ -108,10 +108,10 @@ export default function AuditLogsClient() {
           <table className="w-full text-left text-xs">
             <thead className="bg-sand-50 text-stone-600 font-bold uppercase tracking-wider border-b border-sand-200">
               <tr>
-                <th className="p-4">Waktu</th>
-                <th className="p-4">Aktor</th>
-                <th className="p-4">Tipe Aksi</th>
-                <th className="p-4">Entitas</th>
+                <th className="p-4">Timestamp</th>
+                <th className="p-4">Actor</th>
+                <th className="p-4">Action Type</th>
+                <th className="p-4">Entity</th>
                 <th className="p-4 text-center">Metadata</th>
               </tr>
             </thead>
@@ -120,13 +120,13 @@ export default function AuditLogsClient() {
                 <tr>
                   <td colSpan={5} className="p-8 text-center text-stone-500 font-sans">
                     <Loader2 className="w-6 h-6 animate-spin mx-auto text-primary mb-2" />
-                    Memuat log audit...
+                    Loading audit trail...
                   </td>
                 </tr>
               ) : filteredLogs.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="p-8 text-center text-stone-400 font-sans">
-                    Tidak ada catatan audit yang cocok.
+                    No audit records matching search criteria.
                   </td>
                 </tr>
               ) : (
@@ -148,7 +148,7 @@ export default function AuditLogsClient() {
                           })}
                         </span>
                         <span className="text-[10px] text-stone-400">
-                          {new Date(log.createdAt).toLocaleDateString("id-ID")}
+                          {new Date(log.createdAt).toLocaleDateString("en-US")}
                         </span>
                       </td>
 
@@ -163,7 +163,7 @@ export default function AuditLogsClient() {
                             </span>
                           </div>
                         ) : (
-                          <span className="text-stone-400 italic">Sistem / Webhook</span>
+                          <span className="text-stone-400 italic">System / Webhook</span>
                         )}
                       </td>
 
@@ -193,7 +193,7 @@ export default function AuditLogsClient() {
                           className="px-2 py-1 rounded bg-sand-100 hover:bg-sand-200 text-stone-700 text-[11px] font-semibold inline-flex items-center gap-1 transition-colors"
                         >
                           <Code className="w-3 h-3" />
-                          <span>Detail JSON</span>
+                          <span>View JSON</span>
                         </button>
                       </td>
                     </tr>
@@ -237,7 +237,7 @@ export default function AuditLogsClient() {
                 onClick={() => setInspectingLog(null)}
                 className="px-4 py-2 text-xs font-semibold rounded-button bg-sand-100 hover:bg-sand-200 text-stone-700"
               >
-                Tutup
+                Close
               </button>
             </div>
           </div>

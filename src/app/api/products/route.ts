@@ -13,11 +13,11 @@ const optionInputSchema = z.object({
 });
 
 const createProductSchema = z.object({
-  categoryId: z.string().min(1, "Kategori wajib dipilih"),
-  name: z.string().min(1, "Nama produk wajib diisi"),
-  slug: z.string().min(1, "Slug wajib diisi"),
+  categoryId: z.string().min(1, "Category is required"),
+  name: z.string().min(1, "Product name is required"),
+  slug: z.string().min(1, "Slug is required"),
   description: z.string().optional().nullable(),
-  priceMinor: z.number().int().min(0, "Harga tidak boleh negatif"),
+  priceMinor: z.number().int().min(0, "Price cannot be negative"),
   currency: z.string().default("IDR"),
   imageUrl: z.string().optional().nullable(),
   imagePublicId: z.string().optional().nullable(),
@@ -58,7 +58,7 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error("Error fetching products:", error);
     return NextResponse.json(
-      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Gagal mengambil daftar produk." } },
+      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to retrieve products." } },
       { status: 500 }
     );
   }
@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
           success: false,
           error: {
             code: "VALIDATION_ERROR",
-            message: "Data produk tidak valid.",
+            message: "Invalid product data payload.",
             details: validated.error.flatten().fieldErrors,
           },
         },
@@ -123,7 +123,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Error creating product:", error);
     return NextResponse.json(
-      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Gagal membuat produk baru." } },
+      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to create new product." } },
       { status: 500 }
     );
   }

@@ -58,10 +58,10 @@ export default function CartDrawer() {
               </div>
               <div>
                 <h2 className="font-heading font-bold text-base text-stone-900">
-                  Keranjang Pesanan
+                  Dining Basket
                 </h2>
                 <p className="text-xs text-stone-500 font-medium">
-                  {totalItems} hidangan dipilih
+                  {totalItems} {totalItems === 1 ? "dish selected" : "dishes selected"}
                 </p>
               </div>
             </div>
@@ -83,17 +83,17 @@ export default function CartDrawer() {
                   <UtensilsCrossed className="w-8 h-8" />
                 </div>
                 <h3 className="font-heading font-semibold text-lg text-stone-800 mb-1">
-                  Keranjang Anda Kosong
+                  Your Basket is Empty
                 </h3>
                 <p className="text-xs text-stone-500 max-w-xs mb-6">
-                  Pilih aneka kuliner istimewa dari menu nusantara kami untuk memulai pesanan.
+                  Select authentic specialties from our culinary catalog to begin your order.
                 </p>
                 <button
                   type="button"
                   onClick={() => setIsCartOpen(false)}
                   className="px-5 py-2.5 rounded-button bg-primary text-white text-xs font-semibold hover:bg-primary-hover transition-colors shadow-sm"
                 >
-                  Jelajahi Menu
+                  Explore Menu
                 </button>
               </div>
             ) : (
@@ -140,7 +140,7 @@ export default function CartDrawer() {
 
                     {item.note && (
                       <p className="text-[11px] text-primary/90 italic mt-1 truncate">
-                        Catatan: &ldquo;{item.note}&rdquo;
+                        Note: &ldquo;{item.note}&rdquo;
                       </p>
                     )}
 
@@ -187,7 +187,7 @@ export default function CartDrawer() {
               </div>
 
               <p className="text-[11px] text-stone-500">
-                Pajak dan biaya pengemasan akan dihitung pada saat checkout.
+                Applicable restaurant tax (PB1 10%) will be calculated at checkout.
               </p>
 
               <Link
@@ -195,7 +195,7 @@ export default function CartDrawer() {
                 onClick={() => setIsCartOpen(false)}
                 className="w-full py-3 rounded-button bg-primary text-white font-semibold text-sm hover:bg-primary-hover transition-colors shadow-elevation-1 flex items-center justify-center gap-2"
               >
-                <span>Buka Keranjang & Checkout</span>
+                <span>Review Basket & Checkout</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>

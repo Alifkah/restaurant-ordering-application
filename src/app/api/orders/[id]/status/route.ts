@@ -36,7 +36,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
             success: false,
             error: {
               code: "FORBIDDEN",
-              message: "Hanya staf dapur dan admin yang dapat mengubah status pesanan.",
+              message: "Only culinary staff and administrators can change order status.",
             },
           },
           { status: 403 }
@@ -53,7 +53,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
           success: false,
           error: {
             code: "VALIDATION_ERROR",
-            message: "Status pesanan tidak valid.",
+            message: "Invalid order status value.",
             details: validated.error.flatten().fieldErrors,
           },
         },
@@ -76,7 +76,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
           success: false,
           error: {
             code: "NOT_FOUND",
-            message: "Pesanan tidak ditemukan.",
+            message: "Order not found.",
           },
         },
         { status: 404 }
@@ -129,7 +129,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
         success: false,
         error: {
           code: "INTERNAL_SERVER_ERROR",
-          message: "Gagal memperbarui status pesanan.",
+          message: "Failed to update order status.",
         },
       },
       { status: 500 }

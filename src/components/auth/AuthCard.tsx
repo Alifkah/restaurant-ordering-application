@@ -68,7 +68,7 @@ export default function AuthCard({ initialMode = "login" }: AuthCardProps) {
     try {
       if (mode === "login") {
         if (!formData.email || !formData.password) {
-          setErrorMsg("Silakan masukkan email dan password.");
+          setErrorMsg("Please enter your email and password.");
           setLoading(false);
           return;
         }
@@ -80,12 +80,12 @@ export default function AuthCard({ initialMode = "login" }: AuthCardProps) {
         });
 
         if (res?.error) {
-          setErrorMsg("Email atau password yang Anda masukkan salah.");
+          setErrorMsg("Invalid email or password.");
           setLoading(false);
           return;
         }
 
-        setSuccessMsg("Berhasil masuk! Mengalihkan...");
+        setSuccessMsg("Signed in successfully! Redirecting...");
         setTimeout(() => {
           router.push(callbackUrl);
           router.refresh();
@@ -93,13 +93,13 @@ export default function AuthCard({ initialMode = "login" }: AuthCardProps) {
       } else {
         // Register Mode
         if (formData.password !== formData.confirmPassword) {
-          setErrorMsg("Konfirmasi password tidak sesuai.");
+          setErrorMsg("Passwords do not match.");
           setLoading(false);
           return;
         }
 
         if (formData.password.length < 8) {
-          setErrorMsg("Password minimal 8 karakter.");
+          setErrorMsg("Password must be at least 8 characters.");
           setLoading(false);
           return;
         }
@@ -118,13 +118,13 @@ export default function AuthCard({ initialMode = "login" }: AuthCardProps) {
         const data = await response.json();
 
         if (!response.ok) {
-          setErrorMsg(data.message || "Gagal melakukan registrasi.");
+          setErrorMsg(data.message || "Failed to complete registration.");
           setLoading(false);
           return;
         }
 
         // Auto sign-in after registration
-        setSuccessMsg("Pendaftaran berhasil! Sedang menghubungkan sesi Anda...");
+        setSuccessMsg("Registration successful! Connecting your session...");
         const res = await signIn("credentials", {
           email: formData.email.trim(),
           password: formData.password,
@@ -133,7 +133,7 @@ export default function AuthCard({ initialMode = "login" }: AuthCardProps) {
 
         if (res?.error) {
           setMode("login");
-          setSuccessMsg("Akun berhasil dibuat. Silakan login.");
+          setSuccessMsg("Account created successfully. Please sign in.");
           setLoading(false);
         } else {
           setTimeout(() => {
@@ -144,7 +144,7 @@ export default function AuthCard({ initialMode = "login" }: AuthCardProps) {
       }
     } catch (err) {
       console.error(err);
-      setErrorMsg("Terjadi gangguan jaringan atau server. Coba beberapa saat lagi.");
+      setErrorMsg("Network or server error. Please try again later.");
       setLoading(false);
     }
   };
@@ -161,8 +161,8 @@ export default function AuthCard({ initialMode = "login" }: AuthCardProps) {
         </h1>
         <p className="text-sm text-stone-600 mt-1">
           {mode === "login"
-            ? "Masuk untuk melanjutkan pesanan Anda"
-            : "Buat akun baru untuk pengalaman memesan yang lebih cepat"}
+            ? "Sign in to manage and track your dining experience"
+            : "Create an account for seamless ordering and rewards"}
         </p>
       </div>
 
@@ -183,7 +183,7 @@ export default function AuthCard({ initialMode = "login" }: AuthCardProps) {
                 : "text-stone-500 hover:text-stone-900"
             }`}
           >
-            Masuk
+            Sign In
           </button>
           <button
             type="button"
@@ -198,7 +198,7 @@ export default function AuthCard({ initialMode = "login" }: AuthCardProps) {
                 : "text-stone-500 hover:text-stone-900"
             }`}
           >
-            Daftar Akun
+            Register
           </button>
         </div>
 
@@ -222,7 +222,7 @@ export default function AuthCard({ initialMode = "login" }: AuthCardProps) {
           {mode === "register" && (
             <div>
               <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5">
-                Nama Lengkap
+                Full Name
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
@@ -233,7 +233,7 @@ export default function AuthCard({ initialMode = "login" }: AuthCardProps) {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="Contoh: Budi Pratama"
+                  placeholder="e.g., Alexander Pratama"
                   required
                   className="w-full pl-10 pr-4 py-2.5 rounded-button bg-sand-50/50 border border-sand-300 focus:border-primary focus:ring-2 focus:ring-primary/20 text-stone-900 text-sm placeholder:text-stone-400 outline-none transition-all"
                 />
@@ -243,7 +243,7 @@ export default function AuthCard({ initialMode = "login" }: AuthCardProps) {
 
           <div>
             <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5">
-              Alamat Email
+              Email Address
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
@@ -254,7 +254,7 @@ export default function AuthCard({ initialMode = "login" }: AuthCardProps) {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="nama@email.com"
+                placeholder="name@email.com"
                 required
                 className="w-full pl-10 pr-4 py-2.5 rounded-button bg-sand-50/50 border border-sand-300 focus:border-primary focus:ring-2 focus:ring-primary/20 text-stone-900 text-sm placeholder:text-stone-400 outline-none transition-all"
               />
@@ -274,7 +274,7 @@ export default function AuthCard({ initialMode = "login" }: AuthCardProps) {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder={mode === "login" ? "••••••••" : "Minimal 8 karakter"}
+                placeholder={mode === "login" ? "••••••••" : "Minimum 8 characters"}
                 required
                 className="w-full pl-10 pr-10 py-2.5 rounded-button bg-sand-50/50 border border-sand-300 focus:border-primary focus:ring-2 focus:ring-primary/20 text-stone-900 text-sm placeholder:text-stone-400 outline-none transition-all"
               />
@@ -291,7 +291,7 @@ export default function AuthCard({ initialMode = "login" }: AuthCardProps) {
           {mode === "register" && (
             <div>
               <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5">
-                Konfirmasi Password
+                Confirm Password
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
@@ -302,7 +302,7 @@ export default function AuthCard({ initialMode = "login" }: AuthCardProps) {
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  placeholder="Ulangi password"
+                  placeholder="Repeat your password"
                   required
                   className="w-full pl-10 pr-4 py-2.5 rounded-button bg-sand-50/50 border border-sand-300 focus:border-primary focus:ring-2 focus:ring-primary/20 text-stone-900 text-sm placeholder:text-stone-400 outline-none transition-all"
                 />
@@ -316,14 +316,14 @@ export default function AuthCard({ initialMode = "login" }: AuthCardProps) {
             className="w-full mt-2 py-3 rounded-button bg-primary text-white font-semibold text-sm shadow-elevation-1 hover:bg-primary-hover active:scale-[0.99] disabled:opacity-70 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
           >
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-            <span>{mode === "login" ? "Masuk ke Akun" : "Daftar Sekarang"}</span>
+            <span>{mode === "login" ? "Sign In to Account" : "Register Account"}</span>
           </button>
         </form>
 
         {/* Demo Fast Login Shortcuts */}
         <div className="mt-8 pt-6 border-t border-sand-200">
           <p className="text-xs font-medium text-stone-500 mb-3 text-center">
-            🚀 Akses Cepat Akun Demo (Password: <code className="bg-sand-200 px-1 py-0.5 rounded text-stone-800">Password123!</code>):
+            🚀 Quick Demo Access (Password: <code className="bg-sand-200 px-1 py-0.5 rounded text-stone-800">Password123!</code>):
           </p>
           <div className="grid grid-cols-3 gap-2">
             <button

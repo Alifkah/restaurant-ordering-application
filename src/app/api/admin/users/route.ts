@@ -31,7 +31,7 @@ export async function GET() {
   } catch (error) {
     console.error("Error listing users:", error);
     return NextResponse.json(
-      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Gagal mengambil daftar pengguna." } },
+      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to retrieve user accounts." } },
       { status: 500 }
     );
   }

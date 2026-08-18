@@ -50,7 +50,7 @@ export default function SuccessClient() {
 
   useEffect(() => {
     if (!orderId) {
-      setError("Parameter Order ID tidak ditemukan.");
+      setError("Order ID parameter not found.");
       setLoading(false);
       return;
     }
@@ -61,13 +61,13 @@ export default function SuccessClient() {
         const json = await res.json();
 
         if (!res.ok || !json.success) {
-          setError(json.error?.message || "Gagal memuat rincian pesanan.");
+          setError(json.error?.message || "Failed to load order details.");
         } else {
           setOrder(json.data);
         }
       } catch (err) {
         console.error("Error fetching order:", err);
-        setError("Gagal menghubungi server restoran.");
+        setError("Failed to connect to restaurant server.");
       } finally {
         setLoading(false);
       }
@@ -81,7 +81,7 @@ export default function SuccessClient() {
       <div className="max-w-md mx-auto my-16 p-8 glass-card bg-white rounded-card border border-sand-300 shadow-elevation-2 text-center space-y-4">
         <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" />
         <p className="text-sm font-semibold text-stone-700">
-          Memverifikasi status pembayaran pesanan...
+          Verifying payment and order status...
         </p>
       </div>
     );
@@ -92,7 +92,7 @@ export default function SuccessClient() {
       <div className="max-w-md mx-auto my-16 p-8 glass-card bg-white rounded-card border border-red-200 shadow-elevation-2 text-center space-y-4">
         <AlertCircle className="w-10 h-10 text-red-500 mx-auto" />
         <h2 className="font-heading text-lg font-bold text-stone-900">
-          Informasi Pesanan Tidak Tersedia
+          Order Information Unavailable
         </h2>
         <p className="text-xs text-stone-600">{error}</p>
         <Link
@@ -100,7 +100,7 @@ export default function SuccessClient() {
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-button bg-primary text-white text-xs font-semibold hover:bg-primary-hover transition-colors"
         >
           <UtensilsCrossed className="w-3.5 h-3.5" />
-          <span>Kembali ke Menu</span>
+          <span>Return to Menu</span>
         </Link>
       </div>
     );
@@ -117,19 +117,19 @@ export default function SuccessClient() {
         <div className="space-y-1.5">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold uppercase tracking-wider">
             <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Pembayaran Terkonfirmasi</span>
+            <span>Payment Confirmed</span>
           </div>
 
           <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-stone-900 mt-2">
-            Pesanan Anda Sedang Disiapkan!
+            Your Order is Being Prepared!
           </h1>
           <p className="text-xs sm:text-sm text-stone-600 max-w-md mx-auto">
-            Dapur kami telah menerima pesanan Anda dan segera memulai proses memasak dengan bahan-bahan segar pilihan.
+            Our kitchen team has received your ticket and is starting preparation with selected farm-fresh ingredients.
           </p>
 
           {isDevMode && (
             <div className="inline-block mt-2 px-2.5 py-1 bg-amber-50 border border-amber-200 text-amber-800 rounded text-[11px] font-mono">
-              Mode Pengembangan: Simulasi Pembayaran Berhasil
+              Development Mode: Payment Simulation Successful
             </div>
           )}
         </div>
@@ -138,7 +138,7 @@ export default function SuccessClient() {
         <div className="p-4 rounded-card bg-sand-50 border border-sand-200 grid grid-cols-2 sm:grid-cols-3 gap-3 text-left">
           <div>
             <span className="text-[11px] text-stone-500 block uppercase font-medium">
-              Nomor Pesanan
+              Order Number
             </span>
             <span className="font-mono font-bold text-xs sm:text-sm text-stone-900">
               {order.orderNumber}
@@ -146,7 +146,7 @@ export default function SuccessClient() {
           </div>
           <div>
             <span className="text-[11px] text-stone-500 block uppercase font-medium">
-              Metode Pembayaran
+              Payment Method
             </span>
             <span className="font-semibold text-xs sm:text-sm text-stone-900 flex items-center gap-1">
               <CreditCard className="w-3.5 h-3.5 text-primary" />
@@ -155,18 +155,18 @@ export default function SuccessClient() {
           </div>
           <div className="col-span-2 sm:col-span-1">
             <span className="text-[11px] text-stone-500 block uppercase font-medium">
-              Status Pesanan
+              Order Status
             </span>
             <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700">
               <ChefHat className="w-3.5 h-3.5" />
-              <span>Dikonfirmasi Dapur</span>
+              <span>Confirmed by Kitchen</span>
             </span>
           </div>
         </div>
 
         {order.customerNote && (
           <div className="p-3 rounded-card bg-sand-100/60 text-left text-xs text-stone-700">
-            <span className="font-bold text-stone-900">Instruksi:</span>{" "}
+            <span className="font-bold text-stone-900">Special Instructions:</span>{" "}
             {order.customerNote}
           </div>
         )}
@@ -175,7 +175,7 @@ export default function SuccessClient() {
       {/* Itemized Receipt Card */}
       <div className="glass-card bg-white rounded-card p-6 border border-sand-300 shadow-elevation-1 space-y-4">
         <h2 className="font-heading font-bold text-sm text-stone-900 uppercase tracking-wider pb-3 border-b border-sand-200">
-          Rincian Tagihan & Hidangan
+          Receipt & Itemized Summary
         </h2>
 
         <div className="divide-y divide-sand-200">
@@ -192,7 +192,7 @@ export default function SuccessClient() {
                 )}
                 {item.note && (
                   <p className="text-[11px] text-primary italic mt-0.5">
-                    Catatan: &ldquo;{item.note}&rdquo;
+                    Note: &ldquo;{item.note}&rdquo;
                   </p>
                 )}
               </div>
@@ -209,11 +209,11 @@ export default function SuccessClient() {
             <span>{formatCurrency(order.subtotalMinor)}</span>
           </div>
           <div className="flex justify-between text-stone-600">
-            <span>Pajak Restoran (PB1 10%)</span>
+            <span>Restaurant Tax (PB1 10%)</span>
             <span>{formatCurrency(order.taxMinor)}</span>
           </div>
           <div className="pt-2 border-t border-sand-200 flex justify-between items-baseline font-bold">
-            <span className="text-stone-900">Total Pembayaran Lunas</span>
+            <span className="text-stone-900">Total Paid</span>
             <span className="text-base sm:text-lg text-primary font-extrabold">
               {formatCurrency(order.totalMinor)}
             </span>
@@ -228,14 +228,14 @@ export default function SuccessClient() {
           className="flex-1 py-3.5 rounded-button bg-primary text-white font-semibold text-xs sm:text-sm hover:bg-primary-hover transition-colors shadow-elevation-1 flex items-center justify-center gap-2"
         >
           <UtensilsCrossed className="w-4 h-4" />
-          <span>Lacak Proses Memasak di Dapur</span>
+          <span>Track Live Kitchen Progress</span>
         </Link>
 
         <Link
           href="/menu"
           className="py-3.5 px-6 rounded-button bg-white text-stone-800 font-semibold text-xs sm:text-sm border border-sand-300 hover:bg-sand-50 transition-colors flex items-center justify-center gap-2"
         >
-          <span>Pesan Lagi</span>
+          <span>Order More Dishes</span>
         </Link>
       </div>
     </div>

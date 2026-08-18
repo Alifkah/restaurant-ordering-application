@@ -3,36 +3,36 @@ import { z } from "zod";
 export const loginSchema = z.object({
   email: z
     .string()
-    .min(1, "Email wajib diisi")
-    .email("Format email tidak valid"),
+    .min(1, "Email address is required")
+    .email("Please enter a valid email address"),
   password: z
     .string()
-    .min(1, "Password wajib diisi")
-    .min(6, "Password minimal 6 karakter"),
+    .min(1, "Password is required")
+    .min(6, "Password must be at least 6 characters"),
 });
 
 export const registerSchema = z
   .object({
     name: z
       .string()
-      .min(1, "Nama lengkap wajib diisi")
-      .min(2, "Nama minimal 2 karakter")
-      .max(150, "Nama maksimal 150 karakter"),
+      .min(1, "Full name is required")
+      .min(2, "Name must be at least 2 characters")
+      .max(150, "Name must not exceed 150 characters"),
     email: z
       .string()
-      .min(1, "Email wajib diisi")
-      .email("Format email tidak valid")
-      .max(255, "Email maksimal 255 karakter"),
+      .min(1, "Email address is required")
+      .email("Please enter a valid email address")
+      .max(255, "Email must not exceed 255 characters"),
     password: z
       .string()
-      .min(1, "Password wajib diisi")
-      .min(8, "Password minimal 8 karakter"),
+      .min(1, "Password is required")
+      .min(8, "Password must be at least 8 characters"),
     confirmPassword: z
       .string()
-      .min(1, "Konfirmasi password wajib diisi"),
+      .min(1, "Please confirm your password"),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Konfirmasi password tidak cocok",
+    message: "Passwords do not match",
     path: ["confirmPassword"],
   });
 

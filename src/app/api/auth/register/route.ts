@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          message: `Terlalu banyak permintaan registrasi. Silakan coba lagi dalam ${limiter.resetSeconds} detik.`,
+          message: `Too many registration attempts. Please try again in ${limiter.resetSeconds} seconds.`,
         },
         { status: 429 }
       );
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          message: "Data yang dimasukkan tidak valid.",
+          message: "Invalid registration data.",
           errors: validated.error.flatten().fieldErrors,
         },
         { status: 400 }
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          message: "Email sudah terdaftar. Silakan login atau gunakan email lain.",
+          message: "Email address is already registered. Please sign in or use a different email.",
         },
         { status: 409 }
       );
@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         success: true,
-        message: "Akun berhasil didaftarkan. Silakan masuk.",
+        message: "Account registered successfully. You may now sign in.",
         user: newUser,
       },
       { status: 201 }
@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        message: "Terjadi kesalahan internal server saat mendaftar.",
+        message: "Internal server error occurred while registering account.",
       },
       { status: 500 }
     );

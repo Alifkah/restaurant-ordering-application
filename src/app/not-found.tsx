@@ -14,10 +14,10 @@ export default function NotFound() {
             404 NOT FOUND
           </span>
           <h1 className="font-heading font-extrabold text-2xl text-stone-900">
-            Resep Hidangan Tidak Ditemukan
+            Recipe Not Found
           </h1>
           <p className="text-xs sm:text-sm text-stone-600">
-            Halaman atau menu yang Anda tuju mungkin telah dipindahkan atau belum tersedia di buku menu kami.
+            The culinary page or dish you are looking for might have been moved, updated, or is currently unavailable in our recipe journal.
           </p>
         </div>
 
@@ -27,14 +27,14 @@ export default function NotFound() {
             className="flex-1 py-3 px-4 rounded-button bg-primary hover:bg-primary-hover text-white font-semibold text-xs transition-colors shadow-elevation-1 flex items-center justify-center gap-2"
           >
             <UtensilsCrossed className="w-4 h-4" />
-            <span>Jelajahi Menu</span>
+            <span>Explore Menu</span>
           </Link>
           <Link
             href="/"
             className="py-3 px-4 rounded-button bg-sand-100 hover:bg-sand-200 text-stone-800 font-semibold text-xs border border-sand-300 transition-colors flex items-center justify-center gap-1.5"
           >
             <Home className="w-4 h-4" />
-            <span>Beranda</span>
+            <span>Home</span>
           </Link>
         </div>
       </div>

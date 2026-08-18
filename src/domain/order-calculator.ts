@@ -46,7 +46,7 @@ export async function calculateOrderPrices(
   discountMinor: number = 0
 ): Promise<CalculationResult> {
   if (!rawItems || rawItems.length === 0) {
-    throw new OrderCalculationError("Keranjang pesanan tidak boleh kosong.", "EMPTY_ITEMS");
+    throw new OrderCalculationError("Dining basket cannot be empty.", "EMPTY_ITEMS");
   }
 
   // 1. Collect and validate all distinct product IDs and option IDs
@@ -59,7 +59,7 @@ export async function calculateOrderPrices(
   for (const pid of productIds) {
     if (!uuidRegex.test(pid)) {
       throw new OrderCalculationError(
-        "Terdapat item lama dalam keranjang Anda. Silakan bersihkan keranjang dan pilih hidangan kembali dari katalog menu.",
+        "Outdated items detected in your basket. Please clear your basket and choose dishes from the menu catalog.",
         "INVALID_PRODUCT_ID"
       );
     }
@@ -68,7 +68,7 @@ export async function calculateOrderPrices(
   for (const oid of allOptionIds) {
     if (!uuidRegex.test(oid)) {
       throw new OrderCalculationError(
-        "Terdapat opsi varian lama dalam keranjang. Silakan pilih kembali hidangan Anda.",
+        "Outdated option modifier detected in basket. Please re-select your dish options.",
         "INVALID_OPTION_ID"
       );
     }
@@ -87,13 +87,13 @@ export async function calculateOrderPrices(
     const prod = productMap.get(pid);
     if (!prod) {
       throw new OrderCalculationError(
-        `Produk dengan ID ${pid} tidak ditemukan dalam katalog menu.`,
+        `Dish with ID ${pid} was not found in the menu catalog.`,
         "PRODUCT_NOT_FOUND"
       );
     }
     if (!prod.isAvailable) {
       throw new OrderCalculationError(
-        `Hidangan "${prod.name}" saat ini sedang habis atau tidak tersedia.`,
+        `"${prod.name}" is currently sold out or unavailable.`,
         "PRODUCT_UNAVAILABLE"
       );
     }
@@ -116,13 +116,13 @@ export async function calculateOrderPrices(
       const opt = optionMap.get(oid);
       if (!opt) {
         throw new OrderCalculationError(
-          `Opsi hidangan dengan ID ${oid} tidak ditemukan.`,
+          `Dish option with ID ${oid} was not found.`,
           "OPTION_NOT_FOUND"
         );
       }
       if (!opt.isAvailable) {
         throw new OrderCalculationError(
-          `Opsi "${opt.name}" saat ini tidak tersedia.`,
+          `Option "${opt.name}" is currently unavailable.`,
           "OPTION_UNAVAILABLE"
         );
       }
@@ -148,7 +148,7 @@ export async function calculateOrderPrices(
       // Verify that this option belongs to the product
       if (opt.productId !== prod.id) {
         throw new OrderCalculationError(
-          `Opsi "${opt.name}" tidak sesuai dengan produk "${prod.name}".`,
+          `Option "${opt.name}" does not belong to dish "${prod.name}".`,
           "INVALID_OPTION_ATTACHMENT"
         );
       }

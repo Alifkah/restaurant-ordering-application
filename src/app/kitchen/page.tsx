@@ -6,7 +6,7 @@ import KitchenBoardClient, { KitchenTicket } from "@/components/kitchen/KitchenB
 
 export const metadata: Metadata = {
   title: "Kitchen Display System (KDS) | Nusantara Artisan Kitchen",
-  description: "Papan antrean pesanan dapur realtime untuk staf dan chef.",
+  description: "Real-time kitchen order queue and ticket board for culinary staff and chefs.",
 };
 
 export const dynamic = "force-dynamic";

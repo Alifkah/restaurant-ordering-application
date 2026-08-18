@@ -42,7 +42,7 @@ export default function Navbar() {
             href="/menu"
             className="hover:text-primary transition-colors flex items-center gap-1.5"
           >
-            <span>Katalog Menu</span>
+            <span>Menu Catalog</span>
           </Link>
           <Link
             href="/about"
@@ -54,7 +54,7 @@ export default function Navbar() {
             href="/about#location"
             className="hover:text-primary transition-colors flex items-center gap-1.5"
           >
-            <span>Lokasi & Jam Buka</span>
+            <span>Location & Hours</span>
           </Link>
         </nav>
 
@@ -63,14 +63,14 @@ export default function Navbar() {
           {/* Restaurant Status (Pill) */}
           <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-medium">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>Buka • S/d 22:00 WITA</span>
+            <span>Open • Until 10:00 PM WITA</span>
           </div>
 
           {/* Cart Trigger */}
           <button
             type="button"
             onClick={() => setIsCartOpen(true)}
-            aria-label="Buka Keranjang Belanja"
+            aria-label="Open Dining Basket"
             className="relative p-2 rounded-button bg-sand-200/80 hover:bg-sand-300 text-stone-800 transition-colors flex items-center justify-center"
           >
             <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -98,7 +98,7 @@ export default function Navbar() {
               className="hidden sm:flex px-2.5 py-1.5 rounded-button bg-amber-600 text-white text-xs font-semibold hover:bg-amber-700 transition-colors items-center gap-1.5 shadow-sm"
             >
               <ChefHat className="w-3.5 h-3.5" />
-              <span>Dapur</span>
+              <span>Kitchen</span>
             </Link>
           )}
 
@@ -124,7 +124,7 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={() => signOut({ callbackUrl: "/" })}
-                title="Keluar"
+                title="Sign Out"
                 className="p-1.5 rounded-button text-stone-500 hover:text-red-600 hover:bg-red-50 transition-colors"
               >
                 <LogOut className="w-4 h-4" />
@@ -136,7 +136,7 @@ export default function Navbar() {
               className="px-3.5 py-2 rounded-button bg-primary text-white text-xs sm:text-sm font-semibold hover:bg-primary-hover shadow-elevation-1 transition-all flex items-center gap-1.5"
             >
               <LogIn className="w-4 h-4" />
-              <span>Masuk</span>
+              <span>Sign In</span>
             </Link>
           )}
         </div>

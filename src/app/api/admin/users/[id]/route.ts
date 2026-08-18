@@ -31,7 +31,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
 
     if (!validated.success) {
       return NextResponse.json(
-        { success: false, error: { code: "VALIDATION_ERROR", message: "Payload tidak valid." } },
+        { success: false, error: { code: "VALIDATION_ERROR", message: "Invalid payload." } },
         { status: 400 }
       );
     }
@@ -50,7 +50,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
 
     if (!updated) {
       return NextResponse.json(
-        { success: false, error: { code: "NOT_FOUND", message: "Pengguna tidak ditemukan." } },
+        { success: false, error: { code: "NOT_FOUND", message: "User account not found." } },
         { status: 404 }
       );
     }
@@ -67,7 +67,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
   } catch (error) {
     console.error("Error updating user:", error);
     return NextResponse.json(
-      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Gagal memperbarui data pengguna." } },
+      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to update user account." } },
       { status: 500 }
     );
   }

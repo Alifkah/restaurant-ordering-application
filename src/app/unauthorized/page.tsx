@@ -10,11 +10,11 @@ export default function UnauthorizedPage() {
         </div>
 
         <h1 className="font-heading text-2xl font-bold text-stone-900 mb-2">
-          Akses Ditolak (403)
+          Access Denied (403)
         </h1>
 
         <p className="text-stone-600 text-sm mb-8 leading-relaxed">
-          Anda tidak memiliki izin (peran akses) yang sesuai untuk membuka halaman ini. Silakan kembali atau masuk menggunakan akun dengan hak akses yang berwenang.
+          You do not have the required permissions or role to access this area. Please return to the homepage or sign in with an authorized account.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -23,14 +23,14 @@ export default function UnauthorizedPage() {
             className="w-full sm:w-auto px-5 py-2.5 rounded-button border border-sand-300 bg-white hover:bg-sand-50 text-stone-700 text-sm font-medium transition-colors inline-flex items-center justify-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Kembali ke Beranda</span>
+            <span>Return to Home</span>
           </Link>
           <Link
             href="/login"
             className="w-full sm:w-auto px-5 py-2.5 rounded-button bg-primary hover:bg-primary-hover text-white text-sm font-medium transition-colors inline-flex items-center justify-center gap-2 shadow-sm"
           >
             <LogIn className="w-4 h-4" />
-            <span>Ganti Akun</span>
+            <span>Switch Account</span>
           </Link>
         </div>
       </div>

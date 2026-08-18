@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import UsersClient from "@/components/admin/UsersClient";
 
 export const metadata: Metadata = {
-  title: "Kelola Pengguna & RBAC | Nusantara Admin Suite",
-  description: "Manajemen hak akses role staf dapur, admin, dan akun pelanggan.",
+  title: "Manage Users & RBAC | Nusantara Admin Suite",
+  description: "Role-based access control management for kitchen staff, administrators, and guest accounts.",
 };
 
 export const dynamic = "force-dynamic";

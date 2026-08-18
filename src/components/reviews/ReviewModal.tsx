@@ -33,7 +33,6 @@ export default function ReviewModal({
     e.preventDefault();
     setError(null);
     setSubmitting(true);
-
     try {
       const res = await fetch("/api/reviews", {
         method: "POST",
@@ -55,22 +54,22 @@ export default function ReviewModal({
           onClose();
         }, 1800);
       } else {
-        setError(json.error?.message || "Gagal mengirim ulasan.");
+        setError(json.error?.message || "Failed to submit review.");
       }
     } catch {
-      setError("Terjadi gangguan jaringan.");
+      setError("Network connection issue. Please try again.");
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-stone-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-stone-955/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="glass-card bg-white rounded-card w-full max-w-md border border-sand-300 shadow-elevation-3 p-6 space-y-5 animate-scale-up">
         <div className="flex items-center justify-between pb-3 border-b border-sand-200">
           <div>
             <span className="text-[11px] font-bold text-primary uppercase block">
-              Ulasan Pelanggan Terverifikasi
+              Verified Diner Review
             </span>
             <h3 className="font-heading font-bold text-base text-stone-900 truncate">
               {productName}
@@ -89,10 +88,10 @@ export default function ReviewModal({
           <div className="py-8 text-center space-y-2 animate-fade-in">
             <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto" />
             <h4 className="font-heading font-bold text-stone-900 text-base">
-              Ulasan Berhasil Terkirim!
+              Review Submitted Successfully!
             </h4>
             <p className="text-xs text-stone-600">
-              Terima kasih atas apresiasi dan masukan berharga Anda untuk Koki kami.
+              Thank you for sharing your feedback with our culinary team.
             </p>
           </div>
         ) : (
@@ -107,7 +106,7 @@ export default function ReviewModal({
             {/* Star Rating Picker */}
             <div className="text-center py-2 space-y-2">
               <label className="block text-xs font-bold text-stone-700">
-                Bagaimana Pengalaman Cita Rasa Anda?
+                How was your dining experience?
               </label>
               <div className="flex justify-center items-center gap-2">
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -130,23 +129,23 @@ export default function ReviewModal({
                 ))}
               </div>
               <span className="text-xs font-semibold text-stone-600 block">
-                {rating === 5 && "⭐ Sempurna! Sangat Lezat"}
-                {rating === 4 && "⭐ Sangat Bagus & Nikmat"}
-                {rating === 3 && "⭐ Cukup Baik"}
-                {rating === 2 && "⭐ Kurang Memuaskan"}
-                {rating === 1 && "⭐ Perlu Peningkatan"}
+                {rating === 5 && "⭐ Exceptional! Highly Recommended"}
+                {rating === 4 && "⭐ Very Good & Flavorful"}
+                {rating === 3 && "⭐ Satisfactory"}
+                {rating === 2 && "⭐ Needs Improvement"}
+                {rating === 1 && "⭐ Unsatisfactory"}
               </span>
             </div>
 
             <div>
               <label className="block text-xs font-bold text-stone-700 mb-1">
-                Komentar / Ulasan Singkat (Opsional)
+                Comments / Tasting Notes (Optional)
               </label>
               <textarea
                 rows={3}
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                placeholder="Bagikan kesan Anda tentang tekstur, rempah, atau aroma hidangan ini..."
+                placeholder="Share your impressions on the aroma, texture, spice harmony, or presentation..."
                 className="w-full p-2.5 text-xs rounded-button bg-sand-50/70 border border-sand-300 focus:border-primary outline-none resize-none"
               />
             </div>
@@ -157,7 +156,7 @@ export default function ReviewModal({
                 onClick={onClose}
                 className="px-4 py-2 text-xs font-semibold rounded-button bg-sand-100 hover:bg-sand-200 text-stone-700"
               >
-                Batal
+                Cancel
               </button>
               <button
                 type="submit"
@@ -165,7 +164,7 @@ export default function ReviewModal({
                 className="px-5 py-2 text-xs font-semibold rounded-button bg-primary hover:bg-primary-hover text-white shadow-sm disabled:opacity-60 flex items-center gap-1.5"
               >
                 {submitting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-                <span>Kirim Ulasan</span>
+                <span>Submit Review</span>
               </button>
             </div>
           </form>

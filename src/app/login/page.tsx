@@ -4,8 +4,8 @@ import AuthCard from "@/components/auth/AuthCard";
 import { Loader2 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Masuk | Nusantara Artisan Kitchen & Lounge",
-  description: "Masuk ke akun Anda untuk memesan dan melacak status pesanan secara real-time.",
+  title: "Sign In | Nusantara Artisan Kitchen & Lounge",
+  description: "Sign in to your guest account to order and track real-time kitchen preparation.",
 };
 
 export default function LoginPage() {

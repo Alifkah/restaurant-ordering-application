@@ -74,10 +74,10 @@ export default function DashboardClient() {
             Executive Control
           </span>
           <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-stone-900 mt-1">
-            Dashboard & Analitik Restoran
+            Dashboard & Restaurant Analytics
           </h1>
           <p className="text-xs sm:text-sm text-stone-600 mt-0.5">
-            Pantau kinerja finansial, antrean dapur, dan penjualan menu secara real-time.
+            Monitor revenue performance, kitchen throughput, and bestseller items in real-time.
           </p>
         </div>
 
@@ -88,7 +88,7 @@ export default function DashboardClient() {
             className="px-3 py-2 rounded-button bg-white border border-sand-300 hover:bg-sand-50 text-stone-700 text-xs font-semibold shadow-sm transition-colors flex items-center gap-1.5"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
-            <span>Perbarui Data</span>
+            <span>Refresh Data</span>
           </button>
 
           <Link
@@ -97,7 +97,7 @@ export default function DashboardClient() {
             className="px-4 py-2 rounded-button bg-primary hover:bg-primary-hover text-white text-xs font-semibold shadow-elevation-1 transition-all flex items-center gap-1.5"
           >
             <ChefHat className="w-4 h-4" />
-            <span>Buka Kitchen KDS</span>
+            <span>Open Kitchen KDS</span>
           </Link>
         </div>
       </div>
@@ -108,7 +108,7 @@ export default function DashboardClient() {
         <div className="glass-card bg-white p-5 rounded-card border border-sand-300 shadow-elevation-1 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-stone-500 uppercase tracking-wider">
-              Total Omset (Gross)
+              Gross Revenue
             </span>
             <div className="w-9 h-9 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
               <DollarSign className="w-5 h-5" />
@@ -120,7 +120,7 @@ export default function DashboardClient() {
             </h2>
             <p className="text-[11px] text-emerald-600 font-semibold mt-1 flex items-center gap-1">
               <TrendingUp className="w-3 h-3" />
-              <span>Pendapatan dari pesanan valid</span>
+              <span>Revenue from verified orders</span>
             </p>
           </div>
         </div>
@@ -129,7 +129,7 @@ export default function DashboardClient() {
         <div className="glass-card bg-white p-5 rounded-card border border-sand-300 shadow-elevation-1 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-stone-500 uppercase tracking-wider">
-              Total Pesanan
+              Total Orders
             </span>
             <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
               <ShoppingBag className="w-5 h-5" />
@@ -137,10 +137,10 @@ export default function DashboardClient() {
           </div>
           <div>
             <h2 className="font-heading font-extrabold text-xl sm:text-2xl text-stone-900">
-              {data?.totalOrders || 0} Tiket
+              {data?.totalOrders || 0} Tickets
             </h2>
             <p className="text-[11px] text-stone-500 mt-1">
-              {data?.completedOrders || 0} telah selesai disajikan
+              {data?.completedOrders || 0} fulfilled and served
             </p>
           </div>
         </div>
@@ -149,7 +149,7 @@ export default function DashboardClient() {
         <div className="glass-card bg-white p-5 rounded-card border border-sand-300 shadow-elevation-1 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-stone-500 uppercase tracking-wider">
-              Rata-rata Tiket (AOV)
+              Average Order Value (AOV)
             </span>
             <div className="w-9 h-9 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center">
               <Sparkles className="w-5 h-5" />
@@ -160,7 +160,7 @@ export default function DashboardClient() {
               {formatCurrency(data?.averageTicketMinor || 0)}
             </h2>
             <p className="text-[11px] text-stone-500 mt-1">
-              Nilai per transaksi pelanggan
+              Average spending per guest ticket
             </p>
           </div>
         </div>
@@ -180,7 +180,7 @@ export default function DashboardClient() {
               {completionRate}%
             </h2>
             <p className="text-[11px] text-stone-500 mt-1">
-              Tingkat penyelesaian pesanan dapur
+              Kitchen order fulfillment rate
             </p>
           </div>
         </div>
@@ -193,10 +193,10 @@ export default function DashboardClient() {
           <div className="flex items-center justify-between pb-3 border-b border-sand-200">
             <div>
               <h3 className="font-heading font-bold text-base text-stone-900">
-                Pesanan Masuk Terbaru
+                Recent Guest Orders
               </h3>
               <p className="text-xs text-stone-500 mt-0.5">
-                Aliran transaksi pelanggan dan status langsung dari dapur
+                Live transactional stream and kitchen statuses
               </p>
             </div>
 
@@ -204,7 +204,7 @@ export default function DashboardClient() {
               href="/admin/orders"
               className="text-xs font-bold text-primary hover:text-primary-hover flex items-center gap-1"
             >
-              <span>Semua Pesanan</span>
+              <span>View All Orders</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -213,11 +213,11 @@ export default function DashboardClient() {
             <table className="w-full text-left text-xs">
               <thead className="bg-sand-50 text-stone-600 font-bold uppercase tracking-wider border-b border-sand-200">
                 <tr>
-                  <th className="p-3">No. Order</th>
-                  <th className="p-3">Waktu</th>
+                  <th className="p-3">Order No.</th>
+                  <th className="p-3">Time</th>
                   <th className="p-3">Status</th>
                   <th className="p-3 text-right">Total</th>
-                  <th className="p-3 text-center">Aksi</th>
+                  <th className="p-3 text-center">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-sand-200">
@@ -255,7 +255,7 @@ export default function DashboardClient() {
                             href={`/orders/${ord.id}`}
                             target="_blank"
                             className="text-stone-400 hover:text-primary p-1 inline-block"
-                            title="Buka Pelacak Pesanan"
+                            title="Open Order Tracker"
                           >
                             <ExternalLink className="w-3.5 h-3.5" />
                           </Link>
@@ -266,7 +266,7 @@ export default function DashboardClient() {
                 ) : (
                   <tr>
                     <td colSpan={5} className="p-8 text-center text-stone-400">
-                      Belum ada transaksi tercatat.
+                      No transactions recorded yet.
                     </td>
                   </tr>
                 )}
@@ -280,10 +280,10 @@ export default function DashboardClient() {
           <div className="pb-3 border-b border-sand-200">
             <h3 className="font-heading font-bold text-base text-stone-900 flex items-center gap-2">
               <UtensilsCrossed className="w-4 h-4 text-primary" />
-              <span>Menu Terlaris</span>
+              <span>Bestselling Dishes</span>
             </h3>
             <p className="text-xs text-stone-500 mt-0.5">
-              5 Hidangan paling diminati pelanggan
+              Top 5 dishes most favored by diners
             </p>
           </div>
 
@@ -303,13 +303,13 @@ export default function DashboardClient() {
                     </span>
                   </div>
                   <span className="text-xs font-extrabold text-primary px-2.5 py-1 rounded bg-primary/10 border border-primary/20 flex-shrink-0">
-                    {prod.quantity} porsi
+                    {prod.quantity} {prod.quantity === 1 ? "portion" : "portions"}
                   </span>
                 </div>
               ))
             ) : (
               <p className="text-xs text-stone-400 italic py-6 text-center">
-                Belum ada data penjualan.
+                No sales data recorded yet.
               </p>
             )}
           </div>
@@ -319,7 +319,7 @@ export default function DashboardClient() {
               href="/admin/products"
               className="w-full py-2.5 rounded-button bg-sand-100 hover:bg-sand-200 text-stone-800 font-semibold text-xs transition-colors flex items-center justify-center gap-1.5"
             >
-              <span>Kelola Katalog Menu</span>
+              <span>Manage Menu Catalog</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>

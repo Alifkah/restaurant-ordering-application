@@ -104,10 +104,10 @@ export default function UsersClient() {
             RBAC & Security
           </span>
           <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-stone-900 mt-1">
-            Manajemen Pengguna & Peran
+            User Accounts & Roles
           </h1>
           <p className="text-xs sm:text-sm text-stone-600 mt-0.5">
-            Kelola hak akses role staf dapur, administrator, status akun, dan keamanan.
+            Manage user roles for kitchen staff, administrators, account suspension, and authentication security.
           </p>
         </div>
 
@@ -117,7 +117,7 @@ export default function UsersClient() {
           className="px-3.5 py-2 rounded-button bg-white border border-sand-300 hover:bg-sand-50 text-stone-700 text-xs font-semibold shadow-sm transition-colors flex items-center gap-1.5"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
-          <span>Segarkan Pengguna</span>
+          <span>Refresh Users</span>
         </button>
       </div>
 
@@ -130,7 +130,7 @@ export default function UsersClient() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Cari nama atau email pengguna..."
+              placeholder="Search user by name or email address..."
               className="w-full pl-9 pr-3 py-2 text-xs rounded-button bg-sand-50/60 border border-sand-300 focus:border-primary outline-none transition-all"
             />
           </div>
@@ -140,15 +140,15 @@ export default function UsersClient() {
             onChange={(e) => setRoleFilter(e.target.value)}
             className="py-2 px-3 text-xs rounded-button bg-sand-50/60 border border-sand-300 focus:border-primary outline-none transition-all"
           >
-            <option value="all">Semua Peran</option>
+            <option value="all">All Roles</option>
             <option value="customer">Customer</option>
-            <option value="staff">Staff Dapur</option>
+            <option value="staff">Kitchen Staff</option>
             <option value="admin">Administrator</option>
           </select>
         </div>
 
         <span className="text-xs font-semibold text-stone-500">
-          Total {filteredUsers.length} Akun Terdaftar
+          Total {filteredUsers.length} Registered Accounts
         </span>
       </div>
 
@@ -158,11 +158,11 @@ export default function UsersClient() {
           <table className="w-full text-left text-xs">
             <thead className="bg-sand-50 text-stone-600 font-bold uppercase tracking-wider border-b border-sand-200">
               <tr>
-                <th className="p-4">Pengguna</th>
+                <th className="p-4">User</th>
                 <th className="p-4">Email</th>
-                <th className="p-4">Peran (Role)</th>
-                <th className="p-4 text-center">Status Akun</th>
-                <th className="p-4">Terdaftar</th>
+                <th className="p-4">Role (RBAC)</th>
+                <th className="p-4 text-center">Account Status</th>
+                <th className="p-4">Registered On</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-sand-200">
@@ -170,13 +170,13 @@ export default function UsersClient() {
                 <tr>
                   <td colSpan={5} className="p-8 text-center text-stone-500">
                     <Loader2 className="w-6 h-6 animate-spin mx-auto text-primary mb-2" />
-                    Memuat data pengguna...
+                    Loading user records...
                   </td>
                 </tr>
               ) : filteredUsers.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="p-8 text-center text-stone-400">
-                    Tidak ada akun yang sesuai dengan pencarian.
+                    No accounts found matching search criteria.
                   </td>
                 </tr>
               ) : (
@@ -193,7 +193,7 @@ export default function UsersClient() {
                         </div>
                         <div>
                           <span className="font-heading font-bold text-stone-900 block text-xs sm:text-sm">
-                            {user.name || "Anonim"}
+                            {user.name || "Anonymous Guest"}
                           </span>
                           <span className="font-mono text-[10px] text-stone-400">
                             ID: {user.id.slice(0, 8)}...
@@ -216,7 +216,7 @@ export default function UsersClient() {
                           className={`text-xs px-2.5 py-1 rounded-full border outline-none cursor-pointer ${roleBadge}`}
                         >
                           <option value="customer">Customer</option>
-                          <option value="staff">Staff Dapur</option>
+                          <option value="staff">Kitchen Staff</option>
                           <option value="admin">Administrator</option>
                         </select>
                       </td>
@@ -231,11 +231,11 @@ export default function UsersClient() {
                               : "bg-red-50 text-red-700 border-red-300 hover:bg-red-100"
                           }`}
                         >
-                          {user.status === "active" ? "Aktif" : "Ditangguhkan"}
+                          {user.status === "active" ? "Active" : "Suspended"}
                         </button>
                       </td>
                       <td className="p-4 text-stone-500">
-                        {new Date(user.createdAt).toLocaleDateString("id-ID", {
+                        {new Date(user.createdAt).toLocaleDateString("en-US", {
                           day: "numeric",
                           month: "short",
                           year: "numeric",

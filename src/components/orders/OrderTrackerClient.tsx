@@ -45,11 +45,11 @@ interface OrderTrackingData {
 }
 
 const STAGES = [
-  { key: "pending", label: "Pesanan Diterima", desc: "Menunggu konfirmasi kasir", icon: Clock },
-  { key: "confirmed", label: "Dikonfirmasi", desc: "Pembayaran terverifikasi", icon: ShieldCheck },
-  { key: "preparing", label: "Sedang Dimasak", desc: "Diproses koki di dapur", icon: Flame },
-  { key: "ready", label: "Siap Disajikan", desc: "Siap diantar atau diambil", icon: UtensilsCrossed },
-  { key: "completed", label: "Selesai", desc: "Pesanan telah dinikmati", icon: CheckCircle2 },
+  { key: "pending", label: "Order Received", desc: "Awaiting cashier confirmation", icon: Clock },
+  { key: "confirmed", label: "Confirmed", desc: "Payment verified & ticket queued", icon: ShieldCheck },
+  { key: "preparing", label: "Cooking in Kitchen", desc: "Chef is preparing your dishes", icon: Flame },
+  { key: "ready", label: "Ready for Service", desc: "Ready to be served or picked up", icon: UtensilsCrossed },
+  { key: "completed", label: "Completed", desc: "Order fulfilled & enjoyed", icon: CheckCircle2 },
 ];
 
 export default function OrderTrackerClient({ orderId }: { orderId: string }) {
@@ -69,10 +69,10 @@ export default function OrderTrackerClient({ orderId }: { orderId: string }) {
       if (res.ok && json.success) {
         setOrder(json.data);
       } else {
-        setError(json.error?.message || "Pesanan tidak ditemukan.");
+        setError(json.error?.message || "Order not found.");
       }
     } catch {
-      setError("Gagal menghubungkan ke server restoran.");
+      setError("Failed to connect to restaurant server.");
     } finally {
       setLoading(false);
     }
@@ -120,7 +120,7 @@ export default function OrderTrackerClient({ orderId }: { orderId: string }) {
       <div className="max-w-md mx-auto my-16 p-8 glass-card bg-white rounded-card border border-sand-300 text-center space-y-4 shadow-elevation-1">
         <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" />
         <p className="text-sm font-semibold text-stone-700">
-          Memuat status live pesanan...
+          Loading live kitchen progress...
         </p>
       </div>
     );
@@ -131,7 +131,7 @@ export default function OrderTrackerClient({ orderId }: { orderId: string }) {
       <div className="max-w-md mx-auto my-16 p-8 glass-card bg-white rounded-card border border-red-200 text-center space-y-4 shadow-elevation-1">
         <AlertCircle className="w-10 h-10 text-red-500 mx-auto" />
         <h2 className="font-heading text-lg font-bold text-stone-900">
-          Gagal Memuat Pelacakan
+          Failed to Load Tracker
         </h2>
         <p className="text-xs text-stone-600">{error}</p>
         <Link
@@ -139,7 +139,7 @@ export default function OrderTrackerClient({ orderId }: { orderId: string }) {
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-button bg-primary text-white text-xs font-semibold hover:bg-primary-hover transition-colors"
         >
           <UtensilsCrossed className="w-3.5 h-3.5" />
-          <span>Kembali ke Menu</span>
+          <span>Back to Menu</span>
         </Link>
       </div>
     );
@@ -172,14 +172,14 @@ export default function OrderTrackerClient({ orderId }: { orderId: string }) {
             }`}
           >
             <Radio className="w-3.5 h-3.5" />
-            <span>{sseConnected ? "Terhubung Realtime" : "Menghubungkan..."}</span>
+            <span>{sseConnected ? "Realtime Connected" : "Connecting..."}</span>
           </div>
         </div>
 
         {/* Customer Note & Dining Option */}
         {order.customerNote && (
           <div className="p-3 rounded-card bg-sand-50 border border-sand-200 text-xs text-stone-700">
-            <span className="font-bold text-stone-900">Tempat / Instruksi:</span>{" "}
+            <span className="font-bold text-stone-900">Table / Special Instructions:</span>{" "}
             {order.customerNote}
           </div>
         )}
@@ -189,13 +189,13 @@ export default function OrderTrackerClient({ orderId }: { orderId: string }) {
       <div className="glass-card bg-white rounded-card p-6 sm:p-8 border border-sand-300 shadow-elevation-1 space-y-6">
         <h2 className="font-heading font-bold text-sm text-stone-900 uppercase tracking-wider border-b border-sand-200 pb-3 flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-primary" />
-          <span>Status Proses Dapur</span>
+          <span>Kitchen Preparation Timeline</span>
         </h2>
 
         {isCancelled ? (
           <div className="p-4 rounded-card bg-red-50 border border-red-200 text-red-700 text-center space-y-1">
-            <p className="font-bold text-sm">Pesanan Dibatalkan</p>
-            <p className="text-xs">Pesanan ini telah dibatalkan oleh pihak restoran atau sistem.</p>
+            <p className="font-bold text-sm">Order Cancelled</p>
+            <p className="text-xs">This order has been cancelled by the restaurant or customer service.</p>
           </div>
         ) : (
           <div className="relative">
@@ -248,7 +248,7 @@ export default function OrderTrackerClient({ orderId }: { orderId: string }) {
                         {stage.label}
                         {isCurrent && (
                           <span className="ml-2 inline-block text-[10px] uppercase font-bold bg-primary-100 text-primary-900 px-2 py-0.5 rounded-full">
-                            Aktif Sekarang
+                            Active Now
                           </span>
                         )}
                       </h3>
@@ -265,7 +265,7 @@ export default function OrderTrackerClient({ orderId }: { orderId: string }) {
       {/* 3. Itemized Receipt */}
       <div className="glass-card bg-white rounded-card p-6 border border-sand-300 shadow-elevation-1 space-y-4">
         <h2 className="font-heading font-bold text-sm text-stone-900 uppercase tracking-wider pb-3 border-b border-sand-200">
-          Rincian Hidangan yang Dipesan
+          Ordered Dishes
         </h2>
 
         <div className="divide-y divide-sand-200">
@@ -282,7 +282,7 @@ export default function OrderTrackerClient({ orderId }: { orderId: string }) {
                 )}
                 {item.note && (
                   <p className="text-[11px] text-primary italic mt-0.5">
-                    Catatan: &ldquo;{item.note}&rdquo;
+                    Note: &ldquo;{item.note}&rdquo;
                   </p>
                 )}
                 {item.productId &&
@@ -298,7 +298,7 @@ export default function OrderTrackerClient({ orderId }: { orderId: string }) {
                       className="mt-2 inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 hover:text-amber-800 bg-amber-50 hover:bg-amber-100 px-2.5 py-1 rounded border border-amber-200 transition-colors"
                     >
                       <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
-                      <span>Beri Ulasan Hidangan</span>
+                      <span>Review This Dish</span>
                     </button>
                   )}
               </div>
@@ -315,11 +315,11 @@ export default function OrderTrackerClient({ orderId }: { orderId: string }) {
             <span>{formatCurrency(order.subtotalMinor)}</span>
           </div>
           <div className="flex justify-between text-stone-600">
-            <span>Pajak Restoran (PB1 10%)</span>
+            <span>Restaurant Tax (PB1 10%)</span>
             <span>{formatCurrency(order.taxMinor)}</span>
           </div>
           <div className="pt-2 border-t border-sand-200 flex justify-between items-baseline font-bold">
-            <span className="text-stone-900">Total Pembayaran</span>
+            <span className="text-stone-900">Total Payment</span>
             <span className="text-base sm:text-lg text-primary font-extrabold">
               {formatCurrency(order.totalMinor)}
             </span>
@@ -334,14 +334,14 @@ export default function OrderTrackerClient({ orderId }: { orderId: string }) {
           className="flex-1 py-3.5 rounded-button bg-primary text-white font-semibold text-xs sm:text-sm hover:bg-primary-hover transition-colors shadow-elevation-1 flex items-center justify-center gap-2"
         >
           <UtensilsCrossed className="w-4 h-4" />
-          <span>Pesan Hidangan Lainnya</span>
+          <span>Order More Dishes</span>
         </Link>
         <Link
           href="/"
           className="py-3.5 px-6 rounded-button bg-white text-stone-800 font-semibold text-xs sm:text-sm border border-sand-300 hover:bg-sand-50 transition-colors flex items-center justify-center gap-2"
         >
           <Home className="w-4 h-4" />
-          <span>Beranda</span>
+          <span>Home</span>
         </Link>
       </div>
 

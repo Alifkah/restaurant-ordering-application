@@ -6,8 +6,8 @@ import CancelClient from "@/components/checkout/CancelClient";
 import { Loader2 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Pembayaran Dibatalkan | Nusantara Artisan Kitchen & Lounge",
-  description: "Pembayaran pesanan Anda belum diselesaikan. Anda dapat mencoba kembali kapan saja.",
+  title: "Payment Cancelled | Nusantara Artisan Kitchen & Lounge",
+  description: "Your payment was not completed. You can retry checkout anytime.",
 };
 
 export default function CheckoutCancelPage() {
@@ -21,7 +21,7 @@ export default function CheckoutCancelPage() {
             <div className="max-w-md mx-auto my-16 p-8 glass-card bg-white rounded-card border border-sand-300 text-center space-y-4">
               <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" />
               <p className="text-sm font-semibold text-stone-700">
-                Memuat status pembatalan...
+                Loading cancellation status...
               </p>
             </div>
           }

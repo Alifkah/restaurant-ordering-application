@@ -61,15 +61,18 @@ export default function MenuCatalogClient({
         const isBestseller =
           product.name.toLowerCase().includes("wagyu") ||
           product.name.toLowerCase().includes("betutu") ||
-          product.name.toLowerCase().includes("kecombrang");
+          product.name.toLowerCase().includes("kecombrang") ||
+          product.name.toLowerCase().includes("rendang");
         if (!isBestseller) return false;
       }
 
       if (activeFilter === "spicy") {
         const isSpicy =
           product.name.toLowerCase().includes("betutu") ||
+          product.name.toLowerCase().includes("spicy") ||
           product.name.toLowerCase().includes("pedas") ||
-          product.name.toLowerCase().includes("gejrot") ||
+          product.name.toLowerCase().includes("chili") ||
+          product.description?.toLowerCase().includes("chili") ||
           product.description?.toLowerCase().includes("rawit");
         if (!isSpicy) return false;
       }
@@ -92,7 +95,7 @@ export default function MenuCatalogClient({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Cari hidangan (rendang wagyu, bakmi, kopi aren...)"
+              placeholder="Search dishes (wagyu rendang, noodles, palm sugar coffee...)"
               className="w-full pl-10 pr-10 py-2.5 rounded-button bg-sand-50 border border-sand-300 focus:border-primary focus:ring-2 focus:ring-primary/20 text-xs sm:text-sm text-stone-900 placeholder:text-stone-400 outline-none transition-all"
             />
             {searchQuery && (
@@ -117,7 +120,7 @@ export default function MenuCatalogClient({
                   : "bg-sand-200 text-stone-700 hover:bg-sand-300"
               }`}
             >
-              Semua Menu
+              All Dishes
             </button>
             <button
               type="button"
@@ -141,7 +144,7 @@ export default function MenuCatalogClient({
               }`}
             >
               <Flame className="w-3 h-3" />
-              <span>Menu Pedas</span>
+              <span>Spicy Dishes</span>
             </button>
           </div>
         </div>
@@ -157,7 +160,7 @@ export default function MenuCatalogClient({
                 : "bg-sand-100 text-stone-700 hover:bg-sand-200"
             }`}
           >
-            Semua ({products.length})
+            All ({products.length})
           </button>
 
           {categories.map((cat) => {
@@ -189,10 +192,10 @@ export default function MenuCatalogClient({
             <UtensilsCrossed className="w-6 h-6" />
           </div>
           <h3 className="font-heading font-bold text-lg text-stone-800 mb-1">
-            Hidangan Tidak Ditemukan
+            No Dishes Found
           </h3>
           <p className="text-xs sm:text-sm text-stone-500 max-w-sm mx-auto mb-4">
-            Tidak ada menu yang sesuai dengan kata kunci &ldquo;{searchQuery}&rdquo;. Silakan coba kata kunci lain atau reset filter.
+            We couldn&apos;t find any items matching &ldquo;{searchQuery}&rdquo;. Try another search term or reset your filters.
           </p>
           <button
             type="button"
@@ -203,7 +206,7 @@ export default function MenuCatalogClient({
             }}
             className="px-4 py-2 rounded-button bg-primary text-white text-xs font-semibold hover:bg-primary-hover transition-colors"
           >
-            Reset Semua Filter
+            Reset All Filters
           </button>
         </div>
       ) : (

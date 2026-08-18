@@ -35,7 +35,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
           success: false,
           error: {
             code: "NOT_FOUND",
-            message: "Pesanan tidak ditemukan.",
+            message: "Order not found.",
           },
         },
         { status: 404 }
@@ -56,7 +56,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
         success: false,
         error: {
           code: "INTERNAL_SERVER_ERROR",
-          message: "Gagal mengambil status pembayaran.",
+          message: "Failed to retrieve payment status.",
         },
       },
       { status: 500 }

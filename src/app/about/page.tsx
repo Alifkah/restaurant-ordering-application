@@ -17,8 +17,8 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Kisah Kami (Our Story) | Nusantara Artisan Kitchen & Lounge",
-  description: "Menghidupkan kekayaan rempah kepulauan nusantara melalui teknik woodfired grill dan bahan lokal berkualitas tinggi.",
+  title: "Our Story | Nusantara Artisan Kitchen & Lounge",
+  description: "Revitalizing the rich spice heritage of the Indonesian archipelago through contemporary woodfired culinary mastery and organic farm ingredients.",
 };
 
 export default function AboutPage() {
@@ -42,13 +42,13 @@ export default function AboutPage() {
           <div className="relative max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/20 text-amber-400 border border-primary/30 text-xs font-semibold mb-4">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Filosofi & Kisah Kuliner</span>
+              <span>Philosophy & Culinary Heritage</span>
             </div>
             <h1 className="font-heading text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight mb-6">
-              Menghidupkan Warisan Rempah Nusantara
+              Revitalizing the Spice Routes of Nusantara
             </h1>
             <p className="text-sm sm:text-lg text-stone-300 max-w-2xl mx-auto leading-relaxed">
-              Sebuah perayaan cita rasa kepulauan Indonesia yang diolah dengan bahan-bahan organik lokal, teknik pemanggangan arang batok kelapa, dan ketelitian rasa kontemporer.
+              A celebration of archipelago flavors crafted with locally sourced organic produce, coconut charcoal woodfire grilling, and contemporary culinary precision.
             </p>
           </div>
         </section>
@@ -61,13 +61,13 @@ export default function AboutPage() {
                 Our Culinary Roots
               </span>
               <h2 className="font-heading text-2xl sm:text-3xl font-extrabold text-stone-900 leading-snug">
-                Harmoni Bumbu Asli & Kayu Bakar
+                Harmony of Native Spices & Live Fire
               </h2>
               <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
-                Di Nusantara Artisan Kitchen, kami meyakini bahwa hidangan terbaik berakar pada kejujuran bahan baku. Dari kecombrang segar dataran tinggi Bedugul, lada hitam Lampung, hingga kelapa bakar Bali, setiap rempah ditumbuk dan diracik secara tradisional demi mempertahankan intensitas aromatiknya.
+                At Nusantara Artisan Kitchen, we believe exceptional dining begins with the integrity of raw ingredients. From fresh highland Bedugul torch ginger, Lampung black peppercorns, to Balinese smoked coconut, each spice is ground and blended in-house to preserve intense aromatic vitality.
               </p>
               <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
-                Rendang Wagyu kami dimasak perlahan selama 12 jam pada temperatur rendah dengan santan caramelised pekat, menghasilkan kelembutan tekstur daging yang lumer di mulut.
+                Our Wagyu Rendang is slow-simmered for 12 hours over gentle heat with rich caramelized coconut milk reduction, yielding a melt-in-the-mouth tenderness and complex umami depth.
               </p>
             </div>
 
@@ -91,7 +91,7 @@ export default function AboutPage() {
                 Woodfired Mastery
               </h3>
               <p className="text-xs text-stone-600 leading-relaxed">
-                Pemanggangan di atas arang kayu kelapa murni memberikan kedalaman aroma smoky yang gurih dan renyah di luar namun juicy di dalam.
+                Live grilling over dense coconut shell charcoal imparts a distinct smoky aroma, crisp caramelized exterior, and succulent tenderness.
               </p>
             </div>
 
@@ -100,10 +100,10 @@ export default function AboutPage() {
                 <Leaf className="w-5 h-5" />
               </div>
               <h3 className="font-heading font-bold text-base text-stone-900 mb-2">
-                Farm-to-Table Organik
+                Organic Farm-to-Table
               </h3>
               <p className="text-xs text-stone-600 leading-relaxed">
-                Bermitra langsung dengan petani sayur lokal Bali dan nelayan tangkap ramah lingkungan untuk menjamin kesegaran bahan harian.
+                Direct partnerships with local Bali smallholder farmers and sustainable fisheries ensure peak freshness harvested daily.
               </p>
             </div>
 
@@ -112,10 +112,10 @@ export default function AboutPage() {
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <h3 className="font-heading font-bold text-base text-stone-900 mb-2">
-                Tanpa Pengawet & MSG
+                Zero MSG & Preservatives
               </h3>
               <p className="text-xs text-stone-600 leading-relaxed">
-                Semua kaldu, minyak bawang, dan sambal diproduksi in-house tanpa penguat rasa artifisial maupun bahan pengawet.
+                All broths, infused shallot oils, and artisanal sambal relishes are created from scratch without artificial flavor enhancers or preservatives.
               </p>
             </div>
           </div>
@@ -127,13 +127,13 @@ export default function AboutPage() {
           >
             <div className="text-center max-w-xl mx-auto mb-8">
               <span className="text-xs font-bold text-primary uppercase tracking-wider">
-                Kunjungi Kami
+                Visit Us
               </span>
               <h2 className="font-heading text-2xl sm:text-3xl font-extrabold text-stone-900 mt-1">
-                Lokasi & Jam Operasional
+                Location & Service Hours
               </h2>
               <p className="text-xs sm:text-sm text-stone-600 mt-1.5">
-                Suasana lounge yang teduh di jantung kawasan Seminyak, siap menyambut santap siang dan makan malam Anda.
+                A serene dining sanctuary in the heart of Seminyak, welcoming you for leisurely lunches and evening gatherings.
               </p>
             </div>
 
@@ -141,29 +141,29 @@ export default function AboutPage() {
               <div className="p-4 rounded-card bg-sand-50 border border-sand-200 space-y-2">
                 <div className="flex items-center gap-2 text-primary font-semibold text-sm">
                   <MapPin className="w-4 h-4" />
-                  <span>Alamat Restoran</span>
+                  <span>Restaurant Address</span>
                 </div>
                 <p className="text-xs text-stone-600 leading-relaxed">
-                  Jl. Sunset Road No. 88, Seminyak, Kuta, Kabupaten Badung, Bali 80361
+                  Jl. Sunset Road No. 88, Seminyak, Kuta, Badung Regency, Bali 80361
                 </p>
               </div>
 
               <div className="p-4 rounded-card bg-sand-50 border border-sand-200 space-y-2">
                 <div className="flex items-center gap-2 text-primary font-semibold text-sm">
                   <Clock className="w-4 h-4" />
-                  <span>Jam Buka (WITA)</span>
+                  <span>Hours (WITA)</span>
                 </div>
                 <p className="text-xs text-stone-600 leading-relaxed">
-                  Senin - Kamis: 10:00 - 22:00<br />
-                  Jumat - Sabtu: 10:00 - 23:00<br />
-                  Minggu: 09:00 - 22:00
+                  Monday - Thursday: 10:00 AM - 10:00 PM<br />
+                  Friday - Saturday: 10:00 AM - 11:00 PM<br />
+                  Sunday: 09:00 AM - 10:00 PM
                 </p>
               </div>
 
               <div className="p-4 rounded-card bg-sand-50 border border-sand-200 space-y-2">
                 <div className="flex items-center gap-2 text-primary font-semibold text-sm">
                   <Phone className="w-4 h-4" />
-                  <span>Kontak & Reservasi</span>
+                  <span>Inquiries & Reservations</span>
                 </div>
                 <p className="text-xs text-stone-600 leading-relaxed">
                   WhatsApp: +62 361 8499 123<br />
@@ -177,7 +177,7 @@ export default function AboutPage() {
                 href="/menu"
                 className="px-6 py-3 rounded-button bg-primary text-white font-semibold text-xs sm:text-sm shadow-elevation-1 hover:bg-primary-hover transition-colors inline-flex items-center gap-2"
               >
-                <span>Lihat Menu & Mulai Pesan Online</span>
+                <span>View Menu & Order Online</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>

@@ -47,7 +47,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
 
     if (!updated) {
       return NextResponse.json(
-        { success: false, error: { code: "NOT_FOUND", message: "Kategori tidak ditemukan." } },
+        { success: false, error: { code: "NOT_FOUND", message: "Category not found." } },
         { status: 404 }
       );
     }
@@ -64,7 +64,7 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
   } catch (error) {
     console.error("Error updating category:", error);
     return NextResponse.json(
-      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Gagal memperbarui kategori." } },
+      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to update category." } },
       { status: 500 }
     );
   }
@@ -99,7 +99,7 @@ export async function DELETE(req: NextRequest, { params }: RouteParams) {
   } catch (error) {
     console.error("Error deleting category:", error);
     return NextResponse.json(
-      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Gagal menonaktifkan kategori." } },
+      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to deactivate category." } },
       { status: 500 }
     );
   }

@@ -6,8 +6,8 @@ import { asc } from "drizzle-orm";
 import { z } from "zod";
 
 const createCategorySchema = z.object({
-  name: z.string().min(1, "Nama kategori wajib diisi"),
-  slug: z.string().min(1, "Slug wajib diisi"),
+  name: z.string().min(1, "Category name is required"),
+  slug: z.string().min(1, "Slug is required"),
   description: z.string().optional().nullable(),
   sortOrder: z.number().int().default(0),
   isActive: z.boolean().default(true),
@@ -31,7 +31,7 @@ export async function GET() {
         success: false,
         error: {
           code: "INTERNAL_SERVER_ERROR",
-          message: "Gagal mengambil daftar kategori.",
+          message: "Failed to retrieve categories.",
         },
       },
       { status: 500 }
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: { code: "FORBIDDEN", message: "Hanya Admin yang dapat membuat kategori." },
+          error: { code: "FORBIDDEN", message: "Only administrators can create categories." },
         },
         { status: 403 }
       );
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
           success: false,
           error: {
             code: "VALIDATION_ERROR",
-            message: "Data kategori tidak valid.",
+            message: "Invalid category payload.",
             details: validated.error.flatten().fieldErrors,
           },
         },
@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
         success: false,
         error: {
           code: "INTERNAL_SERVER_ERROR",
-          message: "Gagal membuat kategori baru.",
+          message: "Failed to create new category.",
         },
       },
       { status: 500 }

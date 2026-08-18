@@ -6,8 +6,8 @@ import SuccessClient from "@/components/checkout/SuccessClient";
 import { Loader2 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Pembayaran Berhasil | Nusantara Artisan Kitchen & Lounge",
-  description: "Terima kasih atas pesanan Anda. Pembayaran telah berhasil dikonfirmasi.",
+  title: "Payment Confirmed | Nusantara Artisan Kitchen & Lounge",
+  description: "Thank you for your order! Your payment has been successfully verified.",
 };
 
 export default function CheckoutSuccessPage() {
@@ -21,7 +21,7 @@ export default function CheckoutSuccessPage() {
             <div className="max-w-md mx-auto my-16 p-8 glass-card bg-white rounded-card border border-sand-300 text-center space-y-4">
               <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" />
               <p className="text-sm font-semibold text-stone-700">
-                Memuat konfirmasi pesanan...
+                Loading order confirmation...
               </p>
             </div>
           }

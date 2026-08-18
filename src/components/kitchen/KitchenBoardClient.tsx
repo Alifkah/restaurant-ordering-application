@@ -206,7 +206,7 @@ export default function KitchenBoardClient({ initialOrders }: KitchenBoardClient
   const filteredOrders = ordersList.filter((order) => {
     if (order.status === "completed" || order.status === "cancelled") return false;
     if (filterType === "all") return true;
-    const isTakeaway = order.customerNote?.includes("[Bawa Pulang");
+    const isTakeaway = order.customerNote?.includes("[Bawa Pulang") || order.customerNote?.includes("[Takeaway");
     if (filterType === "takeaway") return isTakeaway;
     if (filterType === "dine_in") return !isTakeaway;
     return true;
@@ -235,7 +235,7 @@ export default function KitchenBoardClient({ initialOrders }: KitchenBoardClient
               </span>
             </div>
             <p className="text-xs text-stone-400">
-              Antrean Pesanan Realtime & Manajemen Dapur
+              Real-time Order Queue & Kitchen Workstation Management
             </p>
           </div>
         </div>
@@ -266,7 +266,7 @@ export default function KitchenBoardClient({ initialOrders }: KitchenBoardClient
                 ? "bg-stone-800 border-stone-700 text-stone-200 hover:bg-stone-700"
                 : "bg-red-950/60 border-red-800/60 text-red-300 hover:bg-red-900/60"
             }`}
-            title={soundEnabled ? "Audio Alert Aktif" : "Audio Mute"}
+            title={soundEnabled ? "Audio Alert Active" : "Audio Muted"}
           >
             {soundEnabled ? (
               <>
@@ -292,7 +292,7 @@ export default function KitchenBoardClient({ initialOrders }: KitchenBoardClient
                   : "text-stone-400 hover:text-white"
               }`}
             >
-              Semua ({filteredOrders.length})
+              All ({filteredOrders.length})
             </button>
             <button
               type="button"
@@ -323,7 +323,7 @@ export default function KitchenBoardClient({ initialOrders }: KitchenBoardClient
             type="button"
             onClick={refreshOrders}
             className="p-2 rounded-button bg-stone-800 border border-stone-700 text-stone-300 hover:bg-stone-700 transition-colors"
-            title="Refresh Manual"
+            title="Manual Refresh"
           >
             <RefreshCw className="w-4 h-4" />
           </button>
@@ -331,7 +331,7 @@ export default function KitchenBoardClient({ initialOrders }: KitchenBoardClient
           <Link
             href="/"
             className="p-2 rounded-button bg-stone-800 border border-stone-700 text-stone-300 hover:bg-stone-700 transition-colors"
-            title="Ke Beranda"
+            title="Home"
           >
             <Home className="w-4 h-4" />
           </Link>
@@ -343,8 +343,8 @@ export default function KitchenBoardClient({ initialOrders }: KitchenBoardClient
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 min-w-[1000px] h-full items-start">
           {/* Column 1: PENDING */}
           <KanbanColumn
-            title="Pesanan Baru"
-            subtitle="Menunggu Pembayaran / Konfirmasi"
+            title="New Orders"
+            subtitle="Awaiting Verification / Payment"
             count={pendingOrders.length}
             badgeColor="bg-amber-500/20 text-amber-400 border-amber-500/30"
           >
@@ -353,7 +353,7 @@ export default function KitchenBoardClient({ initialOrders }: KitchenBoardClient
                 key={order.id}
                 order={order}
                 elapsed={getElapsedTime(order.createdAt)}
-                actionLabel="Acknowledge & Masak"
+                actionLabel="Acknowledge & Cook"
                 actionLoading={actionLoading === order.id}
                 onAction={() => handleUpdateStatus(order.id, "preparing")}
               />
@@ -362,8 +362,8 @@ export default function KitchenBoardClient({ initialOrders }: KitchenBoardClient
 
           {/* Column 2: CONFIRMED */}
           <KanbanColumn
-            title="Dikonfirmasi"
-            subtitle="Pembayaran Berhasil • Siap Dimasak"
+            title="Confirmed"
+            subtitle="Payment Verified • Ready to Prep"
             count={confirmedOrders.length}
             badgeColor="bg-blue-500/20 text-blue-400 border-blue-500/30"
           >
@@ -372,7 +372,7 @@ export default function KitchenBoardClient({ initialOrders }: KitchenBoardClient
                 key={order.id}
                 order={order}
                 elapsed={getElapsedTime(order.createdAt)}
-                actionLabel="Mulai Masak"
+                actionLabel="Start Cooking"
                 actionColor="bg-primary hover:bg-primary-hover"
                 actionIcon={<Flame className="w-4 h-4" />}
                 actionLoading={actionLoading === order.id}
@@ -383,8 +383,8 @@ export default function KitchenBoardClient({ initialOrders }: KitchenBoardClient
 
           {/* Column 3: PREPARING */}
           <KanbanColumn
-            title="Sedang Dimasak"
-            subtitle="Proses di Stasiun Dapur"
+            title="Cooking in Kitchen"
+            subtitle="In Progress at Cooking Station"
             count={preparingOrders.length}
             badgeColor="bg-orange-500/20 text-orange-400 border-orange-500/30"
           >
@@ -393,7 +393,7 @@ export default function KitchenBoardClient({ initialOrders }: KitchenBoardClient
                 key={order.id}
                 order={order}
                 elapsed={getElapsedTime(order.createdAt)}
-                actionLabel="Tandai Siap Saji"
+                actionLabel="Mark Ready for Service"
                 actionColor="bg-emerald-600 hover:bg-emerald-500"
                 actionIcon={<CheckCircle2 className="w-4 h-4" />}
                 actionLoading={actionLoading === order.id}
@@ -404,8 +404,8 @@ export default function KitchenBoardClient({ initialOrders }: KitchenBoardClient
 
           {/* Column 4: READY */}
           <KanbanColumn
-            title="Siap Disajikan"
-            subtitle="Menunggu Antar / Pengambilan"
+            title="Ready for Service"
+            subtitle="Awaiting Delivery / Table Service"
             count={readyOrders.length}
             badgeColor="bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
           >
@@ -414,7 +414,7 @@ export default function KitchenBoardClient({ initialOrders }: KitchenBoardClient
                 key={order.id}
                 order={order}
                 elapsed={getElapsedTime(order.createdAt)}
-                actionLabel="Selesaikan Pesanan"
+                actionLabel="Complete Ticket"
                 actionColor="bg-stone-700 hover:bg-stone-600 text-stone-200"
                 actionIcon={<Check className="w-4 h-4" />}
                 actionLoading={actionLoading === order.id}
@@ -463,7 +463,7 @@ function KanbanColumn({
       <div className="p-3.5 space-y-3.5 overflow-y-auto flex-1 custom-scrollbar">
         {count === 0 ? (
           <div className="py-12 text-center text-stone-500 text-xs">
-            Tidak ada tiket pesanan
+            No active tickets in queue
           </div>
         ) : (
           children
@@ -499,7 +499,7 @@ function KitchenTicketCard({
     timerBadge = "bg-amber-950 text-amber-300 border-amber-600";
   }
 
-  const isTakeaway = order.customerNote?.includes("[Bawa Pulang");
+  const isTakeaway = order.customerNote?.includes("[Bawa Pulang") || order.customerNote?.includes("[Takeaway");
 
   return (
     <div className="bg-[#202730] rounded-card border border-stone-700/80 p-4 space-y-3.5 shadow-md hover:border-stone-500 transition-colors animate-fade-in">
@@ -511,7 +511,7 @@ function KitchenTicketCard({
 
         <div
           className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-bold border ${timerBadge}`}
-          title="Waktu sejak pesanan masuk"
+          title="Elapsed time since order placement"
         >
           <Clock className="w-3.5 h-3.5" />
           <span>{elapsed.formatted}</span>
@@ -529,7 +529,7 @@ function KitchenTicketCard({
           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold">
             <UtensilsCrossed className="w-3.5 h-3.5" />
             <span>
-              {order.customerNote?.match(/Meja [^\]]+/)?.[0] || "Makan di Tempat"}
+              {order.customerNote?.match(/Table [^\]]+/)?.[0] || order.customerNote?.match(/Meja [^\]]+/)?.[0] || "Dine-In"}
             </span>
           </span>
         )}
@@ -544,7 +544,7 @@ function KitchenTicketCard({
 
       {order.customerNote && (
         <div className="p-2 rounded bg-[#161B21] border border-amber-500/30 text-[11px] text-amber-200">
-          <span className="font-bold text-amber-400">Catatan:</span>{" "}
+          <span className="font-bold text-amber-400">Note:</span>{" "}
           {order.customerNote.replace(/\[[^\]]+\]\s*/g, "") || order.customerNote}
         </div>
       )}
@@ -584,7 +584,7 @@ function KitchenTicketCard({
             </div>
           ))
         ) : (
-          <p className="text-xs text-stone-400 italic">Rincian menu sedang dimuat...</p>
+          <p className="text-xs text-stone-400 italic">Loading dish details...</p>
         )}
       </div>
 
@@ -596,7 +596,7 @@ function KitchenTicketCard({
         className={`w-full py-2.5 px-3 rounded-button text-white font-bold text-xs shadow-sm transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-60 ${actionColor}`}
       >
         {actionLoading ? (
-          <span>Memproses...</span>
+          <span>Processing...</span>
         ) : (
           <>
             {actionIcon}

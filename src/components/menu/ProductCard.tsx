@@ -19,14 +19,17 @@ export default function ProductCard({
 }: ProductCardProps) {
   const isSpicy =
     product.name.toLowerCase().includes("betutu") ||
+    product.name.toLowerCase().includes("spicy") ||
     product.name.toLowerCase().includes("pedas") ||
-    product.name.toLowerCase().includes("gejrot") ||
+    product.name.toLowerCase().includes("chili") ||
+    product.description?.toLowerCase().includes("chili") ||
     product.description?.toLowerCase().includes("rawit");
 
   const isBestseller =
     product.name.toLowerCase().includes("wagyu") ||
     product.name.toLowerCase().includes("betutu") ||
-    product.name.toLowerCase().includes("kecombrang");
+    product.name.toLowerCase().includes("kecombrang") ||
+    product.name.toLowerCase().includes("rendang");
 
   return (
     <article aria-label={product.name} className="group glass-card bg-white rounded-card overflow-hidden shadow-elevation-1 hover:shadow-elevation-2 border border-sand-300 transition-all flex flex-col justify-between">
@@ -53,7 +56,7 @@ export default function ProductCard({
             {isSpicy && (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-badge bg-red-500/90 text-white font-bold text-[10px] shadow-sm backdrop-blur-sm">
                 <Flame className="w-3 h-3" />
-                <span>Pedas</span>
+                <span>Spicy</span>
               </span>
             )}
           </div>
@@ -74,7 +77,7 @@ export default function ProductCard({
           </Link>
 
           <p className="text-xs text-stone-600 line-clamp-2 mt-1.5 leading-relaxed min-h-[32px]">
-            {product.description || "Hidangan otentik khas nusantara dengan bumbu rempah pilihan."}
+            {product.description || "Authentic archipelago specialty prepared with chef's selected spices."}
           </p>
         </div>
       </div>
@@ -83,7 +86,7 @@ export default function ProductCard({
       <div className="px-4 sm:px-5 pb-4 sm:pb-5 pt-0 flex items-center justify-between gap-2 border-t border-sand-100 mt-2">
         <div>
           <span className="text-[10px] text-stone-400 font-medium block">
-            Harga mulai
+            From
           </span>
           <span className="font-heading font-bold text-sm sm:text-base text-stone-900">
             {formatCurrency(product.priceMinor)}
@@ -96,7 +99,7 @@ export default function ProductCard({
           className="px-3.5 py-2 rounded-button bg-sand-100 hover:bg-primary hover:text-white text-stone-800 text-xs font-semibold transition-all flex items-center gap-1.5 border border-sand-300 hover:border-primary shadow-sm active:scale-95"
         >
           <Plus className="w-3.5 h-3.5" />
-          <span>Pesan</span>
+          <span>Add</span>
         </button>
       </div>
     </article>

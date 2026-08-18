@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
           success: false,
           error: {
             code: "VALIDATION_ERROR",
-            message: "Payload tidak valid.",
+            message: "Invalid payload.",
             details: validated.error.flatten().fieldErrors,
           },
         },
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
           success: false,
           error: {
             code: "NOT_FOUND",
-            message: "Pesanan tidak ditemukan.",
+            message: "Order not found.",
           },
         },
         { status: 404 }
@@ -158,7 +158,7 @@ export async function POST(req: NextRequest) {
           currency: currencyCode,
           product_data: {
             name: item.productNameSnapshot,
-            description: optDesc || (item.note ? `Catatan: ${item.note}` : undefined),
+            description: optDesc || (item.note ? `Note: ${item.note}` : undefined),
           },
           unit_amount: convertToStripeAmount(
             fullUnitPriceMinor,
@@ -176,8 +176,8 @@ export async function POST(req: NextRequest) {
         price_data: {
           currency: currencyCode,
           product_data: {
-            name: "Pajak Restoran (PB1 10%)",
-            description: "Pajak barang dan jasa restoran",
+            name: "Restaurant Tax (PB1 10%)",
+            description: "Restaurant goods & service tax",
           },
           unit_amount: convertToStripeAmount(
             order.taxMinor,
@@ -243,7 +243,7 @@ export async function POST(req: NextRequest) {
         success: false,
         error: {
           code: "STRIPE_CHECKOUT_ERROR",
-          message: "Gagal membuat sesi pembayaran Stripe.",
+          message: "Failed to create Stripe checkout session.",
         },
       },
       { status: 500 }

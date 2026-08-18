@@ -22,7 +22,7 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-xs text-stone-400 leading-relaxed">
-              Cita rasa warisan kuliner kepulauan nusantara yang diolah dengan bahan-bahan lokal pilihan dan teknik woodfired grill kontemporer.
+              Heritage culinary flavors of the Indonesian archipelago crafted with locally sourced farm ingredients and contemporary woodfired techniques.
             </p>
           </div>
 
@@ -30,24 +30,24 @@ export default function Footer() {
           <div className="space-y-3">
             <h3 className="font-heading font-semibold text-sm text-white flex items-center gap-2">
               <Clock className="w-4 h-4 text-primary" />
-              <span>Jam Operasional (WITA)</span>
+              <span>Service Hours (WITA)</span>
             </h3>
             <ul className="text-xs text-stone-400 space-y-1.5">
               <li className="flex justify-between">
-                <span>Senin - Kamis:</span>
-                <span className="text-stone-200 font-medium">10:00 - 22:00</span>
+                <span>Monday - Thursday:</span>
+                <span className="text-stone-200 font-medium">10:00 AM - 10:00 PM</span>
               </li>
               <li className="flex justify-between">
-                <span>Jumat:</span>
-                <span className="text-stone-200 font-medium">10:00 - 23:00</span>
+                <span>Friday:</span>
+                <span className="text-stone-200 font-medium">10:00 AM - 11:00 PM</span>
               </li>
               <li className="flex justify-between">
-                <span>Sabtu:</span>
-                <span className="text-stone-200 font-medium">09:00 - 23:00</span>
+                <span>Saturday:</span>
+                <span className="text-stone-200 font-medium">09:00 AM - 11:00 PM</span>
               </li>
               <li className="flex justify-between">
-                <span>Minggu:</span>
-                <span className="text-stone-200 font-medium">09:00 - 22:00</span>
+                <span>Sunday:</span>
+                <span className="text-stone-200 font-medium">09:00 AM - 10:00 PM</span>
               </li>
             </ul>
           </div>
@@ -55,27 +55,27 @@ export default function Footer() {
           {/* Quick Links */}
           <div className="space-y-3">
             <h3 className="font-heading font-semibold text-sm text-white">
-              Navigasi Cepat
+              Quick Navigation
             </h3>
             <ul className="text-xs space-y-2">
               <li>
                 <Link href="/menu" className="hover:text-primary transition-colors">
-                  Katalog Menu Digital
+                  Digital Menu Catalog
                 </Link>
               </li>
               <li>
                 <Link href="/about" className="hover:text-primary transition-colors">
-                  Tentang & Kisah Kami
+                  About & Culinary Story
                 </Link>
               </li>
               <li>
                 <Link href="/login" className="hover:text-primary transition-colors">
-                  Akun Pelanggan & Lacak Pesanan
+                  Guest Account & Order Tracking
                 </Link>
               </li>
               <li>
                 <Link href="/kitchen" className="hover:text-primary transition-colors">
-                  Kitchen Display Board (Staff)
+                  Kitchen Display Board (KDS)
                 </Link>
               </li>
             </ul>
@@ -84,7 +84,7 @@ export default function Footer() {
           {/* Contact & Location */}
           <div className="space-y-3">
             <h3 className="font-heading font-semibold text-sm text-white">
-              Lokasi & Kontak
+              Location & Inquiries
             </h3>
             <ul className="text-xs text-stone-400 space-y-2.5">
               <li className="flex items-start gap-2">
@@ -108,7 +108,7 @@ export default function Footer() {
           <p>© 2026 Nusantara Artisan Kitchen & Lounge. All rights reserved.</p>
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-emerald-500" />
-            <span>Pembayaran Aman Didukung oleh Stripe SSL 256-Bit</span>
+            <span>Secure 256-Bit SSL Checkout powered by Stripe</span>
           </div>
         </div>
       </div>

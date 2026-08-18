@@ -32,7 +32,7 @@ export async function GET() {
   } catch (error) {
     console.error("Error getting settings:", error);
     return NextResponse.json(
-      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Gagal mengambil pengaturan restoran." } },
+      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to retrieve restaurant settings." } },
       { status: 500 }
     );
   }
@@ -54,7 +54,7 @@ export async function PATCH(req: NextRequest) {
 
     if (!validated.success) {
       return NextResponse.json(
-        { success: false, error: { code: "VALIDATION_ERROR", message: "Payload tidak valid." } },
+        { success: false, error: { code: "VALIDATION_ERROR", message: "Invalid payload." } },
         { status: 400 }
       );
     }
@@ -102,7 +102,7 @@ export async function PATCH(req: NextRequest) {
   } catch (error) {
     console.error("Error updating settings:", error);
     return NextResponse.json(
-      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Gagal memperbarui pengaturan." } },
+      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to update restaurant settings." } },
       { status: 500 }
     );
   }

@@ -47,12 +47,12 @@ export default function OfflineBanner() {
       {isOffline ? (
         <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-stone-900/90 text-sand-100 text-xs font-semibold shadow-elevation-3 backdrop-blur-sm border border-stone-700">
           <WifiOff className="w-4 h-4 text-amber-400 animate-pulse" />
-          <span>Koneksi internet terputus. Mode offline aktif.</span>
+          <span>Internet connection lost. Offline mode active.</span>
         </div>
       ) : showReconnected ? (
         <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-emerald-700/95 text-white text-xs font-semibold shadow-elevation-3 backdrop-blur-sm border border-emerald-500">
           <Wifi className="w-4 h-4 text-white" />
-          <span>Koneksi tersambung kembali!</span>
+          <span>Connection restored!</span>
         </div>
       ) : null}
     </div>

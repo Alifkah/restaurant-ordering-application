@@ -43,7 +43,7 @@ export async function GET() {
   } catch (error) {
     console.error("Error fetching audit logs:", error);
     return NextResponse.json(
-      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Gagal mengambil audit logs." } },
+      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to retrieve audit logs." } },
       { status: 500 }
     );
   }

@@ -154,7 +154,7 @@ export default function CustomizationModal({
   >((acc, opt) => {
     const groupName = opt.name.includes(":")
       ? opt.name.split(":")[0].trim()
-      : "Pilihan Tambahan / Topping";
+      : "Add-ons & Options";
 
     if (!acc[groupName]) {
       acc[groupName] = [];
@@ -187,7 +187,7 @@ export default function CustomizationModal({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Tutup"
+            aria-label="Close"
             className="absolute top-4 right-4 w-9 h-9 rounded-full bg-stone-900/60 hover:bg-stone-900 text-white flex items-center justify-center transition-colors shadow-sm"
           >
             <X className="w-5 h-5" />
@@ -199,7 +199,7 @@ export default function CustomizationModal({
               {product.name}
             </h3>
             <p className="text-amber-400 font-bold text-sm mt-0.5">
-              Mulai dari {formatCurrency(product.priceMinor)}
+              From {formatCurrency(product.priceMinor)}
             </p>
           </div>
         </div>
@@ -209,7 +209,7 @@ export default function CustomizationModal({
           {product.description && (
             <div>
               <h4 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1">
-                Deskripsi Kuliner
+                Culinary Description
               </h4>
               <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
                 {product.description}
@@ -227,8 +227,8 @@ export default function CustomizationModal({
                 </h4>
                 <span className="text-[11px] text-stone-500 font-medium">
                   {options.some((o) => o.name.includes(":"))
-                    ? "Pilih 1 opsi"
-                    : "Opsional"}
+                    ? "Choose 1 option"
+                    : "Optional"}
                 </span>
               </div>
 
@@ -268,7 +268,7 @@ export default function CustomizationModal({
                       <span className="text-xs font-semibold text-stone-700">
                         {option.priceDeltaMinor > 0
                           ? `+${formatCurrency(option.priceDeltaMinor)}`
-                          : "Gratis"}
+                          : "Free"}
                       </span>
                     </button>
                   );
@@ -280,12 +280,12 @@ export default function CustomizationModal({
           {/* Kitchen Note */}
           <div className="space-y-2">
             <label className="block text-xs font-bold text-stone-800 uppercase tracking-wider">
-              Catatan Khusus untuk Koki
+              Special Instructions for the Kitchen
             </label>
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="Contoh: Sambal dipisah, jangan pakai bawang goreng..."
+              placeholder="e.g., Sambal on the side, no fried shallots, allergy notice..."
               rows={2}
               className="w-full p-3 rounded-button bg-sand-50/60 border border-sand-300 focus:border-primary focus:ring-2 focus:ring-primary/20 text-xs sm:text-sm text-stone-800 placeholder:text-stone-400 outline-none resize-none transition-all"
             />
@@ -332,7 +332,7 @@ export default function CustomizationModal({
               ) : (
                 <ShoppingBag className="w-4 h-4" />
               )}
-              <span>{isAdded ? "Ditambahkan!" : "Tambah ke Keranjang"}</span>
+              <span>{isAdded ? "Added to Basket!" : "Add to Dining Basket"}</span>
             </div>
             <span className="font-bold">{formatCurrency(grandTotal)}</span>
           </button>

@@ -4,8 +4,8 @@ import AuthCard from "@/components/auth/AuthCard";
 import { Loader2 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Daftar Akun | Nusantara Artisan Kitchen & Lounge",
-  description: "Daftarkan akun pelanggan baru untuk memesan aneka kuliner artisan nusantara.",
+  title: "Create Account | Nusantara Artisan Kitchen & Lounge",
+  description: "Register a new guest account to order and savor artisan Indonesian culinary specialties.",
 };
 
 export default function RegisterPage() {

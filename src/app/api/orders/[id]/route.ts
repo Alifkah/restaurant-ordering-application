@@ -26,7 +26,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
           success: false,
           error: {
             code: "NOT_FOUND",
-            message: "Pesanan tidak ditemukan.",
+            message: "Order not found.",
           },
         },
         { status: 404 }
@@ -44,7 +44,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
             success: false,
             error: {
               code: "FORBIDDEN",
-              message: "Anda tidak memiliki akses untuk melihat pesanan ini.",
+              message: "You do not have permission to view this order.",
             },
           },
           { status: 403 }
@@ -131,7 +131,7 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
         success: false,
         error: {
           code: "INTERNAL_SERVER_ERROR",
-          message: "Gagal mengambil rincian pesanan.",
+          message: "Failed to retrieve order details.",
         },
       },
       { status: 500 }

@@ -39,12 +39,12 @@ export default function CancelClient() {
       if (res.ok && json.success && json.data?.url) {
         window.location.href = json.data.url;
       } else {
-        setRetryError(json.error?.message || "Gagal membuat sesi pembayaran baru.");
+        setRetryError(json.error?.message || "Failed to create a new checkout session.");
         setLoading(false);
       }
     } catch (err) {
       console.error("Retry checkout failed:", err);
-      setRetryError("Gagal menghubungi gateway pembayaran.");
+      setRetryError("Failed to connect to the payment gateway.");
       setLoading(false);
     }
   };
@@ -57,13 +57,13 @@ export default function CancelClient() {
 
       <div className="space-y-2">
         <span className="text-xs font-bold text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200 uppercase tracking-wider">
-          Pembayaran Belum Berhasil
+          Payment Incomplete
         </span>
         <h1 className="font-heading text-2xl font-extrabold text-stone-900 mt-2">
-          Transaksi Dibatalkan
+          Transaction Cancelled
         </h1>
         <p className="text-xs sm:text-sm text-stone-600 max-w-sm mx-auto leading-relaxed">
-          Proses pembayaran Stripe tidak diselesaikan atau dibatalkan. Kartu Anda tidak dikenakan biaya dan hidangan Anda tetap tersimpan.
+          The Stripe checkout session was not completed or was cancelled. Your card was not charged and your order selection is saved.
         </p>
       </div>
 
@@ -83,12 +83,12 @@ export default function CancelClient() {
           {loading ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              <span>Menyiapkan Pembayaran...</span>
+              <span>Preparing Checkout...</span>
             </>
           ) : (
             <>
               <RefreshCw className="w-4 h-4" />
-              <span>Coba Pembayaran Kembali</span>
+              <span>Retry Payment</span>
             </>
           )}
         </button>
@@ -98,13 +98,13 @@ export default function CancelClient() {
           className="w-full py-3 rounded-button bg-sand-100 text-stone-800 font-semibold text-xs sm:text-sm hover:bg-sand-200 transition-colors flex items-center justify-center gap-2"
         >
           <ShoppingBag className="w-4 h-4" />
-          <span>Kembali ke Keranjang Belanja</span>
+          <span>Return to Dining Basket</span>
         </Link>
       </div>
 
       <div className="pt-4 border-t border-sand-200 text-stone-500 text-xs flex items-center justify-center gap-2">
         <Phone className="w-3.5 h-3.5 text-primary" />
-        <span>Butuh bantuan? Hubungi kasir di +62 361 8499 123</span>
+        <span>Need assistance? Contact our reception at +62 361 8499 123</span>
       </div>
     </div>
   );

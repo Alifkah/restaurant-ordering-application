@@ -6,8 +6,8 @@ import { desc, eq, and } from "drizzle-orm";
 import { z } from "zod";
 
 const createReviewSchema = z.object({
-  productId: z.string().uuid("Product ID tidak valid"),
-  orderId: z.string().uuid("Order ID tidak valid"),
+  productId: z.string().uuid("Invalid product ID"),
+  orderId: z.string().uuid("Invalid order ID"),
   rating: z.number().int().min(1).max(5),
   comment: z.string().max(500).optional().nullable(),
 });
@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error("Error fetching reviews:", error);
     return NextResponse.json(
-      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Gagal mengambil ulasan." } },
+      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to retrieve reviews." } },
       { status: 500 }
     );
   }
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
     const session = await auth();
     if (!session?.user?.id && process.env.NODE_ENV === "production") {
       return NextResponse.json(
-        { success: false, error: { code: "UNAUTHORIZED", message: "Silakan login terlebih dahulu untuk menulis ulasan." } },
+        { success: false, error: { code: "UNAUTHORIZED", message: "Please sign in to write a verified review." } },
         { status: 401 }
       );
     }
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
           success: false,
           error: {
             code: "VALIDATION_ERROR",
-            message: "Data ulasan tidak valid.",
+            message: "Invalid review submission data.",
             details: validated.error.flatten().fieldErrors,
           },
         },
@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
 
     if (!order) {
       return NextResponse.json(
-        { success: false, error: { code: "NOT_FOUND", message: "Nomor pesanan tidak ditemukan." } },
+        { success: false, error: { code: "NOT_FOUND", message: "Order not found." } },
         { status: 404 }
       );
     }
@@ -106,7 +106,7 @@ export async function POST(req: NextRequest) {
           success: false,
           error: {
             code: "FORBIDDEN",
-            message: "Ulasan hanya dapat diberikan untuk hidangan yang tercantum dalam pesanan ini.",
+            message: "Reviews can only be submitted for dishes included in this verified order.",
           },
         },
         { status: 403 }
@@ -129,14 +129,14 @@ export async function POST(req: NextRequest) {
       {
         success: true,
         data: createdReview,
-        message: "Terima kasih! Ulasan Anda telah terkirim.",
+        message: "Thank you! Your verified review has been submitted.",
       },
       { status: 201 }
     );
   } catch (error) {
     console.error("Error creating review:", error);
     return NextResponse.json(
-      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Gagal mengirim ulasan." } },
+      { success: false, error: { code: "INTERNAL_SERVER_ERROR", message: "Failed to submit review." } },
       { status: 500 }
     );
   }

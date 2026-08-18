@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
           success: false,
           error: {
             code: "VALIDATION_ERROR",
-            message: "Payload pesanan tidak valid.",
+            message: "Invalid order payload.",
             details: validated.error.flatten().fieldErrors,
           },
         },
@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
             success: false,
             error: {
               code: "UNAUTHORIZED",
-              message: "Silakan masuk ke akun Anda untuk menyelesaikan pesanan.",
+              message: "Please sign in to complete your order.",
             },
           },
           { status: 401 }
@@ -76,10 +76,10 @@ export async function POST(req: NextRequest) {
     // 4. Construct Final Customer Note with Dining Option
     let finalNote = customerNote?.trim() || "";
     if (diningOption === "dine_in") {
-      const tableInfo = tableNumber ? `Meja ${tableNumber.trim()}` : "Dine-in";
-      finalNote = `[Makan di Tempat - ${tableInfo}] ${finalNote}`.trim();
+      const tableInfo = tableNumber ? `Table ${tableNumber.trim()}` : "Dine-In";
+      finalNote = `[Dine-In - ${tableInfo}] ${finalNote}`.trim();
     } else {
-      finalNote = `[Bawa Pulang / Takeaway] ${finalNote}`.trim();
+      finalNote = `[Takeaway] ${finalNote}`.trim();
     }
 
     // 5. Generate Unique Order Number
@@ -208,7 +208,7 @@ export async function POST(req: NextRequest) {
         success: false,
         error: {
           code: "INTERNAL_SERVER_ERROR",
-          message: "Gagal membuat pesanan di server. Silakan coba lagi.",
+          message: "Failed to create order on server. Please try again.",
         },
       },
       { status: 500 }
@@ -263,7 +263,7 @@ export async function GET() {
         success: false,
         error: {
           code: "INTERNAL_SERVER_ERROR",
-          message: "Gagal mengambil riwayat pesanan.",
+          message: "Failed to retrieve order history.",
         },
       },
       { status: 500 }
