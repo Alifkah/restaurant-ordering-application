@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useCart } from "@/context/CartContext";
@@ -11,12 +12,25 @@ import {
   LogOut,
   LogIn,
   ShoppingBag,
+  Loader2,
 } from "lucide-react";
 
 export default function Navbar() {
   const { data: session, status } = useSession();
   const { totalItems, setIsCartOpen } = useCart();
+  const [loggingOut, setLoggingOut] = useState(false);
   const user = session?.user;
+
+  const handleSignOut = async () => {
+    try {
+      setLoggingOut(true);
+      await signOut({ redirect: false });
+      window.location.href = "/";
+    } catch (err) {
+      console.error("Sign out error:", err);
+      window.location.href = "/";
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 glass-nav px-4 sm:px-6 py-3 border-b border-sand-300">
@@ -59,23 +73,17 @@ export default function Navbar() {
         </nav>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-2.5 sm:gap-3.5">
-          {/* Restaurant Status (Pill) */}
-          <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-medium">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>Open • Until 10:00 PM WITA</span>
-          </div>
-
-          {/* Cart Trigger */}
+        <div className="flex items-center gap-3">
+          {/* Dining Basket Drawer Trigger */}
           <button
             type="button"
             onClick={() => setIsCartOpen(true)}
+            className="relative p-2 rounded-button bg-sand-100 hover:bg-sand-200 text-stone-800 transition-colors flex items-center justify-center"
             aria-label="Open Dining Basket"
-            className="relative p-2 rounded-button bg-sand-200/80 hover:bg-sand-300 text-stone-800 transition-colors flex items-center justify-center"
           >
-            <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
+            <ShoppingBag className="w-5 h-5" />
             {totalItems > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-primary text-white font-bold text-[10px] flex items-center justify-center shadow-sm">
+              <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center shadow-sm animate-scale-up">
                 {totalItems}
               </span>
             )}
@@ -123,11 +131,16 @@ export default function Navbar() {
 
               <button
                 type="button"
-                onClick={() => signOut({ callbackUrl: "/" })}
+                onClick={handleSignOut}
+                disabled={loggingOut}
                 title="Sign Out"
-                className="p-1.5 rounded-button text-stone-500 hover:text-red-600 hover:bg-red-50 transition-colors"
+                className="p-1.5 rounded-button text-stone-500 hover:text-red-600 hover:bg-red-50 transition-colors disabled:opacity-60"
               >
-                <LogOut className="w-4 h-4" />
+                {loggingOut ? (
+                  <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                ) : (
+                  <LogOut className="w-4 h-4" />
+                )}
               </button>
             </div>
           ) : (

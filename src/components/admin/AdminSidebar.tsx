@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
@@ -15,11 +16,13 @@ import {
   ExternalLink,
   LogOut,
   Shield,
+  Loader2,
 } from "lucide-react";
 
 export default function AdminSidebar() {
   const pathname = usePathname();
   const { data: session } = useSession();
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const navItems = [
     { href: "/admin", label: "Dashboard & KPIs", icon: LayoutDashboard, exact: true },
@@ -30,6 +33,17 @@ export default function AdminSidebar() {
     { href: "/admin/settings", label: "Restaurant Settings", icon: Settings },
     { href: "/admin/audit-logs", label: "Audit Trail", icon: FileText },
   ];
+
+  const handleSignOut = async () => {
+    try {
+      setLoggingOut(true);
+      await signOut({ redirect: false });
+      window.location.href = "/login";
+    } catch (err) {
+      console.error("Admin sign out error:", err);
+      window.location.href = "/login";
+    }
+  };
 
   return (
     <aside className="w-64 bg-stone-900 text-stone-200 flex flex-col justify-between border-r border-stone-800 flex-shrink-0 min-h-screen">
@@ -114,10 +128,15 @@ export default function AdminSidebar() {
 
         <button
           type="button"
-          onClick={() => signOut({ callbackUrl: "/login" })}
-          className="w-full py-2 px-3 rounded-button bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-800/50 text-xs font-semibold transition-colors flex items-center justify-center gap-2"
+          onClick={handleSignOut}
+          disabled={loggingOut}
+          className="w-full py-2 px-3 rounded-button bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-800/50 text-xs font-semibold transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
         >
-          <LogOut className="w-3.5 h-3.5" />
+          {loggingOut ? (
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          ) : (
+            <LogOut className="w-3.5 h-3.5" />
+          )}
           <span>Sign Out</span>
         </button>
       </div>
