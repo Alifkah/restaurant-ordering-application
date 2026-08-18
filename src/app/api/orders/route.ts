@@ -1,0 +1,272 @@
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
+import { db } from "@/db";
+import { orders, orderItems, orderItemOptions, users, auditLogs } from "@/db/schema";
+import { createOrderSchema } from "@/lib/validation/order";
+import {
+  calculateOrderPrices,
+  OrderCalculationError,
+} from "@/domain/order-calculator";
+import { sseBroadcaster } from "@/lib/realtime/sse-broadcaster";
+import { eq, desc } from "drizzle-orm";
+
+/**
+ * Generate human-friendly order number e.g. ORD-20260818-7F3A
+ */
+function generateOrderNumber(): string {
+  const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+  const randomSuffix = Math.floor(1000 + Math.random() * 9000).toString(16).toUpperCase();
+  return `ORD-${dateStr}-${randomSuffix}`;
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const session = await auth();
+    const body = await req.json();
+
+    // 1. Validate Input Payload
+    const validated = createOrderSchema.safeParse(body);
+    if (!validated.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "VALIDATION_ERROR",
+            message: "Payload pesanan tidak valid.",
+            details: validated.error.flatten().fieldErrors,
+          },
+        },
+        { status: 400 }
+      );
+    }
+
+    const { items, diningOption, tableNumber, customerNote, discountMinor } =
+      validated.data;
+
+    // 2. Resolve Customer User ID
+    let customerId = session?.user?.id;
+
+    if (!customerId) {
+      // Find default customer account for guest orders
+      const [defaultCustomer] = await db
+        .select({ id: users.id })
+        .from(users)
+        .where(eq(users.role, "customer"))
+        .limit(1);
+
+      if (defaultCustomer) {
+        customerId = defaultCustomer.id;
+      } else {
+        return NextResponse.json(
+          {
+            success: false,
+            error: {
+              code: "UNAUTHORIZED",
+              message: "Silakan masuk ke akun Anda untuk menyelesaikan pesanan.",
+            },
+          },
+          { status: 401 }
+        );
+      }
+    }
+
+    // 3. Server-Authoritative Price Calculation
+    const calculation = await calculateOrderPrices(items, discountMinor);
+
+    // 4. Construct Final Customer Note with Dining Option
+    let finalNote = customerNote?.trim() || "";
+    if (diningOption === "dine_in") {
+      const tableInfo = tableNumber ? `Meja ${tableNumber.trim()}` : "Dine-in";
+      finalNote = `[Makan di Tempat - ${tableInfo}] ${finalNote}`.trim();
+    } else {
+      finalNote = `[Bawa Pulang / Takeaway] ${finalNote}`.trim();
+    }
+
+    // 5. Generate Unique Order Number
+    const orderNumber = generateOrderNumber();
+
+    // 6. Insert Order Record
+    const [createdOrder] = await db
+      .insert(orders)
+      .values({
+        orderNumber,
+        customerId,
+        status: "pending",
+        subtotalMinor: calculation.subtotalMinor,
+        discountMinor: calculation.discountMinor,
+        taxMinor: calculation.taxMinor,
+        totalMinor: calculation.totalMinor,
+        currency: calculation.currency,
+        customerNote: finalNote || null,
+      })
+      .returning();
+
+    // 7. Insert Order Items & Item Options Snapshots
+    for (const calcItem of calculation.items) {
+      const [insertedOrderItem] = await db
+        .insert(orderItems)
+        .values({
+          orderId: createdOrder.id,
+          productId: calcItem.productId,
+          productNameSnapshot: calcItem.productNameSnapshot,
+          unitPriceMinor: calcItem.unitPriceMinor,
+          quantity: calcItem.quantity,
+          lineTotalMinor: calcItem.lineTotalMinor,
+          note: calcItem.note,
+        })
+        .returning();
+
+      if (calcItem.options.length > 0) {
+        for (const opt of calcItem.options) {
+          await db.insert(orderItemOptions).values({
+            orderItemId: insertedOrderItem.id,
+            productOptionId: opt.productOptionId,
+            optionNameSnapshot: opt.optionNameSnapshot,
+            priceDeltaMinor: opt.priceDeltaMinor,
+            quantity: opt.quantity,
+          });
+        }
+      }
+    }
+
+    // 8. Log Audit Trail
+    await db.insert(auditLogs).values({
+      actorUserId: customerId,
+      action: "ORDER_CREATED",
+      entityType: "ORDER",
+      entityId: createdOrder.id,
+      metadata: {
+        orderNumber: createdOrder.orderNumber,
+        totalMinor: createdOrder.totalMinor,
+        itemsCount: calculation.items.length,
+        diningOption,
+        tableNumber,
+      },
+    });
+
+    // 9. Broadcast Realtime SSE Event to Kitchen & Tracker
+    sseBroadcaster.broadcastKitchenOrder({
+      orderId: createdOrder.id,
+      orderNumber: createdOrder.orderNumber,
+      status: createdOrder.status,
+      totalMinor: createdOrder.totalMinor,
+      currency: createdOrder.currency,
+      customerNote: createdOrder.customerNote,
+      createdAt: createdOrder.createdAt,
+      itemsCount: calculation.items.length,
+      items: calculation.items.map((i) => ({
+        id: i.productId,
+        productName: i.productNameSnapshot,
+        quantity: i.quantity,
+        note: i.note,
+        options: i.options.map((o) => ({ name: o.optionNameSnapshot })),
+      })),
+    });
+
+    sseBroadcaster.broadcastOrderStatus(createdOrder.id, {
+      orderId: createdOrder.id,
+      orderNumber: createdOrder.orderNumber,
+      status: createdOrder.status,
+      updatedAt: createdOrder.createdAt,
+    });
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: {
+          orderId: createdOrder.id,
+          orderNumber: createdOrder.orderNumber,
+          status: createdOrder.status,
+          subtotalMinor: createdOrder.subtotalMinor,
+          taxMinor: createdOrder.taxMinor,
+          totalMinor: createdOrder.totalMinor,
+          currency: createdOrder.currency,
+          customerNote: createdOrder.customerNote,
+          createdAt: createdOrder.createdAt,
+          items: calculation.items,
+        },
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    if (error instanceof OrderCalculationError) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: error.code,
+            message: error.message,
+          },
+        },
+        { status: 422 }
+      );
+    }
+
+    console.error("Error creating order:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: {
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Gagal membuat pesanan di server. Silakan coba lagi.",
+        },
+      },
+      { status: 500 }
+    );
+  }
+}
+
+export async function GET() {
+  try {
+    const session = await auth();
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "UNAUTHORIZED",
+            message: "Authentication required.",
+          },
+        },
+        { status: 401 }
+      );
+    }
+
+    const userRole = session.user.role;
+    const userId = session.user.id;
+
+    let userOrders = [];
+
+    if (userRole === "admin" || userRole === "staff") {
+      userOrders = await db
+        .select()
+        .from(orders)
+        .orderBy(desc(orders.createdAt))
+        .limit(50);
+    } else {
+      userOrders = await db
+        .select()
+        .from(orders)
+        .where(eq(orders.customerId, userId))
+        .orderBy(desc(orders.createdAt));
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: userOrders,
+    });
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: {
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Gagal mengambil riwayat pesanan.",
+        },
+      },
+      { status: 500 }
+    );
+  }
+}
