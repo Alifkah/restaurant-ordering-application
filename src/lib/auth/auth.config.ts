@@ -15,16 +15,16 @@ export const authConfig: NextAuthConfig = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.role = user.role;
-        token.status = user.status;
+        token.role = (user.role as UserRole) || (token.role as UserRole) || "customer";
+        token.status = (user.status as UserStatus) || (token.status as UserStatus) || "active";
       }
       return token;
     },
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.id as string;
-        session.user.role = token.role as UserRole;
-        session.user.status = token.status as UserStatus;
+        session.user.role = (token.role as UserRole) || "customer";
+        session.user.status = (token.status as UserStatus) || "active";
       }
       return session;
     },

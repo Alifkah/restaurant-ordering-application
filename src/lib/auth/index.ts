@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
@@ -17,6 +18,11 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     verificationTokensTable: verificationTokens,
   }),
   providers: [
+    Google({
+      clientId: process.env.AUTH_GOOGLE_ID || process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET || process.env.GOOGLE_CLIENT_SECRET,
+      allowDangerousEmailAccountLinking: true,
+    }),
     Credentials({
       name: "Credentials",
       credentials: {
@@ -43,7 +49,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           }
 
           if (user.status === "suspended" || user.status === "inactive") {
-            throw new Error("Akun Anda sedang dinonaktifkan atau disuspensi. Silakan hubungi admin.");
+            throw new Error("Your account is currently suspended or inactive. Please contact the administrator.");
           }
 
           const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
