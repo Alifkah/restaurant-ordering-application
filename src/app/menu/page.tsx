@@ -3,6 +3,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import FloatingCartPill from "@/components/cart/FloatingCartPill";
 import CartDrawer from "@/components/cart/CartDrawer";
+import TableBanner from "@/components/menu/TableBanner";
 import MenuCatalogClient, {
   CatalogCategory,
   CatalogProduct,
@@ -251,6 +252,7 @@ export default async function MenuPage() {
   return (
     <div className="min-h-screen flex flex-col justify-between bg-sand-100">
       <Navbar />
+      <TableBanner />
 
       {/* Main Container */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 w-full flex-1">

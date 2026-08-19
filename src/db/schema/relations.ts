@@ -4,6 +4,7 @@ import { accounts, sessions } from "./auth";
 import { categories } from "./categories";
 import { products } from "./products";
 import { productOptions } from "./product_options";
+import { restaurantTables } from "./restaurant_tables";
 import { orders } from "./orders";
 import { orderItems } from "./order_items";
 import { orderItemOptions } from "./order_item_options";
@@ -55,10 +56,18 @@ export const productOptionsRelations = relations(productOptions, ({ one, many })
   orderItemOptions: many(orderItemOptions),
 }));
 
+export const restaurantTablesRelations = relations(restaurantTables, ({ many }) => ({
+  orders: many(orders),
+}));
+
 export const ordersRelations = relations(orders, ({ one, many }) => ({
   customer: one(users, {
     fields: [orders.customerId],
     references: [users.id],
+  }),
+  table: one(restaurantTables, {
+    fields: [orders.tableId],
+    references: [restaurantTables.id],
   }),
   items: many(orderItems),
   payments: many(payments),

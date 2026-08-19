@@ -98,9 +98,22 @@ export async function POST(req: NextRequest) {
           }
 
           // Transition Order status from 'pending' to 'confirmed'
+          const updateData: Partial<typeof orders.$inferInsert> = {
+            status: "confirmed",
+          };
+          if (session.metadata?.tableNumber) {
+            updateData.tableNumber = session.metadata.tableNumber;
+          }
+          if (session.metadata?.tableId) {
+            updateData.tableId = session.metadata.tableId;
+          }
+          if (session.metadata?.orderType) {
+            updateData.orderType = session.metadata.orderType as "dine_in" | "takeaway";
+          }
+
           await db
             .update(orders)
-            .set({ status: "confirmed" })
+            .set(updateData)
             .where(eq(orders.id, orderId));
 
           // Log Audit Trail
@@ -114,6 +127,8 @@ export async function POST(req: NextRequest) {
               paymentIntentId,
               amountTotal: session.amount_total,
               currency: session.currency,
+              orderType: session.metadata?.orderType,
+              tableNumber: session.metadata?.tableNumber,
             },
           });
 

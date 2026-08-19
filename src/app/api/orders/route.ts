@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { items, diningOption, tableNumber, customerNote, discountMinor } =
+    const { items, diningOption, tableNumber, tableId, customerNote, discountMinor } =
       validated.data;
 
     // 2. Resolve Customer User ID
@@ -91,6 +91,9 @@ export async function POST(req: NextRequest) {
       .values({
         orderNumber,
         customerId,
+        orderType: diningOption,
+        tableNumber: diningOption === "dine_in" && tableNumber ? tableNumber.trim() : null,
+        tableId: diningOption === "dine_in" && tableId ? tableId : null,
         status: "pending",
         subtotalMinor: calculation.subtotalMinor,
         discountMinor: calculation.discountMinor,

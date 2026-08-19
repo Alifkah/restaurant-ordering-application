@@ -333,6 +333,86 @@ async function seed() {
     }
   }
 
+  // 5. Restaurant Tables
+  console.log("🪑 Seeding Restaurant Tables...");
+  const defaultTables: schema.NewRestaurantTable[] = [
+    {
+      tableNumber: "T-01",
+      qrCodeToken: "tbl_tok_indoort01_98a72b",
+      zone: "Indoor Dining",
+      capacity: 4,
+      isActive: true,
+    },
+    {
+      tableNumber: "T-02",
+      qrCodeToken: "tbl_tok_indoort02_41f60c",
+      zone: "Indoor Dining",
+      capacity: 4,
+      isActive: true,
+    },
+    {
+      tableNumber: "T-03",
+      qrCodeToken: "tbl_tok_indoort03_d8431e",
+      zone: "Indoor Dining",
+      capacity: 6,
+      isActive: true,
+    },
+    {
+      tableNumber: "T-04",
+      qrCodeToken: "tbl_tok_indoort04_c20e17",
+      zone: "Indoor Dining",
+      capacity: 2,
+      isActive: true,
+    },
+    {
+      tableNumber: "T-05",
+      qrCodeToken: "tbl_tok_outdoort05_7b19a3",
+      zone: "Outdoor Terrace",
+      capacity: 4,
+      isActive: true,
+    },
+    {
+      tableNumber: "T-06",
+      qrCodeToken: "tbl_tok_outdoort06_83c42d",
+      zone: "Outdoor Terrace",
+      capacity: 4,
+      isActive: true,
+    },
+    {
+      tableNumber: "VIP-01",
+      qrCodeToken: "tbl_tok_vip01_e1f57b",
+      zone: "VIP Private Dining",
+      capacity: 8,
+      isActive: true,
+    },
+    {
+      tableNumber: "VIP-02",
+      qrCodeToken: "tbl_tok_vip02_63d91c",
+      zone: "VIP Private Dining",
+      capacity: 10,
+      isActive: true,
+    },
+    {
+      tableNumber: "BAR-01",
+      qrCodeToken: "tbl_tok_bar01_a9528f",
+      zone: "Cocktail Bar",
+      capacity: 2,
+      isActive: true,
+    },
+  ];
+
+  for (const tbl of defaultTables) {
+    try {
+      await db
+        .insert(schema.restaurantTables)
+        .values(tbl)
+        .onConflictDoNothing({ target: schema.restaurantTables.tableNumber });
+    } catch (e) {
+      console.warn(`Table ${tbl.tableNumber} might already exist:`, (e as Error).message);
+    }
+  }
+  console.log("✅ Restaurant tables seeded (T-01 to T-06, VIP-01, VIP-02, BAR-01).");
+
   console.log("🎉 Database seeding completed successfully!");
   process.exit(0);
 }

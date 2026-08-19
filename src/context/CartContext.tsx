@@ -39,6 +39,11 @@ interface CartContextType {
   setDiningOption: (opt: "dine_in" | "takeaway") => void;
   tableNumber: string;
   setTableNumber: (table: string) => void;
+  tableId: string | null;
+  setTableId: (id: string | null) => void;
+  tableZone: string | null;
+  setTableZone: (zone: string | null) => void;
+  clearTable: () => void;
   customerNote: string;
   setCustomerNote: (note: string) => void;
   isCartOpen: boolean;
@@ -66,11 +71,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [diningOption, setDiningOption] = useState<"dine_in" | "takeaway">("dine_in");
   const [tableNumber, setTableNumber] = useState("");
+  const [tableId, setTableId] = useState<string | null>(null);
+  const [tableZone, setTableZone] = useState<string | null>(null);
   const [customerNote, setCustomerNote] = useState("");
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load cart from localStorage on mount
+  // Load cart and table from localStorage on mount
   useEffect(() => {
     try {
       const saved = localStorage.getItem(CART_STORAGE_KEY);
@@ -79,7 +86,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         if (parsed.items) setItems(parsed.items);
         if (parsed.diningOption) setDiningOption(parsed.diningOption);
         if (parsed.tableNumber) setTableNumber(parsed.tableNumber);
+        if (parsed.tableId) setTableId(parsed.tableId);
+        if (parsed.tableZone) setTableZone(parsed.tableZone);
         if (parsed.customerNote) setCustomerNote(parsed.customerNote);
+      }
+
+      // Check table session
+      const savedTable = localStorage.getItem("nusantara_table_session");
+      if (savedTable) {
+        const parsedTable = JSON.parse(savedTable);
+        if (parsedTable.tableNumber) setTableNumber(parsedTable.tableNumber);
+        if (parsedTable.tableId) setTableId(parsedTable.tableId);
+        if (parsedTable.zone) setTableZone(parsedTable.zone);
+        setDiningOption("dine_in");
       }
     } catch (e) {
       console.warn("Failed to load cart from storage:", e);
@@ -98,13 +117,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           items,
           diningOption,
           tableNumber,
+          tableId,
+          tableZone,
           customerNote,
         })
       );
     } catch (e) {
       console.warn("Failed to save cart to storage:", e);
     }
-  }, [items, diningOption, tableNumber, customerNote, isLoaded]);
+  }, [items, diningOption, tableNumber, tableId, tableZone, customerNote, isLoaded]);
 
   const addItem = (item: Omit<CartItem, "id" | "lineTotalMinor">) => {
     const id = generateCartItemId(item.productId, item.selectedOptions, item.note);
@@ -172,6 +193,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setCustomerNote("");
   };
 
+  const clearTable = () => {
+    setTableNumber("");
+    setTableId(null);
+    setTableZone(null);
+    try {
+      localStorage.removeItem("nusantara_table_session");
+    } catch (e) {
+      console.warn("Failed to clear table session:", e);
+    }
+  };
+
   const totalItems = useMemo(
     () => items.reduce((sum, item) => sum + item.quantity, 0),
     [items]
@@ -227,6 +259,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setDiningOption,
         tableNumber,
         setTableNumber,
+        tableId,
+        setTableId,
+        tableZone,
+        setTableZone,
+        clearTable,
         customerNote,
         setCustomerNote,
         isCartOpen,

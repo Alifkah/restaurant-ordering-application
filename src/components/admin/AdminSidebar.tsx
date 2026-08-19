@@ -12,6 +12,7 @@ import {
   Users,
   Settings,
   FileText,
+  QrCode,
   ChefHat,
   ExternalLink,
   LogOut,

@@ -17,6 +17,9 @@ interface OrderDetail {
   id: string;
   orderNumber: string;
   customerId: string;
+  orderType?: "dine_in" | "takeaway";
+  tableNumber?: string | null;
+  tableId?: string | null;
   status: "pending" | "confirmed" | "preparing" | "ready" | "completed" | "cancelled";
   subtotalMinor: number;
   taxMinor: number;
@@ -247,13 +250,15 @@ export default function OrdersClient() {
                       <td className="p-4">
                         <span
                           className={`inline-block px-2.5 py-1 rounded-md text-[11px] font-bold border ${
-                            isTakeaway
+                            ord.orderType === "takeaway" || isTakeaway
                               ? "bg-amber-50 text-amber-800 border-amber-200"
                               : "bg-emerald-50 text-emerald-800 border-emerald-200"
                           }`}
                         >
-                          {isTakeaway
+                          {ord.orderType === "takeaway" || isTakeaway
                             ? "🛍️ Takeaway"
+                            : ord.tableNumber
+                            ? `🍽️ Table #${ord.tableNumber}`
                             : ord.customerNote?.match(/Table [^\]]+/)?.[0] || ord.customerNote?.match(/Meja [^\]]+/)?.[0] || "🍽️ Dine-in"}
                         </span>
                       </td>
@@ -436,12 +441,13 @@ export default function OrdersClient() {
               <p className="text-[11px]">
                 {new Date(kotOrder.createdAt).toLocaleString("en-US")}
               </p>
-              <p className="font-bold uppercase text-xs pt-1">
-                {kotOrder.customerNote?.match(/Table [^\]]+/)?.[0] || kotOrder.customerNote?.match(/Meja [^\]]+/)?.[0] ||
-                  (kotOrder.customerNote?.includes("[Bawa Pulang") || kotOrder.customerNote?.includes("[Takeaway")
-                    ? "TAKEAWAY"
-                    : "DINE-IN")}
-              </p>
+              <div className="my-1.5 p-1.5 rounded bg-stone-900 text-white font-extrabold uppercase text-xs tracking-wider">
+                {kotOrder.orderType === "takeaway" || kotOrder.customerNote?.includes("[Bawa Pulang") || kotOrder.customerNote?.includes("[Takeaway")
+                  ? "🛍️ TAKEAWAY"
+                  : kotOrder.tableNumber
+                  ? `🍽️ TABLE #${kotOrder.tableNumber}`
+                  : kotOrder.customerNote?.match(/Table [^\]]+/)?.[0] || kotOrder.customerNote?.match(/Meja [^\]]+/)?.[0] || "🍽️ DINE-IN"}
+              </div>
             </div>
 
             {/* Note */}

@@ -4,6 +4,7 @@ export * from "./auth";
 export * from "./categories";
 export * from "./products";
 export * from "./product_options";
+export * from "./restaurant_tables";
 export * from "./orders";
 export * from "./order_items";
 export * from "./order_item_options";

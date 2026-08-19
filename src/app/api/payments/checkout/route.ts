@@ -196,6 +196,9 @@ export async function POST(req: NextRequest) {
       metadata: {
         orderId: order.id,
         orderNumber: order.orderNumber,
+        orderType: order.orderType || "dine_in",
+        tableNumber: order.tableNumber || "",
+        tableId: order.tableId || "",
       },
       success_url: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}&order_id=${order.id}`,
       cancel_url: `${origin}/checkout/cancel?order_id=${order.id}`,

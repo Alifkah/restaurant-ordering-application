@@ -13,6 +13,7 @@ export const createOrderSchema = z.object({
     .min(1, "Your dining basket cannot be empty"),
   diningOption: z.enum(["dine_in", "takeaway"]).default("dine_in"),
   tableNumber: z.string().max(50).optional().nullable(),
+  tableId: z.string().uuid().optional().nullable(),
   customerNote: z.string().max(500, "Customer note must not exceed 500 characters").optional().nullable(),
   discountMinor: z.number().int().min(0).default(0),
 });

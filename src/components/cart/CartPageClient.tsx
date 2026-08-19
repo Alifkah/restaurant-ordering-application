@@ -35,6 +35,8 @@ export default function CartPageClient() {
     setDiningOption,
     tableNumber,
     setTableNumber,
+    tableId,
+    tableZone,
     customerNote,
     setCustomerNote,
   } = useCart();
@@ -54,11 +56,6 @@ export default function CartPageClient() {
       return;
     }
 
-    if (diningOption === "dine_in" && !tableNumber.trim()) {
-      setErrorMsg("Please provide a Table Number for Dine-In service.");
-      return;
-    }
-
     setLoading(true);
 
     try {
@@ -71,7 +68,8 @@ export default function CartPageClient() {
           note: item.note || undefined,
         })),
         diningOption,
-        tableNumber: diningOption === "dine_in" ? tableNumber.trim() : undefined,
+        tableNumber: diningOption === "dine_in" && tableNumber ? tableNumber.trim() : undefined,
+        tableId: diningOption === "dine_in" && tableId ? tableId : undefined,
         customerNote: customerNote.trim() || undefined,
         discountMinor: 0,
       };
@@ -279,10 +277,17 @@ export default function CartPageClient() {
             </div>
 
             {diningOption === "dine_in" && (
-              <div className="pt-2 animate-fade-in">
-                <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1">
-                  Table Number *
-                </label>
+              <div className="pt-2 animate-fade-in space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider">
+                    Table Number *
+                  </label>
+                  {tableZone && (
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">
+                      📍 {tableZone}
+                    </span>
+                  )}
+                </div>
                 <input
                   type="text"
                   value={tableNumber}

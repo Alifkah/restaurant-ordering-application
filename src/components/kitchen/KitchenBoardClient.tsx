@@ -28,6 +28,9 @@ export interface KitchenTicketItem {
 export interface KitchenTicket {
   id: string;
   orderNumber: string;
+  orderType?: "dine_in" | "takeaway";
+  tableNumber?: string | null;
+  tableId?: string | null;
   status: "pending" | "confirmed" | "preparing" | "ready" | "completed" | "cancelled";
   subtotalMinor: number;
   taxMinor: number;
@@ -499,7 +502,8 @@ function KitchenTicketCard({
     timerBadge = "bg-amber-950 text-amber-300 border-amber-600";
   }
 
-  const isTakeaway = order.customerNote?.includes("[Bawa Pulang") || order.customerNote?.includes("[Takeaway");
+  const isTakeaway = order.orderType === "takeaway" || order.customerNote?.includes("[Bawa Pulang") || order.customerNote?.includes("[Takeaway");
+  const displayTable = order.tableNumber ? `TABLE #${order.tableNumber}` : (order.customerNote?.match(/Table [^\]]+/)?.[0] || order.customerNote?.match(/Meja [^\]]+/)?.[0] || "DINE-IN");
 
   return (
     <div className="bg-[#202730] rounded-card border border-stone-700/80 p-4 space-y-3.5 shadow-md hover:border-stone-500 transition-colors animate-fade-in">
@@ -518,19 +522,17 @@ function KitchenTicketCard({
         </div>
       </div>
 
-      {/* Dining Badge & Customer Note */}
+      {/* High-Contrast Table Badge */}
       <div className="flex flex-wrap items-center gap-2">
         {isTakeaway ? (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold">
-            <ShoppingBag className="w-3.5 h-3.5" />
-            <span>Takeaway</span>
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/25 text-amber-300 border border-amber-500/40 text-xs font-black tracking-wide shadow-sm">
+            <ShoppingBag className="w-4 h-4 text-amber-400" />
+            <span>🛍️ TAKEAWAY</span>
           </span>
         ) : (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold">
-            <UtensilsCrossed className="w-3.5 h-3.5" />
-            <span>
-              {order.customerNote?.match(/Table [^\]]+/)?.[0] || order.customerNote?.match(/Meja [^\]]+/)?.[0] || "Dine-In"}
-            </span>
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/30 text-emerald-200 border border-emerald-400/60 text-xs font-black tracking-wide shadow-sm">
+            <UtensilsCrossed className="w-4 h-4 text-emerald-400" />
+            <span>🔥 {displayTable.toUpperCase()} • DINE-IN</span>
           </span>
         )}
 
