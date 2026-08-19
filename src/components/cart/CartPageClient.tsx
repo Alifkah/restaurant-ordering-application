@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useCart } from "@/context/CartContext";
 import MenuImage from "@/components/ui/MenuImage";
@@ -16,14 +17,17 @@ import {
   ShieldCheck,
   AlertCircle,
   Loader2,
-  CheckCircle2,
   Lock,
   CreditCard,
   Zap,
   User,
+  Banknote,
+  QrCode,
+  Check,
 } from "lucide-react";
 
 export default function CartPageClient() {
+  const router = useRouter();
   const { data: session } = useSession();
   const {
     items,
@@ -46,17 +50,11 @@ export default function CartPageClient() {
   const [guestEmail, setGuestEmail] = useState(session?.user?.email || "");
   const [guestPhone, setGuestPhone] = useState("");
 
-  // Card details state (visual representation)
-  const [cardNumber, setCardNumber] = useState("");
-  const [cardExpiry, setCardExpiry] = useState("");
-  const [cardCvc, setCardCvc] = useState("");
+  // Payment Method State: 'stripe' | 'cash' | 'qris'
+  const [paymentMethod, setPaymentMethod] = useState<"stripe" | "cash" | "qris">("cash");
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [successOrder, setSuccessOrder] = useState<{
-    orderId: string;
-    orderNumber: string;
-  } | null>(null);
 
   // Price calculations matching 5% service charge & 10% PB1
   const serviceChargeMinor = Math.round(subtotalMinor * 0.05);
@@ -100,6 +98,7 @@ export default function CartPageClient() {
         guestEmail: guestEmail.trim() || undefined,
         guestPhone: guestPhone.trim() ? `+62${guestPhone.replace(/^0+/, "")}` : undefined,
         discountMinor: 0,
+        paymentMethod,
       };
 
       const res = await fetch("/api/orders", {
@@ -122,79 +121,34 @@ export default function CartPageClient() {
       // Order created successfully!
       const orderData = json.data;
 
-      // Initiate Stripe payment checkout session
-      const paymentRes = await fetch("/api/payments/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId: orderData.orderId }),
-      });
+      // 1. If Online Stripe payment chosen, initiate Stripe Checkout
+      if (paymentMethod === "stripe") {
+        const paymentRes = await fetch("/api/payments/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId: orderData.orderId }),
+        });
 
-      const paymentJson = await paymentRes.json();
+        const paymentJson = await paymentRes.json();
 
-      // Clear local cart
-      clearCart();
+        // Clear local cart
+        clearCart();
 
-      if (paymentRes.ok && paymentJson.success && paymentJson.data?.url) {
-        window.location.href = paymentJson.data.url;
-        return;
+        if (paymentRes.ok && paymentJson.success && paymentJson.data?.url) {
+          window.location.href = paymentJson.data.url;
+          return;
+        }
       }
 
-      // Fallback to local success view if direct URL is not returned
-      setSuccessOrder({
-        orderId: orderData.orderId,
-        orderNumber: orderData.orderNumber,
-      });
-      setLoading(false);
+      // 2. If Cash or QRIS, clear cart and redirect directly to Live Tracking
+      clearCart();
+      router.push(`/orders/${orderData.orderId}`);
     } catch (err) {
       console.error("Order creation failed:", err);
       setErrorMsg("Network connection error. Please try again.");
       setLoading(false);
     }
   };
-
-  // Success Modal View
-  if (successOrder) {
-    return (
-      <div className="max-w-md mx-auto my-12 p-8 glass-card bg-white rounded-card border border-sand-300 shadow-elevation-3 text-center space-y-6 animate-scale-up">
-        <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-sm">
-          <CheckCircle2 className="w-8 h-8" />
-        </div>
-
-        <div className="space-y-2">
-          <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 uppercase tracking-wider">
-            Order Placed Successfully
-          </span>
-          <h2 className="font-heading text-2xl font-extrabold text-stone-900 mt-2">
-            Thank You for Dining with Us!
-          </h2>
-          <p className="text-sm text-stone-600">
-            Order Reference:{" "}
-            <span className="font-bold text-stone-900 font-mono">
-              {successOrder.orderNumber}
-            </span>
-          </p>
-          <p className="text-xs text-stone-500 max-w-sm mx-auto">
-            Your ticket has been sent directly to the kitchen display board and preparation is starting shortly.
-          </p>
-        </div>
-
-        <div className="pt-4 border-t border-sand-200 flex flex-col gap-2.5">
-          <Link
-            href={`/orders/${successOrder.orderId}`}
-            className="w-full py-3 rounded-button bg-primary text-white font-semibold text-xs sm:text-sm hover:bg-primary-hover transition-colors shadow-sm inline-flex items-center justify-center gap-2"
-          >
-            <span>Track Kitchen Progress</span>
-          </Link>
-          <Link
-            href="/menu"
-            className="w-full py-2.5 rounded-button bg-sand-100 text-stone-700 font-medium text-xs hover:bg-sand-200 transition-colors"
-          >
-            Order More Dishes
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   // Empty Cart View
   if (items.length === 0) {
@@ -296,7 +250,7 @@ export default function CartPageClient() {
                   type="text"
                   value={guestName}
                   onChange={(e) => setGuestName(e.target.value)}
-                  placeholder="e.g. Raden Arya"
+                  placeholder="e.g. Budi Santoso"
                   required
                   className="w-full px-3.5 py-2.5 rounded-button bg-sand-50/70 border border-sand-300 focus:border-primary focus:ring-2 focus:ring-primary/20 text-xs sm:text-sm text-stone-900 outline-none transition-all"
                 />
@@ -311,7 +265,7 @@ export default function CartPageClient() {
                   type="email"
                   value={guestEmail}
                   onChange={(e) => setGuestEmail(e.target.value)}
-                  placeholder="e.g. arya@example.com"
+                  placeholder="e.g. customer@gmail.com"
                   required
                   className="w-full px-3.5 py-2.5 rounded-button bg-sand-50/70 border border-sand-300 focus:border-primary focus:ring-2 focus:ring-primary/20 text-xs sm:text-sm text-stone-900 outline-none transition-all"
                 />
@@ -324,7 +278,7 @@ export default function CartPageClient() {
                 </label>
                 <div className="flex rounded-button border border-sand-300 overflow-hidden bg-sand-50/70 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all">
                   <div className="px-3.5 py-2.5 bg-sand-200/80 border-r border-sand-300 text-stone-700 text-xs sm:text-sm font-bold flex items-center gap-1.5 flex-shrink-0">
-                    <span>🇮🇩</span>
+                    <span>ID</span>
                     <span>+62</span>
                   </div>
                   <input
@@ -540,43 +494,150 @@ export default function CartPageClient() {
               </div>
             </div>
 
-            {/* Simulated Stripe Card Element */}
-            <div className="p-4 rounded-xl bg-sand-50/90 border border-sand-300 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-stone-800 flex items-center gap-1.5">
-                  <CreditCard className="w-4 h-4 text-primary" />
-                  <span>Stripe Secure Payment</span>
-                </span>
-                <div className="flex items-center gap-1 text-[10px] font-bold text-stone-500">
-                  <span className="px-1.5 py-0.5 bg-white rounded border border-sand-300">VISA</span>
-                  <span className="px-1.5 py-0.5 bg-white rounded border border-sand-300">MC</span>
-                </div>
-              </div>
+            {/* Payment Method Selector */}
+            <div className="space-y-2.5 pt-2 border-t border-sand-200">
+              <label className="block text-xs font-bold text-stone-800 uppercase tracking-wider">
+                Select Payment Method
+              </label>
 
               <div className="space-y-2">
-                <input
-                  type="text"
-                  value={cardNumber}
-                  onChange={(e) => setCardNumber(e.target.value)}
-                  placeholder="Card Number •••• •••• •••• ••••"
-                  className="w-full px-3 py-2 rounded-lg bg-white border border-sand-300 text-xs text-stone-900 placeholder:text-stone-400 outline-none"
-                />
-                <div className="grid grid-cols-2 gap-2">
-                  <input
-                    type="text"
-                    value={cardExpiry}
-                    onChange={(e) => setCardExpiry(e.target.value)}
-                    placeholder="MM / YY"
-                    className="w-full px-3 py-2 rounded-lg bg-white border border-sand-300 text-xs text-stone-900 placeholder:text-stone-400 outline-none"
-                  />
-                  <input
-                    type="text"
-                    value={cardCvc}
-                    onChange={(e) => setCardCvc(e.target.value)}
-                    placeholder="CVC"
-                    className="w-full px-3 py-2 rounded-lg bg-white border border-sand-300 text-xs text-stone-900 placeholder:text-stone-400 outline-none"
-                  />
-                </div>
+                {/* 1. Cash / Tunai */}
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod("cash")}
+                  className={`w-full p-3.5 rounded-xl border text-left transition-all flex items-center justify-between gap-3 ${
+                    paymentMethod === "cash"
+                      ? "bg-primary-50/80 border-primary ring-2 ring-primary/20 shadow-xs"
+                      : "bg-white border-sand-300 hover:border-sand-400"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-9 h-9 rounded-lg flex items-center justify-center ${
+                        paymentMethod === "cash"
+                          ? "bg-primary text-white"
+                          : "bg-sand-100 text-stone-600"
+                      }`}
+                    >
+                      <Banknote className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-heading font-bold text-xs sm:text-sm text-stone-900">
+                          Cash / Tunai di Kasir & Meja
+                        </span>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                          Bayar di Tempat
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-stone-500 mt-0.5">
+                        Bayar langsung dengan uang tunai saat hidangan diantar
+                      </p>
+                    </div>
+                  </div>
+
+                  <div
+                    className={`w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 ${
+                      paymentMethod === "cash"
+                        ? "border-primary bg-primary text-white"
+                        : "border-stone-300"
+                    }`}
+                  >
+                    {paymentMethod === "cash" && <Check className="w-3 h-3 stroke-[3]" />}
+                  </div>
+                </button>
+
+                {/* 2. QRIS Kasir / Meja */}
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod("qris")}
+                  className={`w-full p-3.5 rounded-xl border text-left transition-all flex items-center justify-between gap-3 ${
+                    paymentMethod === "qris"
+                      ? "bg-primary-50/80 border-primary ring-2 ring-primary/20 shadow-xs"
+                      : "bg-white border-sand-300 hover:border-sand-400"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-9 h-9 rounded-lg flex items-center justify-center ${
+                        paymentMethod === "qris"
+                          ? "bg-primary text-white"
+                          : "bg-sand-100 text-stone-600"
+                      }`}
+                    >
+                      <QrCode className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-heading font-bold text-xs sm:text-sm text-stone-900">
+                          QRIS Kasir / Standee Meja
+                        </span>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                          Scan QRIS
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-stone-500 mt-0.5">
+                        Scan QRIS dari standee meja atau mesin EDC kasir
+                      </p>
+                    </div>
+                  </div>
+
+                  <div
+                    className={`w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 ${
+                      paymentMethod === "qris"
+                        ? "border-primary bg-primary text-white"
+                        : "border-stone-300"
+                    }`}
+                  >
+                    {paymentMethod === "qris" && <Check className="w-3 h-3 stroke-[3]" />}
+                  </div>
+                </button>
+
+                {/* 3. Online Payment (Stripe) */}
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod("stripe")}
+                  className={`w-full p-3.5 rounded-xl border text-left transition-all flex items-center justify-between gap-3 ${
+                    paymentMethod === "stripe"
+                      ? "bg-primary-50/80 border-primary ring-2 ring-primary/20 shadow-xs"
+                      : "bg-white border-sand-300 hover:border-sand-400"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-9 h-9 rounded-lg flex items-center justify-center ${
+                        paymentMethod === "stripe"
+                          ? "bg-primary text-white"
+                          : "bg-sand-100 text-stone-600"
+                      }`}
+                    >
+                      <CreditCard className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-heading font-bold text-xs sm:text-sm text-stone-900">
+                          Online Payment (Stripe)
+                        </span>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">
+                          Kartu & E-Wallet
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-stone-500 mt-0.5">
+                        Kartu Kredit/Debit, GoPay, OVO, ShopeePay via Stripe
+                      </p>
+                    </div>
+                  </div>
+
+                  <div
+                    className={`w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 ${
+                      paymentMethod === "stripe"
+                        ? "border-primary bg-primary text-white"
+                        : "border-stone-300"
+                    }`}
+                  >
+                    {paymentMethod === "stripe" && <Check className="w-3 h-3 stroke-[3]" />}
+                  </div>
+                </button>
               </div>
             </div>
 
@@ -590,7 +651,17 @@ export default function CartPageClient() {
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Processing Payment...</span>
+                  <span>Processing Order...</span>
+                </>
+              ) : paymentMethod === "cash" ? (
+                <>
+                  <Banknote className="w-4 h-4" />
+                  <span>Place Cash Order • {formatCurrency(calculatedTotalMinor)}</span>
+                </>
+              ) : paymentMethod === "qris" ? (
+                <>
+                  <QrCode className="w-4 h-4" />
+                  <span>Place QRIS Order • {formatCurrency(calculatedTotalMinor)}</span>
                 </>
               ) : (
                 <>
@@ -612,7 +683,7 @@ export default function CartPageClient() {
       <div className="lg:hidden fixed bottom-14 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-sand-300 p-3.5 px-4 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] flex items-center justify-between gap-3">
         <div>
           <span className="text-[10px] text-stone-500 font-bold uppercase block">
-            TOTAL DUE
+            TOTAL DUE ({paymentMethod === "cash" ? "CASH" : paymentMethod === "qris" ? "QRIS" : "STRIPE"})
           </span>
           <span className="font-heading font-extrabold text-base text-primary">
             {formatCurrency(calculatedTotalMinor)}
@@ -629,7 +700,13 @@ export default function CartPageClient() {
             <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
             <>
-              <span>Pay with Stripe</span>
+              <span>
+                {paymentMethod === "cash"
+                  ? "Order (Cash)"
+                  : paymentMethod === "qris"
+                  ? "Order (QRIS)"
+                  : "Pay with Stripe"}
+              </span>
               <span>→</span>
             </>
           )}

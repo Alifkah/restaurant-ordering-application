@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/db";
-import { orders, orderItems, orderItemOptions, users, auditLogs } from "@/db/schema";
+import { orders, orderItems, orderItemOptions, users, auditLogs, payments } from "@/db/schema";
 import { createOrderSchema } from "@/lib/validation/order";
 import {
   calculateOrderPrices,
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { items, diningOption, tableNumber, tableId, customerNote, discountMinor, guestName, guestEmail, guestPhone } =
+    const { items, diningOption, tableNumber, tableId, customerNote, discountMinor, guestName, guestEmail, guestPhone, paymentMethod = "stripe" } =
       validated.data;
 
     // 2. Resolve Customer User ID (Session or Guest)
@@ -99,16 +99,18 @@ export async function POST(req: NextRequest) {
 
     // 4. Construct Final Customer Note with Dining Option & Guest Details
     let finalNote = customerNote?.trim() || "";
+    const paymentLabel = paymentMethod === "cash" ? "Cash/Tunai" : paymentMethod === "qris" ? "QRIS" : "Stripe Online";
     const guestMeta = [
       guestName ? `Name: ${guestName.trim()}` : null,
       guestPhone ? `WA: ${guestPhone.trim()}` : null,
+      `Pay: ${paymentLabel}`,
     ].filter(Boolean).join(" • ");
 
     if (diningOption === "dine_in") {
       const tableInfo = tableNumber ? `Table ${tableNumber.trim()}` : "Dine-In";
-      finalNote = `[Dine-In - ${tableInfo}${guestMeta ? ` | ${guestMeta}` : ""}] ${finalNote}`.trim();
+      finalNote = `[Dine-In - ${tableInfo} | ${guestMeta}] ${finalNote}`.trim();
     } else {
-      finalNote = `[Takeaway${guestMeta ? ` | ${guestMeta}` : ""}] ${finalNote}`.trim();
+      finalNote = `[Takeaway | ${guestMeta}] ${finalNote}`.trim();
     }
 
     // 5. Generate Unique Order Number
@@ -159,6 +161,17 @@ export async function POST(req: NextRequest) {
           });
         }
       }
+    }
+
+    // 8. Insert Payment Record for Non-Stripe (Cash / QRIS)
+    if (paymentMethod === "cash" || paymentMethod === "qris") {
+      await db.insert(payments).values({
+        orderId: createdOrder.id,
+        provider: paymentMethod,
+        status: "pending",
+        amountMinor: createdOrder.totalMinor,
+        currency: createdOrder.currency,
+      });
     }
 
     // 8. Log Audit Trail

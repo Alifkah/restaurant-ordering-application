@@ -19,6 +19,7 @@ export const createOrderSchema = z.object({
   guestName: z.string().max(100).optional().nullable(),
   guestEmail: z.string().email("Invalid email format").optional().nullable(),
   guestPhone: z.string().max(30).optional().nullable(),
+  paymentMethod: z.enum(["stripe", "cash", "qris"]).default("stripe"),
 });
 
 export type OrderItemInput = z.infer<typeof orderItemInputSchema>;
