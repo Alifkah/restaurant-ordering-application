@@ -15,7 +15,10 @@ import {
   Home,
   Check,
   Radio,
+  Printer,
+  Banknote,
 } from "lucide-react";
+import KitchenOrderTicket, { KOTData } from "@/components/print/KitchenOrderTicket";
 
 export interface KitchenTicketItem {
   id: string;
@@ -53,6 +56,7 @@ export default function KitchenBoardClient({ initialOrders }: KitchenBoardClient
   const [sseConnected, setSseConnected] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [now, setNow] = useState(Date.now());
+  const [activeKot, setActiveKot] = useState<KOTData | null>(null);
 
   // Web Audio Context reference
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -112,52 +116,64 @@ export default function KitchenBoardClient({ initialOrders }: KitchenBoardClient
       const res = await fetch("/api/orders");
       const json = await res.json();
       if (res.ok && json.success) {
-        // Fetch detailed items for each order
         const detailedOrders: KitchenTicket[] = await Promise.all(
           json.data.map(async (ord: KitchenTicket) => {
             try {
               const detailRes = await fetch(`/api/orders/${ord.id}`);
               const detailJson = await detailRes.json();
               if (detailRes.ok && detailJson.success) {
-                return detailJson.data;
+                return {
+                  ...ord,
+                  items: detailJson.data.items.map((i: { id: string; productName: string; quantity: number; note?: string | null; options?: Array<{ name: string }> }) => ({
+                    id: i.id,
+                    productName: i.productName,
+                    quantity: i.quantity,
+                    note: i.note,
+                    options: i.options || [],
+                  })),
+                };
               }
+              return ord;
             } catch {
-              // fallback
+              return ord;
             }
-            return ord;
           })
         );
         setOrdersList(detailedOrders);
       }
     } catch (err) {
-      console.warn("Error refreshing kitchen orders:", err);
+      console.error("Failed to refresh kitchen orders:", err);
     }
   }, []);
 
-  // SSE Stream Listener
+  // Setup SSE Listener for live orders & status changes
   useEffect(() => {
-    refreshOrders();
-
-    const eventSource = new EventSource("/api/realtime/kitchen?dev_preview=true");
+    const eventSource = new EventSource("/api/realtime/kitchen");
 
     eventSource.addEventListener("connected", () => {
       setSseConnected(true);
     });
 
-    eventSource.addEventListener("kitchen_update", (e) => {
+    eventSource.addEventListener("new_order", (e) => {
       try {
         const payload = JSON.parse(e.data);
-        console.log("⚡ Kitchen SSE Event Received:", payload);
-
-        // Play alert sound for new incoming order
-        if (payload.status === "pending" || payload.status === "confirmed") {
-          playChime();
-        }
-
-        // Re-fetch clean list to maintain full consistency
+        console.log("🔔 New kitchen order SSE received:", payload);
+        playChime();
         refreshOrders();
       } catch (err) {
-        console.error("Error processing SSE message:", err);
+        console.error("Failed to parse new_order SSE:", err);
+      }
+    });
+
+    eventSource.addEventListener("status_change", (e) => {
+      try {
+        const payload = JSON.parse(e.data);
+        console.log("⚡ Kitchen order status change:", payload);
+        setOrdersList((prev) =>
+          prev.map((o) => (o.id === payload.orderId ? { ...o, status: payload.status } : o))
+        );
+      } catch (err) {
+        console.error("Failed to parse status_change SSE:", err);
       }
     });
 
@@ -165,12 +181,16 @@ export default function KitchenBoardClient({ initialOrders }: KitchenBoardClient
       setSseConnected(false);
     };
 
+    // Auto-poll fallback every 8 seconds
+    const interval = setInterval(refreshOrders, 8000);
+
     return () => {
       eventSource.close();
+      clearInterval(interval);
     };
   }, [playChime, refreshOrders]);
 
-  // Status transition handler
+  // Update order status action
   const handleUpdateStatus = async (
     orderId: string,
     newStatus: "preparing" | "ready" | "completed"
@@ -183,58 +203,114 @@ export default function KitchenBoardClient({ initialOrders }: KitchenBoardClient
         body: JSON.stringify({ status: newStatus }),
       });
 
-      if (res.ok) {
+      const json = await res.json();
+      if (res.ok && json.success) {
         setOrdersList((prev) =>
           prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o))
         );
+      } else {
+        alert(json.error?.message || "Failed to update order status.");
       }
     } catch (err) {
-      console.error("Failed to update order status:", err);
+      console.error("Status update error:", err);
+      alert("Network connection error. Please try again.");
     } finally {
       setActionLoading(null);
     }
   };
 
-  // Helper to calculate elapsed minutes and seconds
-  const getElapsedTime = (createdAt: string) => {
-    const createdTime = new Date(createdAt).getTime();
-    const elapsedSeconds = Math.max(0, Math.floor((now - createdTime) / 1000));
-    const mins = Math.floor(elapsedSeconds / 60);
-    const secs = elapsedSeconds % 60;
-    const formatted = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
-    return { formatted, mins };
+  // Mark order as paid (Cashier)
+  const handleMarkPaid = async (orderId: string) => {
+    setActionLoading(orderId);
+    try {
+      const res = await fetch(`/api/admin/orders/${orderId}/mark-paid`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ paymentMethod: "cashier_cash" }),
+      });
+
+      const json = await res.json();
+      if (res.ok && json.success) {
+        setOrdersList((prev) =>
+          prev.map((o) => (o.id === orderId ? { ...o, status: "confirmed" } : o))
+        );
+      } else {
+        alert(json.error?.message || "Failed to mark order as paid.");
+      }
+    } catch (err) {
+      console.error("Mark paid error:", err);
+      alert("Network connection error.");
+    } finally {
+      setActionLoading(null);
+    }
   };
 
-  // Filter orders
-  const filteredOrders = ordersList.filter((order) => {
-    if (order.status === "completed" || order.status === "cancelled") return false;
-    if (filterType === "all") return true;
-    const isTakeaway = order.customerNote?.includes("[Bawa Pulang") || order.customerNote?.includes("[Takeaway");
-    if (filterType === "takeaway") return isTakeaway;
-    if (filterType === "dine_in") return !isTakeaway;
+  // Open KOT Print Ticket
+  const handleOpenPrintKot = (order: KitchenTicket) => {
+    setActiveKot({
+      orderId: order.id,
+      orderNumber: order.orderNumber,
+      orderType: order.orderType || (order.customerNote?.includes("[Takeaway") ? "takeaway" : "dine_in"),
+      tableNumber: order.tableNumber || (order.customerNote?.match(/Table ([^ \]|]+)/)?.[1] || null),
+      status: order.status,
+      paymentStatus: order.customerNote?.includes("Pay: Cash") || order.customerNote?.includes("Pay: QRIS") ? "pending" : "paid",
+      customerNote: order.customerNote,
+      createdAt: order.createdAt,
+      subtotalMinor: order.subtotalMinor,
+      taxMinor: order.taxMinor,
+      totalMinor: order.totalMinor,
+      items: (order.items || []).map((i) => ({
+        name: i.productName,
+        quantity: i.quantity,
+        note: i.note,
+        options: i.options,
+      })),
+    });
+  };
+
+  // Filter orders by dine-in / takeaway
+  const filteredOrders = ordersList.filter((ord) => {
+    if (ord.status === "completed" || ord.status === "cancelled") return false;
+    if (filterType === "dine_in") {
+      return ord.orderType === "dine_in" || (!ord.customerNote?.includes("[Takeaway") && !ord.customerNote?.includes("[Bawa Pulang"));
+    }
+    if (filterType === "takeaway") {
+      return ord.orderType === "takeaway" || ord.customerNote?.includes("[Takeaway") || ord.customerNote?.includes("[Bawa Pulang");
+    }
     return true;
   });
 
+  // Split by 4 columns
   const pendingOrders = filteredOrders.filter((o) => o.status === "pending");
   const confirmedOrders = filteredOrders.filter((o) => o.status === "confirmed");
   const preparingOrders = filteredOrders.filter((o) => o.status === "preparing");
   const readyOrders = filteredOrders.filter((o) => o.status === "ready");
 
+  const getElapsedTime = (createdAt: string) => {
+    const elapsedSeconds = Math.max(0, Math.floor((now - new Date(createdAt).getTime()) / 1000));
+    const mins = Math.floor(elapsedSeconds / 60);
+    const secs = elapsedSeconds % 60;
+    return {
+      formatted: `${mins}:${secs < 10 ? "0" : ""}${secs}`,
+      mins,
+    };
+  };
+
   return (
     <div className="min-h-screen bg-[#12161A] text-stone-100 flex flex-col font-sans">
       {/* 1. Header Bar */}
-      <header className="bg-[#181E24] border-b border-stone-800 px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-30 shadow-md">
+      <header className="px-4 sm:px-6 py-3.5 bg-[#181E24] border-b border-stone-800 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-30 shadow-md">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-primary text-white flex items-center justify-center shadow-sm">
+          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-elevation-1">
             <ChefHat className="w-6 h-6" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="font-heading font-extrabold text-base sm:text-lg text-white tracking-tight">
-                Nusantara KDS
+              <h1 className="font-heading font-extrabold text-lg sm:text-xl text-white tracking-wide">
+                KDS • Kitchen Display System
               </h1>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-primary/20 text-amber-400 border border-primary/30 uppercase">
-                Kitchen Display
+              <span className="px-2 py-0.5 rounded-full bg-primary/20 text-amber-400 border border-primary/30 text-[11px] font-bold">
+                Nusantara Artisan
               </span>
             </div>
             <p className="text-xs text-stone-400">
@@ -351,16 +427,22 @@ export default function KitchenBoardClient({ initialOrders }: KitchenBoardClient
             count={pendingOrders.length}
             badgeColor="bg-amber-500/20 text-amber-400 border-amber-500/30"
           >
-            {pendingOrders.map((order) => (
-              <KitchenTicketCard
-                key={order.id}
-                order={order}
-                elapsed={getElapsedTime(order.createdAt)}
-                actionLabel="Acknowledge & Cook"
-                actionLoading={actionLoading === order.id}
-                onAction={() => handleUpdateStatus(order.id, "preparing")}
-              />
-            ))}
+            {pendingOrders.map((order) => {
+              const isUnpaidCash = order.customerNote?.includes("Pay: Cash") || order.customerNote?.includes("Pay: QRIS");
+              return (
+                <KitchenTicketCard
+                  key={order.id}
+                  order={order}
+                  elapsed={getElapsedTime(order.createdAt)}
+                  actionLabel={isUnpaidCash ? "Mark Paid (Cash/EDC)" : "Acknowledge & Cook"}
+                  actionIcon={isUnpaidCash ? <Banknote className="w-4 h-4" /> : <Flame className="w-4 h-4" />}
+                  actionColor={isUnpaidCash ? "bg-amber-600 hover:bg-amber-500" : "bg-primary hover:bg-primary-hover"}
+                  actionLoading={actionLoading === order.id}
+                  onAction={() => (isUnpaidCash ? handleMarkPaid(order.id) : handleUpdateStatus(order.id, "preparing"))}
+                  onPrint={() => handleOpenPrintKot(order)}
+                />
+              );
+            })}
           </KanbanColumn>
 
           {/* Column 2: CONFIRMED */}
@@ -380,6 +462,7 @@ export default function KitchenBoardClient({ initialOrders }: KitchenBoardClient
                 actionIcon={<Flame className="w-4 h-4" />}
                 actionLoading={actionLoading === order.id}
                 onAction={() => handleUpdateStatus(order.id, "preparing")}
+                onPrint={() => handleOpenPrintKot(order)}
               />
             ))}
           </KanbanColumn>
@@ -401,6 +484,7 @@ export default function KitchenBoardClient({ initialOrders }: KitchenBoardClient
                 actionIcon={<CheckCircle2 className="w-4 h-4" />}
                 actionLoading={actionLoading === order.id}
                 onAction={() => handleUpdateStatus(order.id, "ready")}
+                onPrint={() => handleOpenPrintKot(order)}
               />
             ))}
           </KanbanColumn>
@@ -422,11 +506,21 @@ export default function KitchenBoardClient({ initialOrders }: KitchenBoardClient
                 actionIcon={<Check className="w-4 h-4" />}
                 actionLoading={actionLoading === order.id}
                 onAction={() => handleUpdateStatus(order.id, "completed")}
+                onPrint={() => handleOpenPrintKot(order)}
               />
             ))}
           </KanbanColumn>
         </div>
       </main>
+
+      {/* Printable Thermal KOT Dialog */}
+      {activeKot && (
+        <KitchenOrderTicket
+          kot={activeKot}
+          isOpen={!!activeKot}
+          onClose={() => setActiveKot(null)}
+        />
+      )}
     </div>
   );
 }
@@ -485,6 +579,7 @@ function KitchenTicketCard({
   actionIcon,
   actionLoading,
   onAction,
+  onPrint,
 }: {
   order: KitchenTicket;
   elapsed: { formatted: string; mins: number };
@@ -493,8 +588,8 @@ function KitchenTicketCard({
   actionIcon?: React.ReactNode;
   actionLoading?: boolean;
   onAction: () => void;
+  onPrint?: () => void;
 }) {
-  // Timer Alert Color: <10m Green, 10-20m Amber, >20m Red Urgent
   let timerBadge = "bg-emerald-950/80 text-emerald-400 border-emerald-700/60";
   if (elapsed.mins >= 20) {
     timerBadge = "bg-red-950 text-red-300 border-red-600 animate-pulse";
@@ -502,8 +597,17 @@ function KitchenTicketCard({
     timerBadge = "bg-amber-950 text-amber-300 border-amber-600";
   }
 
-  const isTakeaway = order.orderType === "takeaway" || order.customerNote?.includes("[Bawa Pulang") || order.customerNote?.includes("[Takeaway");
-  const displayTable = order.tableNumber ? `TABLE #${order.tableNumber}` : (order.customerNote?.match(/Table [^\]]+/)?.[0] || order.customerNote?.match(/Meja [^\]]+/)?.[0] || "DINE-IN");
+  const isTakeaway =
+    order.orderType === "takeaway" ||
+    order.customerNote?.includes("[Bawa Pulang") ||
+    order.customerNote?.includes("[Takeaway");
+  const displayTable = order.tableNumber
+    ? `TABLE #${order.tableNumber}`
+    : order.customerNote?.match(/Table [^\]|]+/)?.[0] || "DINE-IN";
+
+  const isUnpaidCash =
+    order.status === "pending" &&
+    (order.customerNote?.includes("Pay: Cash") || order.customerNote?.includes("Pay: QRIS"));
 
   return (
     <div className="bg-[#202730] rounded-card border border-stone-700/80 p-4 space-y-3.5 shadow-md hover:border-stone-500 transition-colors animate-fade-in">
@@ -513,35 +617,56 @@ function KitchenTicketCard({
           {order.orderNumber}
         </span>
 
-        <div
-          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-bold border ${timerBadge}`}
-          title="Elapsed time since order placement"
-        >
-          <Clock className="w-3.5 h-3.5" />
-          <span>{elapsed.formatted}</span>
+        <div className="flex items-center gap-2">
+          {onPrint && (
+            <button
+              type="button"
+              onClick={onPrint}
+              className="p-1 rounded bg-stone-800 hover:bg-stone-700 text-stone-300 border border-stone-700 text-xs transition-colors"
+              title="Print Kitchen Ticket (KOT)"
+            >
+              <Printer className="w-3.5 h-3.5" />
+            </button>
+          )}
+
+          <div
+            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-mono font-bold border ${timerBadge}`}
+            title="Elapsed time since order placement"
+          >
+            <Clock className="w-3.5 h-3.5" />
+            <span>{elapsed.formatted}</span>
+          </div>
         </div>
       </div>
 
-      {/* High-Contrast Table Badge */}
-      <div className="flex flex-wrap items-center gap-2">
-        {isTakeaway ? (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/25 text-amber-300 border border-amber-500/40 text-xs font-black tracking-wide shadow-sm">
-            <ShoppingBag className="w-4 h-4 text-amber-400" />
-            <span>🛍️ TAKEAWAY</span>
-          </span>
-        ) : (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/30 text-emerald-200 border border-emerald-400/60 text-xs font-black tracking-wide shadow-sm">
-            <UtensilsCrossed className="w-4 h-4 text-emerald-400" />
-            <span>🔥 {displayTable.toUpperCase()} • DINE-IN</span>
-          </span>
-        )}
+      {/* High-Contrast Table Badge & Payment Badge */}
+      <div className="space-y-1.5">
+        <div className="flex flex-wrap items-center gap-2">
+          {isTakeaway ? (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/25 text-amber-300 border border-amber-500/40 text-xs font-black tracking-wide shadow-sm">
+              <ShoppingBag className="w-4 h-4 text-amber-400" />
+              <span>🛍️ TAKEAWAY</span>
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/30 text-emerald-200 border border-emerald-400/60 text-xs font-black tracking-wide shadow-sm">
+              <UtensilsCrossed className="w-4 h-4 text-emerald-400" />
+              <span>🔥 {displayTable.toUpperCase()} • DINE-IN</span>
+            </span>
+          )}
 
-        <span className="text-[11px] text-stone-400 font-mono">
-          {new Date(order.createdAt).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
-        </span>
+          <span className="text-[11px] text-stone-400 font-mono">
+            {new Date(order.createdAt).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </span>
+        </div>
+
+        {isUnpaidCash && (
+          <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-amber-500/20 border border-amber-500/50 text-amber-300 text-[10px] font-bold uppercase tracking-wider">
+            <span>⚠️ PAY AT CASHIER - UNPAID</span>
+          </div>
+        )}
       </div>
 
       {order.customerNote && (

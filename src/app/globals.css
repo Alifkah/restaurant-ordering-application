@@ -65,7 +65,9 @@
     visibility: hidden;
   }
   #standee-card-print,
-  #standee-card-print * {
+  #standee-card-print *,
+  #kot-thermal-print,
+  #kot-thermal-print * {
     visibility: visible;
   }
   #standee-card-print {
@@ -78,6 +80,21 @@
     background: #FFFFFF !important;
     color: #1C1917 !important;
     box-shadow: none !important;
+    page-break-inside: avoid;
+  }
+  #kot-thermal-print {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 80mm !important;
+    max-width: 80mm !important;
+    background: #FFFFFF !important;
+    color: #000000 !important;
+    font-family: monospace !important;
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 auto;
+    padding: 0 !important;
     page-break-inside: avoid;
   }
 }

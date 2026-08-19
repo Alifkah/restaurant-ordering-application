@@ -10,6 +10,8 @@ const createReviewSchema = z.object({
   orderId: z.string().uuid("Invalid order ID"),
   rating: z.number().int().min(1).max(5),
   comment: z.string().max(500).optional().nullable(),
+  imageUrls: z.array(z.string().url()).max(3).optional().nullable(),
+  imagePublicIds: z.array(z.string()).max(3).optional().nullable(),
 });
 
 export async function GET(req: NextRequest) {
@@ -23,6 +25,8 @@ export async function GET(req: NextRequest) {
         orderId: reviews.orderId,
         rating: reviews.rating,
         comment: reviews.comment,
+        imageUrls: reviews.imageUrls,
+        imagePublicIds: reviews.imagePublicIds,
         createdAt: reviews.createdAt,
         customerName: users.name,
       })
@@ -76,7 +80,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { productId, orderId, rating, comment } = validated.data;
+    const { productId, orderId, rating, comment, imageUrls, imagePublicIds } = validated.data;
     const customerId = session?.user?.id || "00000000-0000-0000-0000-000000000001";
 
     // 1. Verify eligibility: check if order exists
@@ -113,7 +117,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 3. Create review
+    // 3. Create review with photo attachments
     const [createdReview] = await db
       .insert(reviews)
       .values({
@@ -122,6 +126,8 @@ export async function POST(req: NextRequest) {
         orderId,
         rating,
         comment: comment?.trim() || null,
+        imageUrls: imageUrls && imageUrls.length > 0 ? imageUrls : null,
+        imagePublicIds: imagePublicIds && imagePublicIds.length > 0 ? imagePublicIds : null,
       })
       .returning();
 
@@ -129,7 +135,7 @@ export async function POST(req: NextRequest) {
       {
         success: true,
         data: createdReview,
-        message: "Thank you! Your verified review has been submitted.",
+        message: "Thank you! Your verified photo review has been submitted.",
       },
       { status: 201 }
     );

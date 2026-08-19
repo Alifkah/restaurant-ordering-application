@@ -13,8 +13,8 @@ import {
   Utensils,
   ArrowLeft,
   ShieldCheck,
-  Star,
 } from "lucide-react";
+import ProductReviewList from "@/components/reviews/ProductReviewList";
 
 interface OptionItem {
   id: string;
@@ -349,89 +349,7 @@ export default function ProductDetailClient({
 
       {/* Verified Customer Reviews Section */}
       <div className="space-y-6 pt-6 border-t border-sand-300">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="font-heading font-bold text-xl text-stone-900 flex items-center gap-2">
-              <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
-              <span>Verified Diner Reviews</span>
-            </h2>
-            <p className="text-xs text-stone-500 mt-0.5">
-              Authentic feedback from verified diners
-            </p>
-          </div>
-          <span className="text-xs font-bold text-stone-700 bg-sand-200/80 px-3 py-1.5 rounded-full">
-            {reviewsList.length > 0
-              ? `${(
-                  reviewsList.reduce((acc, r) => acc + r.rating, 0) /
-                  reviewsList.length
-                ).toFixed(1)} / 5.0 (${reviewsList.length} reviews)`
-              : "5.0 / 5.0 (Chef's Rating)"}
-          </span>
-        </div>
-
-        {reviewsList.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {reviewsList.map((rev) => (
-              <div
-                key={rev.id}
-                className="glass-card bg-white rounded-card p-4 border border-sand-200 shadow-elevation-1 space-y-2.5"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-full bg-primary/10 text-primary font-bold text-xs flex items-center justify-center">
-                      {rev.customerName?.charAt(0) || "D"}
-                    </div>
-                    <div>
-                      <span className="font-bold text-xs text-stone-900 block">
-                        {rev.customerName || "Verified Diner"}
-                      </span>
-                      <span className="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
-                        <ShieldCheck className="w-3 h-3" />
-                        <span>Verified Purchase</span>
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-0.5">
-                    {[1, 2, 3, 4, 5].map((s) => (
-                      <Star
-                        key={s}
-                        className={`w-3.5 h-3.5 ${
-                          s <= rev.rating
-                            ? "text-amber-400 fill-amber-400"
-                            : "text-stone-200"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                {rev.comment && (
-                  <p className="text-xs text-stone-700 italic bg-sand-50/70 p-2.5 rounded-md">
-                    &ldquo;{rev.comment}&rdquo;
-                  </p>
-                )}
-
-                <span className="text-[10px] text-stone-400 block text-right">
-                  {new Date(rev.createdAt).toLocaleDateString("en-US", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </span>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="p-6 rounded-card bg-sand-50 border border-sand-200 text-center space-y-1">
-            <p className="text-xs font-semibold text-stone-700">
-              No reviews for this dish yet.
-            </p>
-            <p className="text-[11px] text-stone-500">
-              Order and taste this dish to leave your first verified review!
-            </p>
-          </div>
-        )}
+        <ProductReviewList reviews={reviewsList} productName={product.name} />
       </div>
 
       {/* Recommended Pairings */}

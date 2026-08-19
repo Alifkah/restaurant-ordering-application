@@ -271,11 +271,11 @@ Schema ini diturunkan dari PRD dan System Architecture. PRD menetapkan entitas u
   ------------------------------------------------------------------------------------
   Column                  Type                                 Constraint
   ----------------------- ------------------------------------ -----------------------
-  id                      uuid                                 PK
+  id                      uuid                                 PK (Default: gen_random_uuid())
 
   order_id                uuid                                 FK → orders.id
 
-  provider                varchar(30)                          DEFAULT stripe
+  provider                varchar(30)                          DEFAULT 'stripe' ('stripe', 'cashier_cash', 'cashier_edc')
 
   provider_payment_id     varchar(255)                         NULLABLE
 
@@ -289,9 +289,9 @@ Schema ini diturunkan dari PRD dan System Architecture. PRD menetapkan entitas u
 
   paid_at                 timestamptz                          NULLABLE
 
-  created_at              timestamptz                          NOT NULL
+  created_at              timestamptz                          DEFAULT now() NOT NULL
 
-  updated_at              timestamptz                          NOT NULL
+  updated_at              timestamptz                          DEFAULT now() NOT NULL
   ------------------------------------------------------------------------------------
 
 ## reviews
@@ -299,7 +299,7 @@ Schema ini diturunkan dari PRD dan System Architecture. PRD menetapkan entitas u
   -----------------------------------------------------------------------
   Column                  Type                    Constraint
   ----------------------- ----------------------- -----------------------
-  id                      uuid                    PK
+  id                      uuid                    PK (Default: gen_random_uuid())
 
   customer_id             uuid                    FK → users.id
 
@@ -307,13 +307,17 @@ Schema ini diturunkan dari PRD dan System Architecture. PRD menetapkan entitas u
 
   order_id                uuid                    FK → orders.id
 
-  rating                  smallint                1--5
+  rating                  smallint                1--5 NOT NULL
 
   comment                 text                    NULLABLE
 
-  created_at              timestamptz             NOT NULL
+  image_urls              jsonb                   NULLABLE (Array string URL foto Cloudinary)
 
-  updated_at              timestamptz             NOT NULL
+  image_public_ids        jsonb                   NULLABLE (Array public ID Cloudinary)
+
+  created_at              timestamptz             DEFAULT now() NOT NULL
+
+  updated_at              timestamptz             DEFAULT now() NOT NULL
   -----------------------------------------------------------------------
 
 ## audit_logs

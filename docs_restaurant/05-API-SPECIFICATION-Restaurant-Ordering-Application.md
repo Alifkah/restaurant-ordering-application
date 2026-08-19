@@ -105,31 +105,35 @@ Version 1.0 --- 18 August 2026
   ----------------- ------------------------ -------------------- -----------------------------------
   POST              /api/payments/checkout   Customer / Guest     Create Stripe Checkout session (supports Guest)
 
+  POST              /api/admin/orders/:id/mark-paid Admin/Staff   Mark order as paid at cashier (Cash / EDC)
+
   GET               /api/payments/:orderId   Customer/Admin/Guest Get payment status
 
   POST              /api/webhooks/stripe     Stripe               Receive and verify Stripe webhook
   ------------------------------------------------------------------------------------------------
 
-# 8. Review API
+# 8. Review API (Includes Photo Uploads)
 
   -----------------------------------------------------------------------------------------------------------------
   Method            Endpoint                           Auth              Purpose
   ----------------- ---------------------------------- ----------------- ------------------------------------------
-  POST              /api/reviews                       Customer          Create eligible product review
+  POST              /api/reviews                       Customer          Create eligible product review (with photo URLs)
 
-  GET               /api/products/:productId/reviews   Public            List product reviews
+  GET               /api/products/:productId/reviews   Public            List product reviews with customer photo gallery
 
   PATCH             /api/reviews/:id                   Customer          Update own review if policy allows
 
   DELETE            /api/reviews/:id                   Customer/Admin    Remove review according to authorization
   -----------------------------------------------------------------------------------------------------------------
 
-# 9. Admin & Media API (Cloudinary)
+# 9. Admin, Print & Media API (Cloudinary & ESC/POS)
 
   ---------------------------------------------------------------------------------------------------------
   Method            Endpoint                     Auth              Purpose
   ----------------- ---------------------------- ----------------- ---------------------------------------------
-  POST              /api/admin/media/sign        Admin             Generate Cloudinary signed upload parameters
+  GET               /api/orders/:id/print-kot    Staff / Admin     Generate 58mm/80mm ESC/POS printable KOT receipt
+
+  POST              /api/admin/media/sign        Admin / Customer  Generate Cloudinary signed upload parameters
 
   GET               /api/admin/users             Admin             List users
 

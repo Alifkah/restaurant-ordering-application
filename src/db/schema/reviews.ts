@@ -1,4 +1,4 @@
-import { pgTable, uuid, smallint, text, timestamp, index } from "drizzle-orm/pg-core";
+import { pgTable, uuid, smallint, text, timestamp, index, jsonb } from "drizzle-orm/pg-core";
 import { users } from "./users";
 import { products } from "./products";
 import { orders } from "./orders";
@@ -18,6 +18,8 @@ export const reviews = pgTable(
       .references(() => orders.id, { onDelete: "restrict" }),
     rating: smallint("rating").notNull(), // 1 to 5
     comment: text("comment"),
+    imageUrls: jsonb("image_urls").$type<string[]>(),
+    imagePublicIds: jsonb("image_public_ids").$type<string[]>(),
     createdAt: timestamp("created_at", { withTimezone: true, mode: "date" })
       .defaultNow()
       .notNull(),

@@ -432,14 +432,84 @@ Design a comprehensive restaurant table management and printable QR code generat
 
 ---
 
+### Prompt 22: Pay at Cashier Option & Cashier Settlement Screen
+```text
+Screen: Pay at Cashier Checkout Mode & Cashier Verification Modal
+Platform: Responsive Mobile & Desktop Web
+Prompt:
+Design an alternative payment flow for customers who choose "Pay at Cashier" and the staff verification view:
+- State A (Customer Checkout Selection & Tracking):
+  - Payment Method Toggle Pills: [ 💳 Pay Online with Card (Stripe) ] | [ 💵 Pay at Cashier (Cash / EDC Card) ] (Active).
+  - Instruction Banner: Warm amber card: "💡 Please present your Order #ORD-8492 or Table Number to the cashier counter before or upon food delivery."
+  - Primary CTA: "Place Order (Pay at Cashier) →".
+  - Order Tracking State: Amber warning chip "⚠️ Payment Pending at Cashier" with a prominent barcode/QR code for the cashier to scan.
+- State B (Cashier / Staff Verification Pop-up on KDS & Admin):
+  - Modal: "Confirm Cashier Payment - Order #8492 (Table 08)".
+  - Total Bill: "Rp 245.000" with quick settlement options: [ 💵 Cash Received ] | [ 💳 EDC / Debit Machine ].
+  - Actions: "Mark as Paid & Send to Kitchen 🟢" (instantly updates order to Confirmed).
+```
+
+---
+
+### Prompt 23: Kitchen Thermal Order Ticket (58mm / 80mm ESC/POS KOT Layout)
+```text
+Screen: Kitchen Thermal Print Order Ticket (ESC/POS Receipt View)
+Platform: Monospace Printable Web Component (58mm/80mm Width)
+Prompt:
+Design an ultra-crisp, high-contrast monochrome thermal printer receipt layout (Kitchen Order Ticket - KOT):
+- Ticket Header:
+  - Restaurant Name ("LUMIÈRE DINING - KITCHEN TICKET") centered.
+  - Large Bold Table Identifier: "*** TABLE 08 - DINE IN ***" in 24px inverted/bold monospace text.
+  - Order Reference: "#ORD-8492" • Timestamp: "19 Aug 2026 14:15:30".
+  - Staff / Server: "Server: Auto-QR".
+- Dashed Line Divider (`--------------------------------`)
+- Order Items Table (High Legibility):
+  - Row 1: "2x  TRUFFLE RISOTTO             Rp 290.000"
+    - Modifiers indented: "   >> LARGE PORTION"
+    - Modifiers indented: "   >> EXTRA PARMESAN CHEESE"
+  - Row 2: "1x  YUZU ICED TEA                Rp  65.000"
+    - Modifiers: "   >> LESS ICE (50%)"
+- Dashed Line Divider (`--------------------------------`)
+- Special Kitchen Instructions (Boxed Highlight):
+  - "[ NOTE: Please serve drinks first! ]"
+- Payment Status Flag:
+  - Centered bold text: "[ PAID VIA STRIPE ]" or "[ *** UNPAID - PAY AT CASHIER *** ]".
+- Ticket Footer: Cut line indicator (`- - - - - - - - - - - - - - - - `).
+```
+
+---
+
+### Prompt 24: Customer Photo Review Modal & Verified Photo Gallery
+```text
+Screen: Photo Review Submission Modal & Public Product Reviews Gallery
+Platform: Responsive Mobile & Desktop Web
+Prompt:
+Design an appetizing, user-generated photo review submission modal and public menu review display:
+- Modal A (Submit Photo Review - Triggered on Completed Orders):
+  - Header: "How was your Wagyu Truffle Donburi?" with dish thumbnail.
+  - Star Rating: 5 large interactive amber stars.
+  - Feedback Textarea: "Share your culinary experience (taste, presentation, portion)..."
+  - Cloudinary Photo Upload Dropzone:
+    - Drag-and-drop zone with camera icon: "📸 Upload up to 3 photos of your dish".
+    - Instant preview thumbnails with remove (X) icon and upload progress bar.
+  - Verified Badge Note: "🛡️ You are posting as a Verified Dine-In Guest (Table 08)".
+  - Submit CTA: "Post Verified Review".
+- Section B (Public Food Page Photo Review Stream):
+  - Aggregate Summary: "⭐ 4.9 out of 5 (128 reviews) • 96% recommended".
+  - Customer Photo Strip: Horizontal scrolling row of square food photos taken by real customers. Clicking opens a lightbox zoom modal.
+  - Review Card: Customer avatar/name, verified badge ("🟢 Verified Order"), 5-star rating, relative date ("2 days ago"), review text, and attached food photos.
+```
+
+---
+
 ## 5. Cara Menggunakan di stitch.withgoogle
 
 1. Buka [stitch.withgoogle](https://stitch.withgoogle).
 2. Buat proyek baru (*New Project*): **"Restaurant Ordering App"**.
 3. Masukkan **Prompt 1 (Design System Global)** terlebih dahulu untuk menetapkan pedoman warna, tipografi, dan radius komponen.
 4. Buat screen satu per satu dengan menyalin (*copy-paste*) masing-masing prompt di atas:
-   - **Alur Publik & Pelanggan**: Prompt 1 s/d 5, Prompt 10 (Login/Register), Prompt 11 (Account/Orders), Prompt 12 (About), Prompt 17 (Payment Success/Failed), Prompt 20 (Dine-In QR Table Menu).
-   - **Alur Staf Dapur**: Prompt 6 (Kitchen Board).
+   - **Alur Publik & Pelanggan**: Prompt 1 s/d 5, Prompt 10 (Login/Register), Prompt 11 (Account/Orders), Prompt 12 (About), Prompt 17 (Payment Success/Failed), Prompt 20 (Dine-In QR Table Menu), Prompt 22 (Pay at Cashier), Prompt 24 (Photo Reviews).
+   - **Alur Staf Dapur & Printer**: Prompt 6 (Kitchen Board), Prompt 23 (Thermal Print KOT).
    - **Alur Admin Operasional**: Prompt 7 (Dashboard), Prompt 8 (Products), Prompt 9 (Settings), Prompt 13 (Master Orders), Prompt 14 (User Management), Prompt 15 (Reports), Prompt 16 (Audit Logs), Prompt 18 (Categories), Prompt 21 (Tables & QR Generator).
    - **Status Sistem & PWA**: Prompt 19 (404, 500 & Offline PWA).
 5. Tinjau varian desain (*generate variants*), sesuaikan elemen interaktif, dan jadikan referensi visual resmi sebelum masuk ke tahap pengkodean Next.js!
