@@ -17,6 +17,7 @@ import {
   LogOut,
   Shield,
   Loader2,
+  QrCode,
 } from "lucide-react";
 
 export default function AdminSidebar() {
@@ -28,6 +29,7 @@ export default function AdminSidebar() {
     { href: "/admin", label: "Dashboard & KPIs", icon: LayoutDashboard, exact: true },
     { href: "/admin/products", label: "Dishes & Menu", icon: UtensilsCrossed },
     { href: "/admin/categories", label: "Menu Categories", icon: Tags },
+    { href: "/admin/tables", label: "Tables & QR Codes", icon: QrCode },
     { href: "/admin/orders", label: "Order Manager", icon: ShoppingBag },
     { href: "/admin/users", label: "Users & RBAC", icon: Users },
     { href: "/admin/settings", label: "Restaurant Settings", icon: Settings },

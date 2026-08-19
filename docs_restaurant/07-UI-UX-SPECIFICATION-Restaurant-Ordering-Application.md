@@ -27,7 +27,7 @@ Dokumen ini menerjemahkan kebutuhan customer-facing, staff-facing, dan admin-fac
 
 > PUBLIC\
 > ├── Home\
-> ├── Menu\
+> ├── Menu (Normal Online Ordering & Dine-In Table Mode `?table=XX`)\
 > │ ├── Category\
 > │ └── Product Detail\
 > ├── About\
@@ -36,17 +36,18 @@ Dokumen ini menerjemahkan kebutuhan customer-facing, staff-facing, dan admin-fac
 > CUSTOMER\
 > ├── Account\
 > ├── Orders\
-> │ └── Order Detail / Tracking\
+> │ └── Order Detail / Tracking (Dine-in Table Delivery / Pickup)\
 > ├── Cart\
-> └── Checkout\
+> └── Checkout (Table Lock, Express Guest / Account Auth)\
 > \
 > STAFF\
-> └── Kitchen Board\
+> └── Kitchen Board (Dine-in Table Badge & Takeaway Routing)\
 > \
 > ADMIN\
 > ├── Dashboard\
 > ├── Products\
 > ├── Categories\
+> ├── Tables & QR Generator\
 > ├── Orders\
 > ├── Users\
 > ├── Reports\
@@ -55,39 +56,40 @@ Dokumen ini menerjemahkan kebutuhan customer-facing, staff-facing, dan admin-fac
 
 # 4. Customer Screens
 
-  ----------------------------------------------------------------------------------------------------
-  Screen                  Core Components                                      Primary Action
-  ----------------------- ---------------------------------------------------- -----------------------
-  Home                    Hero, restaurant info, featured menu, CTA            Browse menu
+  -------------------------------------------------------------------------------------------------------------------------
+  Screen                           Core Components                                           Primary Action
+  -------------------------------- --------------------------------------------------------- ------------------------------
+  Home                             Hero, restaurant info, featured menu, CTA                 Browse menu
 
-  Menu                    Search, category filter, product cards               Open product
+  Menu (Standard / Dine-In)        Search, category filter, Table Context Header (`Table 08`), product cards Open product
 
-  Product Detail          Image, description, price, options, quantity         Add to cart
+  Product Detail                   Image, description, price, options, quantity              Add to cart
 
-  Cart                    Items, options, quantity, subtotal                   Checkout
+  Cart                             Items, options, quantity, locked table number, subtotal   Checkout
 
-  Checkout                Order summary, customer/account state, payment CTA   Pay
+  Checkout                         Order summary, table badge, Stripe payment CTA            Pay with Stripe
 
-  Order Tracking          Status timeline, order details                       Track order
+  Order Tracking                   Live status timeline, table delivery ping, review modal   Track order / Call server
 
-  Order History           Order list/filter                                    Open order
+  Order History                    Order list/filter                                         Open order
 
-  Review                  Rating, comment, product context                     Submit review
+  Review                           Rating, comment, product context                          Submit review
 
-  Account                 Profile/session actions                              Manage account
-  ----------------------------------------------------------------------------------------------------
+  Account                          Profile/session actions                                   Manage account
+  -------------------------------------------------------------------------------------------------------------------------
 
 # 5. Staff Kitchen Board
 
 > ┌──────────┬────────────┬────────────┬────────────┐\
-> │ PENDING │ CONFIRMED │ PREPARING │ READY │\
+> │ PENDING  │ CONFIRMED  │ PREPARING  │ READY      │\
 > ├──────────┼────────────┼────────────┼────────────┤\
-> │ Order \# │ Order \# │ Order \# │ Order \# │\
-> │ Items │ Items │ Items │ Items │\
-> │ Time │ Time │ Time │ Time │\
+> │ [TBL 08] │ [TAKEAWAY] │ [TBL 12]   │ [TBL 03]   │\
+> │ Order #  │ Order #    │ Order #    │ Order #    │\
+> │ Items    │ Items      │ Items      │ Items      │\
+> │ Time     │ Time       │ Time       │ Time       │\
 > └──────────┴────────────┴────────────┴────────────┘
 
-Order baru harus terlihat secara realtime. Staff dapat acknowledge dan memperbarui status sesuai state machine.
+Order baru harus terlihat secara realtime dengan badge Meja Fisik (misal `[TABLE 08 - DINE IN]`) atau `[TAKEAWAY]`. Staff dapat acknowledge dan memperbarui status hingga hidangan diantar ke meja.
 
 # 6. Admin Screens
 
@@ -98,17 +100,19 @@ Order baru harus terlihat secara realtime. Staff dapat acknowledge dan memperbar
 
   Products                            CRUD products, price, availability, image, options
 
-  Categories                          CRUD categories and ordering
+  Categories                          CRUD categories and visual ordering
 
-  Orders                              Monitor/filter/manage all orders
+  Tables & QR Generator               Manage dining tables, occupancy status, download QR PDF
+
+  Orders                              Monitor/filter/manage all orders (filter by Table)
 
   Users                               Customer/staff management
 
-  Reports                             Operational insights
+  Reports                             Operational insights & sales by table/dine-in ratio
 
   Audit Logs                          Who changed what and when
 
-  Settings                            Hours, location, restaurant operational settings
+  Settings                            Hours, location, currency, restaurant operational settings
   ----------------------------------------------------------------------------------------
 
 # 7. Design System Requirements

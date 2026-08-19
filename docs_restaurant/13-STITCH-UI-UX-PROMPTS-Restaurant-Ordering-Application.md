@@ -375,15 +375,63 @@ Design aesthetic error and connectivity fallback screens tailored for a culinary
 
 ---
 
+### Prompt 20: Dine-In QR Table Ordering Experience (`/menu?table=08` & `/table/08`)
+```text
+Screen: Dine-In QR Code Table Ordering & Service Call
+Platform: Mobile-First Responsive PWA
+Prompt:
+Design a frictionless, mobile-first Dine-In food ordering experience triggered by scanning a table QR code.
+- Theme & Colors: Warm sand background (#F9F6F0), terracotta primary accent (#D9531E), warm obsidian floating elements.
+- Sticky Top Table Context Bar:
+  - Table Badge: Pulsing amber/terracotta chip "📍 Dining at Table 08 (Indoor Hall)".
+  - Quick Service Trigger: Pill button "🛎️ Call Server / Water" that triggers a staff notification modal.
+  - Restaurant status: "🟢 Kitchen Live • Ready in ~15m".
+- Active Menu Browsing & Filtering:
+  - Sticky horizontal category pill bar (Mains, Starters, Drinks, Desserts).
+  - Food card grid optimized for mobile thumb scrolling: High-res food image, dish name, price formatted in local currency (Rp / $), and quick "+ Add" button.
+- Customization Drawer:
+  - Portions, Spiciness, Extra toppings, and Table-specific cooking note ("Please serve drinks first").
+- Sticky Bottom Table Basket Bar:
+  - Elevated pill card showing: "Table 08 • 3 Items • Rp 185.000" with a prominent "Review & Order Now →" CTA button.
+```
+
+---
+
+### Prompt 21: Admin Dining Tables & Printable QR Code Generator (`/admin/tables`)
+```text
+Screen: Admin Dining Tables Management & QR Code Generator
+Platform: Desktop Web Dashboard
+Prompt:
+Design a comprehensive restaurant table management and printable QR code generator dashboard for administrators.
+- Layout: 2-Column Split Layout (65% Table Layout Grid & Live Occupancy / 35% QR Code Preview & Print Card).
+- Top Control Bar:
+  - Area Filter Tabs: "All Areas (24 Tables)", "Indoor Dining (12)", "Outdoor Terrace (8)", "VIP Lounge (4)".
+  - Search: "Search by table number...".
+  - Actions: "Print All QR Cards (PDF)" and "+ Add New Table" button.
+- Left Section (Interactive Table Grid):
+  - Card grid displaying restaurant tables with visual status indicators:
+    • Table 01 to 08 (Indoor): Green outline (Available 🟢) / Amber outline (Active Ordering / Dining 🟡 - Bill: Rp 340.000) / Blue (Paid & Awaiting Cleaning 🔵).
+    • Table Card Details: Table Number, Seating Capacity (4 Pax), Assigned QR Code snippet, and Active Order link.
+- Right Section (Printable QR Code Card Preview & Customizer):
+  - Visual Card Preview (A6 Table Tent Card format):
+    1. Elegant restaurant logo & branding at the top.
+    2. Large high-contrast QR Code with restaurant icon in the center.
+    3. Instructional copy: "Scan to View Menu & Order Directly from Table 08".
+    4. WiFi Info Box: "📶 Guest WiFi: ArtisanKitchen • Pass: bonappetit".
+  - Customizer Controls: Toggle restaurant logo, adjust card theme (Classic Dark Obsidian / Warm Ivory Paper), and "Download High-Res PDF / SVG" button.
+```
+
+---
+
 ## 5. Cara Menggunakan di stitch.withgoogle
 
 1. Buka [stitch.withgoogle](https://stitch.withgoogle).
 2. Buat proyek baru (*New Project*): **"Restaurant Ordering App"**.
 3. Masukkan **Prompt 1 (Design System Global)** terlebih dahulu untuk menetapkan pedoman warna, tipografi, dan radius komponen.
 4. Buat screen satu per satu dengan menyalin (*copy-paste*) masing-masing prompt di atas:
-   - **Alur Publik & Pelanggan**: Prompt 1 s/d 5, Prompt 10 (Login/Register), Prompt 11 (Account/Orders), Prompt 12 (About), Prompt 17 (Payment Success/Failed).
+   - **Alur Publik & Pelanggan**: Prompt 1 s/d 5, Prompt 10 (Login/Register), Prompt 11 (Account/Orders), Prompt 12 (About), Prompt 17 (Payment Success/Failed), Prompt 20 (Dine-In QR Table Menu).
    - **Alur Staf Dapur**: Prompt 6 (Kitchen Board).
-   - **Alur Admin Operasional**: Prompt 7 (Dashboard), Prompt 8 (Products), Prompt 9 (Settings), Prompt 13 (Master Orders), Prompt 14 (User Management), Prompt 15 (Reports), Prompt 16 (Audit Logs), Prompt 18 (Categories).
+   - **Alur Admin Operasional**: Prompt 7 (Dashboard), Prompt 8 (Products), Prompt 9 (Settings), Prompt 13 (Master Orders), Prompt 14 (User Management), Prompt 15 (Reports), Prompt 16 (Audit Logs), Prompt 18 (Categories), Prompt 21 (Tables & QR Generator).
    - **Status Sistem & PWA**: Prompt 19 (404, 500 & Offline PWA).
 5. Tinjau varian desain (*generate variants*), sesuaikan elemen interaktif, dan jadikan referensi visual resmi sebelum masuk ke tahap pengkodean Next.js!
 
