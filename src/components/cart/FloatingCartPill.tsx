@@ -9,7 +9,7 @@ export default function FloatingCartPill() {
   if (totalItems === 0) return null;
 
   return (
-    <aside aria-label="Dining Basket Summary" className="fixed bottom-6 right-6 z-40 animate-slide-up">
+    <aside aria-label="Dining Basket Summary" className="hidden md:block fixed bottom-6 right-6 z-40 animate-slide-up">
       <button
         type="button"
         onClick={() => setIsCartOpen(true)}

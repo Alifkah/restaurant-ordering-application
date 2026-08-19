@@ -171,41 +171,44 @@ export default function CustomizationModal({
         className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm transition-opacity"
       />
 
-      {/* Modal Dialog Card */}
-      <div className="relative w-full sm:max-w-lg bg-white rounded-t-[20px] sm:rounded-card shadow-elevation-3 overflow-hidden flex flex-col max-h-[90vh] z-10 animate-slide-up">
+      {/* Modal Dialog Card / Bottom Sheet */}
+      <div className="relative w-full sm:max-w-lg bg-white rounded-t-2xl sm:rounded-card shadow-elevation-3 overflow-hidden flex flex-col max-h-[92vh] z-10 animate-slide-up">
+        {/* Mobile Pull Bar */}
+        <div className="sm:hidden absolute top-2.5 left-1/2 -translate-x-1/2 z-20 w-12 h-1 rounded-full bg-white/80 backdrop-blur-sm" />
+
         {/* Modal Hero Image */}
-        <div className="relative h-48 sm:h-56 w-full bg-sand-200 flex-shrink-0">
+        <div className="relative h-44 sm:h-56 w-full bg-sand-200 flex-shrink-0">
           <MenuImage
             src={product.imageUrl}
             alt={product.name}
             fill
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-stone-900/80 via-stone-900/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-stone-950/85 via-stone-900/30 to-transparent" />
 
           {/* Close Button */}
           <button
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="absolute top-4 right-4 w-9 h-9 rounded-full bg-stone-900/60 hover:bg-stone-900 text-white flex items-center justify-center transition-colors shadow-sm"
+            className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-stone-900/70 hover:bg-stone-900 text-white flex items-center justify-center transition-colors shadow-sm z-20"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
 
           {/* Hero Content Overlay */}
-          <div className="absolute bottom-4 left-4 right-4 text-white">
-            <h3 className="font-heading text-lg sm:text-xl font-bold leading-tight">
+          <div className="absolute bottom-3.5 left-4 right-4 text-white">
+            <h3 className="font-heading text-lg sm:text-xl font-bold leading-tight drop-shadow-sm">
               {product.name}
             </h3>
-            <p className="text-amber-400 font-bold text-sm mt-0.5">
+            <p className="text-amber-300 font-extrabold text-sm mt-0.5 drop-shadow-sm">
               From {formatCurrency(product.priceMinor)}
             </p>
           </div>
         </div>
 
         {/* Modal Scrollable Content */}
-        <div className="flex-1 overflow-y-auto p-5 space-y-6">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-5">
           {product.description && (
             <div>
               <h4 className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1">
@@ -293,7 +296,7 @@ export default function CustomizationModal({
         </div>
 
         {/* Modal Sticky Bottom Action Bar */}
-        <div className="p-4 sm:p-5 border-t border-sand-300 bg-sand-50/90 flex items-center gap-3">
+        <div className="p-4 sm:p-5 pb-6 sm:pb-5 border-t border-sand-300 bg-white shadow-[0_-4px_16px_rgba(0,0,0,0.05)] flex items-center gap-3">
           {/* Quantity Stepper */}
           <div className="flex items-center border border-sand-300 rounded-button bg-white shadow-sm overflow-hidden flex-shrink-0">
             <button

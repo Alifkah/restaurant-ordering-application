@@ -83,9 +83,9 @@ export default function MenuCatalogClient({
 
   return (
     <div className="space-y-8">
-      {/* Top Search & Filter Bar */}
-      <div className="glass-card bg-white/90 p-4 sm:p-5 rounded-card border border-sand-300 shadow-elevation-1 space-y-4">
-        <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
+      {/* Top Search & Filter Bar - Sticky for Mobile & Desktop */}
+      <div className="sticky top-[57px] z-30 bg-white/95 backdrop-blur-md -mx-4 sm:mx-0 p-4 sm:p-5 rounded-none sm:rounded-card border-y sm:border border-sand-300 shadow-sm space-y-3.5 transition-all">
+        <div className="flex flex-col sm:flex-row gap-2.5 items-center justify-between">
           {/* Search Input */}
           <div className="relative w-full sm:max-w-md">
             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
@@ -95,8 +95,8 @@ export default function MenuCatalogClient({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search dishes (wagyu rendang, noodles, palm sugar coffee...)"
-              className="w-full pl-10 pr-10 py-2.5 rounded-button bg-sand-50 border border-sand-300 focus:border-primary focus:ring-2 focus:ring-primary/20 text-xs sm:text-sm text-stone-900 placeholder:text-stone-400 outline-none transition-all"
+              placeholder="Search dishes (wagyu rendang, bakmi, coffee...)"
+              className="w-full pl-10 pr-10 py-2 rounded-button bg-sand-50 border border-sand-300 focus:border-primary focus:ring-2 focus:ring-primary/20 text-xs sm:text-sm text-stone-900 placeholder:text-stone-400 outline-none transition-all"
             />
             {searchQuery && (
               <button
@@ -110,54 +110,54 @@ export default function MenuCatalogClient({
           </div>
 
           {/* Quick Dietary Filters */}
-          <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
+          <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto no-scrollbar pb-0.5 sm:pb-0">
             <button
               type="button"
               onClick={() => setActiveFilter("all")}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors whitespace-nowrap ${
+              className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap ${
                 activeFilter === "all"
-                  ? "bg-stone-900 text-white"
-                  : "bg-sand-200 text-stone-700 hover:bg-sand-300"
+                  ? "bg-stone-900 text-white shadow-xs"
+                  : "bg-sand-100 text-stone-700 hover:bg-sand-200 border border-sand-300/60"
               }`}
             >
-              All Dishes
+              All
             </button>
             <button
               type="button"
               onClick={() => setActiveFilter("bestseller")}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors flex items-center gap-1 whitespace-nowrap ${
+              className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors flex items-center gap-1 whitespace-nowrap ${
                 activeFilter === "bestseller"
-                  ? "bg-amber-500 text-stone-950 font-semibold shadow-sm"
-                  : "bg-sand-200 text-stone-700 hover:bg-sand-300"
+                  ? "bg-amber-500 text-stone-950 font-bold shadow-xs"
+                  : "bg-sand-100 text-stone-700 hover:bg-sand-200 border border-sand-300/60"
               }`}
             >
-              <Sparkles className="w-3 h-3" />
+              <Sparkles className="w-3 h-3 text-amber-900" />
               <span>Bestseller</span>
             </button>
             <button
               type="button"
               onClick={() => setActiveFilter("spicy")}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors flex items-center gap-1 whitespace-nowrap ${
+              className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors flex items-center gap-1 whitespace-nowrap ${
                 activeFilter === "spicy"
-                  ? "bg-red-500 text-white font-semibold shadow-sm"
-                  : "bg-sand-200 text-stone-700 hover:bg-sand-300"
+                  ? "bg-red-500 text-white font-bold shadow-xs"
+                  : "bg-sand-100 text-stone-700 hover:bg-sand-200 border border-sand-300/60"
               }`}
             >
-              <Flame className="w-3 h-3" />
-              <span>Spicy Dishes</span>
+              <Flame className="w-3 h-3 text-red-200" />
+              <span>Spicy</span>
             </button>
           </div>
         </div>
 
         {/* Category Horizontal Sticky Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-2 border-t border-sand-200">
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-2 border-t border-sand-200/80 -mx-1 px-1">
           <button
             type="button"
             onClick={() => setSelectedCategorySlug("all")}
-            className={`px-4 py-2 rounded-button text-xs sm:text-sm font-semibold transition-all whitespace-nowrap flex-shrink-0 ${
+            className={`px-3.5 py-1.5 rounded-button text-xs font-bold transition-all whitespace-nowrap flex-shrink-0 active:scale-95 ${
               selectedCategorySlug === "all"
                 ? "bg-primary text-white shadow-elevation-1"
-                : "bg-sand-100 text-stone-700 hover:bg-sand-200"
+                : "bg-sand-100 text-stone-700 hover:bg-sand-200 border border-sand-300/60"
             }`}
           >
             All ({products.length})
@@ -172,13 +172,13 @@ export default function MenuCatalogClient({
                 key={cat.id}
                 type="button"
                 onClick={() => setSelectedCategorySlug(cat.slug)}
-                className={`px-4 py-2 rounded-button text-xs sm:text-sm font-semibold transition-all whitespace-nowrap flex-shrink-0 ${
+                className={`px-3.5 py-1.5 rounded-button text-xs font-bold transition-all whitespace-nowrap flex-shrink-0 active:scale-95 ${
                   isSelected
                     ? "bg-primary text-white shadow-elevation-1"
-                    : "bg-sand-100 text-stone-700 hover:bg-sand-200"
+                    : "bg-sand-100 text-stone-700 hover:bg-sand-200 border border-sand-300/60"
                 }`}
               >
-                {cat.name} ({count})
+                {cat.name} {count > 0 && `(${count})`}
               </button>
             );
           })}
