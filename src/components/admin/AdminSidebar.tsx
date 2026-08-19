@@ -18,7 +18,6 @@ import {
   LogOut,
   Shield,
   Loader2,
-  QrCode,
 } from "lucide-react";
 
 export default function AdminSidebar() {
