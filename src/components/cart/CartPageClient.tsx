@@ -18,7 +18,9 @@ import {
   Loader2,
   CheckCircle2,
   Lock,
-  Info,
+  CreditCard,
+  Zap,
+  User,
 } from "lucide-react";
 
 export default function CartPageClient() {
@@ -28,9 +30,7 @@ export default function CartPageClient() {
     updateQuantity,
     removeItem,
     clearCart,
-    formattedSubtotal,
-    formattedTax,
-    formattedTotal,
+    subtotalMinor,
     diningOption,
     setDiningOption,
     tableNumber,
@@ -41,6 +41,16 @@ export default function CartPageClient() {
     setCustomerNote,
   } = useCart();
 
+  // Guest Information state
+  const [guestName, setGuestName] = useState(session?.user?.name || "");
+  const [guestEmail, setGuestEmail] = useState(session?.user?.email || "");
+  const [guestPhone, setGuestPhone] = useState("");
+
+  // Card details state (visual representation)
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardExpiry, setCardExpiry] = useState("");
+  const [cardCvc, setCardCvc] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successOrder, setSuccessOrder] = useState<{
@@ -48,11 +58,26 @@ export default function CartPageClient() {
     orderNumber: string;
   } | null>(null);
 
+  // Price calculations matching 5% service charge & 10% PB1
+  const serviceChargeMinor = Math.round(subtotalMinor * 0.05);
+  const calculatedTaxMinor = Math.round((subtotalMinor + serviceChargeMinor) * 0.1);
+  const calculatedTotalMinor = subtotalMinor + serviceChargeMinor + calculatedTaxMinor;
+
   const handleCreateOrder = async () => {
     setErrorMsg(null);
 
     if (items.length === 0) {
       setErrorMsg("Your dining basket is currently empty.");
+      return;
+    }
+
+    if (diningOption === "dine_in" && !tableNumber?.trim()) {
+      setErrorMsg("Please enter your Table Number for Dine-In service.");
+      return;
+    }
+
+    if (!session?.user && (!guestName.trim() || !guestEmail.trim())) {
+      setErrorMsg("Please enter your Name and Email Address for order updates.");
       return;
     }
 
@@ -71,6 +96,9 @@ export default function CartPageClient() {
         tableNumber: diningOption === "dine_in" && tableNumber ? tableNumber.trim() : undefined,
         tableId: diningOption === "dine_in" && tableId ? tableId : undefined,
         customerNote: customerNote.trim() || undefined,
+        guestName: guestName.trim() || undefined,
+        guestEmail: guestEmail.trim() || undefined,
+        guestPhone: guestPhone.trim() ? `+62${guestPhone.replace(/^0+/, "")}` : undefined,
         discountMinor: 0,
       };
 
@@ -111,7 +139,7 @@ export default function CartPageClient() {
         return;
       }
 
-      // Fallback to local success view if URL is not returned
+      // Fallback to local success view if direct URL is not returned
       setSuccessOrder({
         orderId: orderData.orderId,
         orderNumber: orderData.orderNumber,
@@ -195,7 +223,7 @@ export default function CartPageClient() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-16 lg:pb-0">
       {/* Top Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -204,10 +232,10 @@ export default function CartPageClient() {
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-stone-500 hover:text-primary transition-colors mb-1"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Continue Selecting Dishes</span>
+            <span>Back to Menu Catalog</span>
           </Link>
           <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-stone-900">
-            Review Basket & Order Details
+            Checkout & Order Details
           </h1>
         </div>
 
@@ -231,55 +259,132 @@ export default function CartPageClient() {
 
       {/* Main 2-Column Checkout Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Column: Itemized List & Dining Preferences */}
+        {/* Left Column: Guest Details & Your Order */}
         <div className="lg:col-span-7 space-y-6">
-          {/* Dining Option Card */}
-          <div className="glass-card bg-white rounded-card p-5 border border-sand-300 shadow-elevation-1 space-y-4">
+          {/* Segmented Switch: Sign In / Guest Checkout */}
+          {!session?.user && (
+            <div className="flex items-center p-1 rounded-xl bg-sand-200 border border-sand-300 max-w-sm">
+              <Link
+                href="/login?callbackUrl=/cart"
+                className="flex-1 py-2 text-center text-xs font-semibold rounded-lg text-stone-600 hover:text-stone-900 transition-colors"
+              >
+                Sign In
+              </Link>
+              <span
+                className="flex-1 py-2 text-center text-xs font-bold rounded-lg bg-primary text-white shadow-sm flex items-center justify-center gap-1 transition-all cursor-default"
+              >
+                <Zap className="w-3.5 h-3.5" />
+                <span>⚡ Fast Guest Checkout</span>
+              </span>
+            </div>
+          )}
+
+          {/* Card 1: Guest Details */}
+          <div className="glass-card bg-white rounded-card p-5 sm:p-6 border border-sand-300 shadow-elevation-1 space-y-4">
             <h2 className="font-heading font-bold text-sm text-stone-900 uppercase tracking-wider flex items-center gap-2">
-              <UtensilsCrossed className="w-4 h-4 text-primary" />
-              <span>Dining Preference</span>
+              <User className="w-4 h-4 text-primary" />
+              <span>Guest & Dining Details</span>
             </h2>
 
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => setDiningOption("dine_in")}
-                className={`p-3.5 rounded-button border text-left transition-all ${
-                  diningOption === "dine_in"
-                    ? "bg-primary-50 border-primary shadow-sm"
-                    : "bg-sand-50/60 border-sand-300 hover:border-sand-400"
-                }`}
-              >
-                <span className="font-heading font-bold text-xs sm:text-sm text-stone-900 block">
-                  🍽️ Dine-In
-                </span>
-                <span className="text-[11px] text-stone-500 mt-0.5 block">
-                  Eat at the dining lounge
-                </span>
-              </button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              {/* Full Name */}
+              <div className="space-y-1">
+                <label className="block text-xs font-semibold text-stone-700">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  value={guestName}
+                  onChange={(e) => setGuestName(e.target.value)}
+                  placeholder="e.g. Raden Arya"
+                  required
+                  className="w-full px-3.5 py-2.5 rounded-button bg-sand-50/70 border border-sand-300 focus:border-primary focus:ring-2 focus:ring-primary/20 text-xs sm:text-sm text-stone-900 outline-none transition-all"
+                />
+              </div>
 
-              <button
-                type="button"
-                onClick={() => setDiningOption("takeaway")}
-                className={`p-3.5 rounded-button border text-left transition-all ${
-                  diningOption === "takeaway"
-                    ? "bg-primary-50 border-primary shadow-sm"
-                    : "bg-sand-50/60 border-sand-300 hover:border-sand-400"
-                }`}
-              >
-                <span className="font-heading font-bold text-xs sm:text-sm text-stone-900 block">
-                  🛍️ Takeaway
-                </span>
-                <span className="text-[11px] text-stone-500 mt-0.5 block">
-                  Packaged to-go / Pickup
-                </span>
-              </button>
+              {/* Email Address */}
+              <div className="space-y-1">
+                <label className="block text-xs font-semibold text-stone-700">
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  value={guestEmail}
+                  onChange={(e) => setGuestEmail(e.target.value)}
+                  placeholder="e.g. arya@example.com"
+                  required
+                  className="w-full px-3.5 py-2.5 rounded-button bg-sand-50/70 border border-sand-300 focus:border-primary focus:ring-2 focus:ring-primary/20 text-xs sm:text-sm text-stone-900 outline-none transition-all"
+                />
+              </div>
+
+              {/* WhatsApp Number with +62 prefix pill */}
+              <div className="sm:col-span-2 space-y-1">
+                <label className="block text-xs font-semibold text-stone-700">
+                  WhatsApp Number (for live order status)
+                </label>
+                <div className="flex rounded-button border border-sand-300 overflow-hidden bg-sand-50/70 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+                  <div className="px-3.5 py-2.5 bg-sand-200/80 border-r border-sand-300 text-stone-700 text-xs sm:text-sm font-bold flex items-center gap-1.5 flex-shrink-0">
+                    <span>🇮🇩</span>
+                    <span>+62</span>
+                  </div>
+                  <input
+                    type="tel"
+                    value={guestPhone}
+                    onChange={(e) => setGuestPhone(e.target.value)}
+                    placeholder="812 3456 7890"
+                    className="w-full px-3.5 py-2.5 bg-transparent text-xs sm:text-sm text-stone-900 outline-none"
+                  />
+                </div>
+              </div>
             </div>
 
+            {/* Dining Preference Pills */}
+            <div className="pt-2 space-y-2">
+              <label className="block text-xs font-semibold text-stone-700">
+                Dining Preference *
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setDiningOption("dine_in")}
+                  className={`p-3 rounded-button border text-left transition-all ${
+                    diningOption === "dine_in"
+                      ? "bg-primary-50 border-primary text-primary font-bold shadow-xs"
+                      : "bg-sand-50/60 border-sand-300 text-stone-700 hover:border-sand-400 font-medium"
+                  }`}
+                >
+                  <span className="text-xs sm:text-sm block">
+                    🍽️ Dine-In {tableNumber && `(Table ${tableNumber})`}
+                  </span>
+                  <span className="text-[11px] text-stone-500 font-normal mt-0.5 block">
+                    Served directly to your table
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setDiningOption("takeaway")}
+                  className={`p-3 rounded-button border text-left transition-all ${
+                    diningOption === "takeaway"
+                      ? "bg-primary-50 border-primary text-primary font-bold shadow-xs"
+                      : "bg-sand-50/60 border-sand-300 text-stone-700 hover:border-sand-400 font-medium"
+                  }`}
+                >
+                  <span className="text-xs sm:text-sm block">
+                    🛍️ Takeaway
+                  </span>
+                  <span className="text-[11px] text-stone-500 font-normal mt-0.5 block">
+                    Packaged to-go / Pickup
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            {/* Table Number if Dine-In */}
             {diningOption === "dine_in" && (
-              <div className="pt-2 animate-fade-in space-y-1.5">
+              <div className="pt-1 animate-fade-in space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider">
+                  <label className="block text-xs font-semibold text-stone-700">
                     Table Number *
                   </label>
                   {tableZone && (
@@ -292,24 +397,41 @@ export default function CartPageClient() {
                   type="text"
                   value={tableNumber}
                   onChange={(e) => setTableNumber(e.target.value)}
-                  placeholder="e.g., Table 12 or Booth 04"
+                  placeholder="e.g., 08 or VIP-1"
                   required
-                  className="w-full p-2.5 rounded-button bg-sand-50/50 border border-sand-300 focus:border-primary focus:ring-2 focus:ring-primary/20 text-xs sm:text-sm text-stone-900 placeholder:text-stone-400 outline-none transition-all"
+                  className="w-full px-3.5 py-2.5 rounded-button bg-sand-50/70 border border-sand-300 focus:border-primary focus:ring-2 focus:ring-primary/20 text-xs sm:text-sm text-stone-900 outline-none transition-all"
                 />
               </div>
             )}
+
+            {/* Special Note textarea */}
+            <div className="pt-1 space-y-1">
+              <label className="block text-xs font-semibold text-stone-700">
+                Special Requests / Kitchen Notes
+              </label>
+              <textarea
+                value={customerNote}
+                onChange={(e) => setCustomerNote(e.target.value)}
+                placeholder="e.g. Serve food together, no plastic cutlery, extra napkins..."
+                rows={2}
+                className="w-full px-3.5 py-2 rounded-button bg-sand-50/70 border border-sand-300 focus:border-primary focus:ring-2 focus:ring-primary/20 text-xs sm:text-sm text-stone-900 outline-none resize-none transition-all"
+              />
+            </div>
           </div>
 
-          {/* Itemized Basket */}
-          <div className="glass-card bg-white rounded-card p-5 border border-sand-300 shadow-elevation-1 space-y-4">
-            <h2 className="font-heading font-bold text-sm text-stone-900 uppercase tracking-wider">
-              Selected Dishes ({items.length})
+          {/* Card 2: Your Order */}
+          <div className="glass-card bg-white rounded-card p-5 sm:p-6 border border-sand-300 shadow-elevation-1 space-y-4">
+            <h2 className="font-heading font-bold text-sm text-stone-900 uppercase tracking-wider flex items-center justify-between">
+              <span>Your Order ({items.length} {items.length === 1 ? "dish" : "dishes"})</span>
+              <span className="text-xs text-stone-500 font-medium">
+                {items.reduce((s, i) => s + i.quantity, 0)} items total
+              </span>
             </h2>
 
             <div className="divide-y divide-sand-200">
               {items.map((item) => (
-                <div key={item.id} className="py-4 first:pt-0 last:pb-0 flex gap-4 items-start">
-                  <div className="relative w-20 h-20 rounded-lg overflow-hidden bg-sand-200 flex-shrink-0">
+                <div key={item.id} className="py-4 first:pt-0 last:pb-0 flex gap-3.5 items-start">
+                  <div className="relative w-18 h-18 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-sand-200 flex-shrink-0">
                     <MenuImage
                       src={item.imageUrl}
                       alt={item.name}
@@ -326,28 +448,22 @@ export default function CartPageClient() {
                       <button
                         type="button"
                         onClick={() => removeItem(item.id)}
-                        className="text-stone-400 hover:text-red-600 transition-colors p-1"
+                        className="text-xs text-red-500 hover:text-red-700 font-semibold p-1 hover:bg-red-50 rounded"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        Remove
                       </button>
                     </div>
 
-                    {/* Options list */}
+                    {/* Options / Variants */}
                     {item.selectedOptions.length > 0 && (
-                      <div className="mt-1 space-y-0.5">
-                        {item.selectedOptions.map((opt) => (
-                          <p key={opt.id} className="text-xs text-stone-500">
-                            • {opt.name}{" "}
-                            {opt.priceDeltaMinor > 0 &&
-                              `(+${formatCurrency(opt.priceDeltaMinor)})`}
-                          </p>
-                        ))}
-                      </div>
+                      <p className="text-xs text-stone-500 mt-0.5">
+                        {item.selectedOptions.map((o) => o.name).join(" • ")}
+                      </p>
                     )}
 
                     {item.note && (
-                      <p className="text-xs text-primary italic mt-1">
-                        Note: &ldquo;{item.note}&rdquo;
+                      <p className="text-xs text-primary italic mt-0.5">
+                        &ldquo;{item.note}&rdquo;
                       </p>
                     )}
 
@@ -356,12 +472,12 @@ export default function CartPageClient() {
                         {formatCurrency(item.lineTotalMinor)}
                       </span>
 
-                      {/* Quantity Stepper */}
-                      <div className="flex items-center border border-sand-300 rounded-button bg-white shadow-sm overflow-hidden">
+                      {/* Mini Quantity Stepper */}
+                      <div className="flex items-center border border-sand-300 rounded-lg bg-sand-50 shadow-xs overflow-hidden">
                         <button
                           type="button"
                           onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                          className="p-1.5 text-stone-600 hover:bg-sand-100 transition-colors"
+                          className="p-1.5 text-stone-600 hover:bg-sand-200 transition-colors"
                         >
                           <Minus className="w-3.5 h-3.5" />
                         </button>
@@ -371,7 +487,7 @@ export default function CartPageClient() {
                         <button
                           type="button"
                           onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          className="p-1.5 text-stone-600 hover:bg-sand-100 transition-colors"
+                          className="p-1.5 text-stone-600 hover:bg-sand-200 transition-colors"
                         >
                           <Plus className="w-3.5 h-3.5" />
                         </button>
@@ -382,40 +498,36 @@ export default function CartPageClient() {
               ))}
             </div>
           </div>
-
-          {/* Global Order Note */}
-          <div className="glass-card bg-white rounded-card p-5 border border-sand-300 shadow-elevation-1 space-y-2">
-            <label className="block text-xs font-bold text-stone-800 uppercase tracking-wider">
-              Overall Order & Kitchen Notes
-            </label>
-            <textarea
-              value={customerNote}
-              onChange={(e) => setCustomerNote(e.target.value)}
-              placeholder="e.g., Serve dishes together, extra cutlery, birthday celebration..."
-              rows={2}
-              className="w-full p-3 rounded-button bg-sand-50/60 border border-sand-300 focus:border-primary focus:ring-2 focus:ring-primary/20 text-xs sm:text-sm text-stone-800 placeholder:text-stone-400 outline-none resize-none transition-all"
-            />
-          </div>
         </div>
 
-        {/* Right Column: Sticky Bill Summary & Checkout */}
+        {/* Right Column: Order Summary Card */}
         <div className="lg:col-span-5 space-y-6 sticky top-20">
           <div className="glass-card bg-white rounded-card p-6 border border-sand-300 shadow-elevation-2 space-y-5">
             <h2 className="font-heading font-bold text-base text-stone-900 border-b border-sand-200 pb-3">
-              Payment Summary
+              Order Summary
             </h2>
 
+            {/* Pricing Breakdown */}
             <div className="space-y-3 text-xs sm:text-sm">
               <div className="flex justify-between text-stone-600">
-                <span>Subtotal ({items.reduce((s, i) => s + i.quantity, 0)} {items.reduce((s, i) => s + i.quantity, 0) === 1 ? "item" : "items"})</span>
-                <span className="font-semibold text-stone-800">{formattedSubtotal}</span>
+                <span>Subtotal</span>
+                <span className="font-semibold text-stone-800">
+                  {formatCurrency(subtotalMinor)}
+                </span>
               </div>
 
               <div className="flex justify-between text-stone-600">
-                <span className="flex items-center gap-1">
-                  <span>Restaurant Tax (PB1 10%)</span>
+                <span>Service Charge (5%)</span>
+                <span className="font-semibold text-stone-800">
+                  {formatCurrency(serviceChargeMinor)}
                 </span>
-                <span className="font-semibold text-stone-800">{formattedTax}</span>
+              </div>
+
+              <div className="flex justify-between text-stone-600">
+                <span>Restaurant Tax (PB1 10%)</span>
+                <span className="font-semibold text-stone-800">
+                  {formatCurrency(calculatedTaxMinor)}
+                </span>
               </div>
 
               <div className="pt-3 border-t border-sand-200 flex justify-between items-baseline">
@@ -423,61 +535,105 @@ export default function CartPageClient() {
                   Total Due
                 </span>
                 <span className="font-heading font-extrabold text-xl text-primary">
-                  {formattedTotal}
+                  {formatCurrency(calculatedTotalMinor)}
                 </span>
               </div>
             </div>
 
-            {/* User Session Info Pill */}
-            {session?.user ? (
-              <div className="p-3 rounded-button bg-sand-50 border border-sand-200 text-xs text-stone-700 flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-primary text-white font-bold text-[10px] flex items-center justify-center">
-                  {session.user.name?.charAt(0) || "U"}
-                </div>
-                <div className="truncate">
-                  <p className="font-semibold truncate">{session.user.name}</p>
-                  <p className="text-[10px] text-stone-500 truncate">{session.user.email}</p>
-                </div>
-              </div>
-            ) : (
-              <div className="p-3 rounded-button bg-amber-50 border border-amber-200 text-xs text-amber-800 flex items-start gap-2">
-                <Info className="w-4 h-4 flex-shrink-0 mt-0.5 text-amber-600" />
-                <span>
-                  Ordering as Guest. You may also{" "}
-                  <Link href="/login" className="font-bold underline">
-                    Sign In
-                  </Link>{" "}
-                  to keep your order history.
+            {/* Simulated Stripe Card Element */}
+            <div className="p-4 rounded-xl bg-sand-50/90 border border-sand-300 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-stone-800 flex items-center gap-1.5">
+                  <CreditCard className="w-4 h-4 text-primary" />
+                  <span>Stripe Secure Payment</span>
                 </span>
+                <div className="flex items-center gap-1 text-[10px] font-bold text-stone-500">
+                  <span className="px-1.5 py-0.5 bg-white rounded border border-sand-300">VISA</span>
+                  <span className="px-1.5 py-0.5 bg-white rounded border border-sand-300">MC</span>
+                </div>
               </div>
-            )}
+
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  value={cardNumber}
+                  onChange={(e) => setCardNumber(e.target.value)}
+                  placeholder="Card Number •••• •••• •••• ••••"
+                  className="w-full px-3 py-2 rounded-lg bg-white border border-sand-300 text-xs text-stone-900 placeholder:text-stone-400 outline-none"
+                />
+                <div className="grid grid-cols-2 gap-2">
+                  <input
+                    type="text"
+                    value={cardExpiry}
+                    onChange={(e) => setCardExpiry(e.target.value)}
+                    placeholder="MM / YY"
+                    className="w-full px-3 py-2 rounded-lg bg-white border border-sand-300 text-xs text-stone-900 placeholder:text-stone-400 outline-none"
+                  />
+                  <input
+                    type="text"
+                    value={cardCvc}
+                    onChange={(e) => setCardCvc(e.target.value)}
+                    placeholder="CVC"
+                    className="w-full px-3 py-2 rounded-lg bg-white border border-sand-300 text-xs text-stone-900 placeholder:text-stone-400 outline-none"
+                  />
+                </div>
+              </div>
+            </div>
 
             {/* Primary Order CTA */}
             <button
               type="button"
               disabled={loading}
               onClick={handleCreateOrder}
-              className="w-full py-3.5 px-4 rounded-button bg-primary text-white font-semibold text-sm shadow-elevation-1 hover:bg-primary-hover active:scale-[0.99] disabled:opacity-60 transition-all flex items-center justify-center gap-2"
+              className="w-full py-3.5 px-4 rounded-button bg-primary text-white font-bold text-sm shadow-elevation-1 hover:bg-primary-hover active:scale-[0.99] disabled:opacity-60 transition-all flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Processing Order...</span>
+                  <span>Processing Payment...</span>
                 </>
               ) : (
                 <>
                   <Lock className="w-4 h-4" />
-                  <span>Place Order • {formattedTotal}</span>
+                  <span>Pay {formatCurrency(calculatedTotalMinor)} with Stripe 🔒</span>
                 </>
               )}
             </button>
 
             <div className="flex items-center justify-center gap-2 text-[11px] text-stone-500 text-center">
               <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              <span>Realtime Kitchen Notification & Secure Checkout</span>
+              <span>No registration required • SSL Encrypted</span>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Mobile Sticky Bottom Bar */}
+      <div className="lg:hidden fixed bottom-14 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-sand-300 p-3.5 px-4 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] flex items-center justify-between gap-3">
+        <div>
+          <span className="text-[10px] text-stone-500 font-bold uppercase block">
+            TOTAL DUE
+          </span>
+          <span className="font-heading font-extrabold text-base text-primary">
+            {formatCurrency(calculatedTotalMinor)}
+          </span>
+        </div>
+
+        <button
+          type="button"
+          disabled={loading}
+          onClick={handleCreateOrder}
+          className="py-2.5 px-5 rounded-button bg-primary text-white font-bold text-xs shadow-elevation-1 hover:bg-primary-hover active:scale-95 disabled:opacity-60 transition-all flex items-center gap-1.5"
+        >
+          {loading ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <>
+              <span>Pay with Stripe</span>
+              <span>→</span>
+            </>
+          )}
+        </button>
       </div>
     </div>
   );

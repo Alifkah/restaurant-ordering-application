@@ -81,6 +81,13 @@ Dokumen ini mendefinisikan authentication, session, role-based access control (R
 -   Pemeriksaan otorisasi dilakukan di sisi server pada setiap mutasi data (Server Actions / Route Handlers).
 -   Perubahan role/status user hanya boleh dilakukan oleh Admin.
 
+## 7.1 Guest Checkout & Order Tracking Architecture
+
+-   **Pemesanan Cepat (Guest)**: Pengguna tidak diwajibkan login/registrasi sebelum memesan. Pengguna cukup memasukkan Nama, Email/WhatsApp, dan Nomor Meja saat checkout.
+-   **Guest Tracking Token**: Saat order guest dibuat, server menghasilkan `guest_tracking_token` (kriptografis acak) yang disimpan di database dan di-embed ke URL pelacakan (misal: `/orders/ORD-042?token=xyz...`) atau disimpan di cookie browser sementara.
+-   **Otorisasi Pelacakan Guest**: Endpoint status `/api/orders/:id/status` dan `/api/realtime/orders/:id` mengizinkan akses jika request memiliki session pemilik ATAU query parameter `token` yang cocok dengan `guest_tracking_token`.
+-   **Konversi Akun (Seamless Account Claiming)**: Pada halaman sukses/pelacakan order, guest diberikan opsi: *"Ingin simpan riwayat ini? Cukup buat password"*. Jika guest mendaftar dengan email yang sama, sistem otomatis menautkan pesanan-pesanan guest masa lalunya ke `users.id` akun baru tersebut.
+
 # 8. Authentication Endpoints
 
   -------------------------------------------------------------------------------------------------------

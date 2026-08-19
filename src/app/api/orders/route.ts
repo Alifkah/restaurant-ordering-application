@@ -40,46 +40,75 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { items, diningOption, tableNumber, tableId, customerNote, discountMinor } =
+    const { items, diningOption, tableNumber, tableId, customerNote, discountMinor, guestName, guestEmail, guestPhone } =
       validated.data;
 
-    // 2. Resolve Customer User ID
+    // 2. Resolve Customer User ID (Session or Guest)
     let customerId = session?.user?.id;
 
     if (!customerId) {
-      // Find default customer account for guest orders
-      const [defaultCustomer] = await db
-        .select({ id: users.id })
-        .from(users)
-        .where(eq(users.role, "customer"))
-        .limit(1);
+      if (guestEmail) {
+        const normalizedEmail = guestEmail.trim().toLowerCase();
+        const [existingGuestUser] = await db
+          .select({ id: users.id })
+          .from(users)
+          .where(eq(users.email, normalizedEmail))
+          .limit(1);
 
-      if (defaultCustomer) {
-        customerId = defaultCustomer.id;
+        if (existingGuestUser) {
+          customerId = existingGuestUser.id;
+        } else {
+          const [newGuestUser] = await db
+            .insert(users)
+            .values({
+              email: normalizedEmail,
+              name: guestName?.trim() || "Guest Customer",
+              role: "customer",
+              status: "active",
+            })
+            .returning({ id: users.id });
+          customerId = newGuestUser.id;
+        }
       } else {
-        return NextResponse.json(
-          {
-            success: false,
-            error: {
-              code: "UNAUTHORIZED",
-              message: "Please sign in to complete your order.",
+        // Fallback to default customer account for anonymous guest orders
+        const [defaultCustomer] = await db
+          .select({ id: users.id })
+          .from(users)
+          .where(eq(users.role, "customer"))
+          .limit(1);
+
+        if (defaultCustomer) {
+          customerId = defaultCustomer.id;
+        } else {
+          return NextResponse.json(
+            {
+              success: false,
+              error: {
+                code: "UNAUTHORIZED",
+                message: "Please sign in or provide contact details to complete your order.",
+              },
             },
-          },
-          { status: 401 }
-        );
+            { status: 401 }
+          );
+        }
       }
     }
 
     // 3. Server-Authoritative Price Calculation
     const calculation = await calculateOrderPrices(items, discountMinor);
 
-    // 4. Construct Final Customer Note with Dining Option
+    // 4. Construct Final Customer Note with Dining Option & Guest Details
     let finalNote = customerNote?.trim() || "";
+    const guestMeta = [
+      guestName ? `Name: ${guestName.trim()}` : null,
+      guestPhone ? `WA: ${guestPhone.trim()}` : null,
+    ].filter(Boolean).join(" • ");
+
     if (diningOption === "dine_in") {
       const tableInfo = tableNumber ? `Table ${tableNumber.trim()}` : "Dine-In";
-      finalNote = `[Dine-In - ${tableInfo}] ${finalNote}`.trim();
+      finalNote = `[Dine-In - ${tableInfo}${guestMeta ? ` | ${guestMeta}` : ""}] ${finalNote}`.trim();
     } else {
-      finalNote = `[Takeaway] ${finalNote}`.trim();
+      finalNote = `[Takeaway${guestMeta ? ` | ${guestMeta}` : ""}] ${finalNote}`.trim();
     }
 
     // 5. Generate Unique Order Number

@@ -80,21 +80,30 @@ Design a dish customization modal for a restaurant ordering app that guides the 
 
 ---
 
-### Prompt 4: Cart Summary & Checkout Page (Stripe Payment)
+### Prompt 4: Cart Summary & Checkout Page (Guest Fast Checkout & Stripe Payment)
 ```text
-Screen: Cart Review & Stripe Checkout
-Platform: Responsive Web
+Screen: Cart Review & Stripe Checkout (Supports Fast Guest Checkout)
+Platform: Responsive Web & Mobile PWA
 Prompt:
-Design a clean, high-trust 2-column checkout screen for online food ordering.
-- Left Column (Order Details & Customer Info):
-  1. Customer Info / Auth Block: Shows logged-in customer name and email, or quick one-tap login/registration prompt.
-  2. Dining Option / Order Note: Dining preference selector (Dine-in / Takeaway / Table Number) and overall order note.
-  3. Itemized Basket List: List of selected dishes with thumbnail, quantity badge, list of customized options in small grey text, and a delete (trash) / edit icon.
+Design a clean, high-trust 2-column checkout screen for online food ordering supporting both Fast Guest Checkout and Registered Customer Sign-in.
+- Left Column (Customer Info & Order Details):
+  1. Checkout Mode Selector (Segmented Pill Switch):
+     - Tab A (Default): "⚡ Fast Guest Checkout" (Order in seconds without creating a password).
+     - Tab B: "Sign In to Account" (For returning members with saved addresses/history).
+  2. Guest Checkout Form Fields (Compact Card):
+     - Full Name input (e.g. "Budi Santoso").
+     - WhatsApp / Phone Number input with country prefix (+62) for instant order notification updates.
+     - Email Address input (for Stripe digital receipt).
+  3. Dining Mode & Table Selector:
+     - Segmented buttons: [ 🍽️ Dine-in (Table Number: 08) ] | [ 🛍️ Takeaway / Pickup ].
+     - Special Chef / Kitchen Note input ("e.g. Please serve drinks first").
+  4. Itemized Basket List:
+     - Dish thumbnail, item title, customization summary (e.g. "Large, Level 2 Spicy, +Extra Cheese"), quantity stepper (- 1 +), line price, and remove icon.
 - Right Column (Sticky Payment Summary):
-  1. Bill Breakdown: Subtotal, Service Charge / Tax, and Total formatted in configured currency.
+  1. Bill Breakdown: Subtotal, Service Charge / Tax, and Total formatted in configured currency (e.g., "Rp 245.000").
   2. Payment Method Card: Embedded Stripe Checkout element styling showing Credit/Debit Card input fields (Card Number, Exp, CVC), Apple Pay / Google Pay quick buttons, and official Stripe security badges.
-  3. Primary CTA: "Pay Rp 245.000 with Stripe" with a lock icon.
-  4. Reassurance: "🔒 256-Bit SSL Encrypted & Instant Kitchen Confirmation".
+  3. Primary CTA: "Pay Rp 245.000 with Stripe 🔒" (Warm terracotta primary button).
+  4. Reassurance Footer: "🔒 256-Bit SSL Encrypted • Instant Kitchen Confirmation • No Account Required".
 ```
 
 ---

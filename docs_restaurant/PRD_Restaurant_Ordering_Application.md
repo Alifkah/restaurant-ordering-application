@@ -108,6 +108,8 @@ Restoran memerlukan satu sistem terpadu yang menghubungkan pengalaman pelanggan 
   CF-09      Melacak status pesanan yang sedang berjalan                           Wajib
 
   CF-10      Memberikan ulasan produk (hanya untuk pesanan yang memenuhi syarat)   Wajib
+
+  CF-11      Pemesanan cepat tanpa akun (Guest Fast Checkout) & Dine-In Scan QR    Wajib
   ------------------------------------------------------------------------------------------------
 
 5.2 Sisi Staf (Staff-Facing)

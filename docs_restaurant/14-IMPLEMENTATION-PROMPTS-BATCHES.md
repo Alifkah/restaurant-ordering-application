@@ -41,7 +41,7 @@ Tolong bangun fondasi awal proyek Restaurant Ordering Application sesuai dengan 
      • categories (id, name, slug, description, sort_order, is_active)
      • products (id, category_id, name, slug, description, price_minor, currency, image_url, image_public_id, is_available, sort_order)
      • product_options (id, product_id, name, description, price_delta_minor, is_available, sort_order)
-     • orders (id, order_number, customer_id, status [pending, confirmed, preparing, ready, completed, cancelled], subtotal_minor, discount_minor, tax_minor, total_minor, currency, customer_note)
+     • orders (id, order_number, customer_id [nullable], guest_name, guest_email, guest_phone, table_number, order_type, guest_tracking_token, status [pending, confirmed, preparing, ready, completed, cancelled], subtotal_minor, discount_minor, tax_minor, total_minor, currency, customer_note)
      • order_items (id, order_id, product_id, product_name_snapshot, unit_price_minor, quantity, line_total_minor, note)
      • order_item_options (id, order_item_id, product_option_id, option_name_snapshot, price_delta_minor, quantity)
      • payments (id, order_id, provider, provider_payment_id, checkout_session_id, status [pending, paid, failed, refunded], amount_minor, currency, paid_at)
@@ -70,7 +70,7 @@ Implementasikan sistem autentikasi dan kontrol akses berbasis peran (RBAC) sesua
    - Setup session callback agar menyertakan `id`, `role` (customer/staff/admin), dan `status` ke dalam objek session.
 
 2. Proteksi Rute & Middleware (`middleware.ts`):
-   - Lindungi rute `/account/*` dan `/orders/*` untuk customer yang terautentikasi.
+   - Lindungi rute `/account/*` dan riwayat `/orders/*` untuk customer yang terautentikasi (dengan fallback akses token untuk guest tracking).
    - Lindungi rute `/kitchen/*` dan `/api/realtime/kitchen` khusus untuk role STAFF dan ADMIN.
    - Lindungi rute `/admin/*` dan `/api/admin/*` khusus untuk role ADMIN.
    - Redirect otomatis jika belum login atau jika role tidak sesuai (403 Forbidden).
@@ -112,24 +112,24 @@ Bangun antarmuka publik restoran dan modul katalog menu makanan sesuai dengan PR
 
 ---
 
-### 🛒 BATCH 4: Keranjang Belanja & Mesin Kalkulasi Pesanan (Phase 5 & 6)
+### 🛒 BATCH 4: Keranjang Belanja, Guest Checkout & Kalkulasi Pesanan (Phase 5 & 6)
 
 ```text
-[EXECUTION PROMPT - BATCH 4: CART & ORDER PROCESSING ENGINE]
+[EXECUTION PROMPT - BATCH 4: CART, GUEST CHECKOUT & ORDER PROCESSING ENGINE]
 
-Implementasikan manajemen keranjang belanja dan mesin pemrosesan pesanan sesuai dengan 03-DATABASE-SCHEMA dan 05-API-SPECIFICATION:
+Implementasikan manajemen keranjang belanja, alur Guest Fast Checkout, dan mesin pemrosesan pesanan sesuai dengan 03-DATABASE-SCHEMA dan 05-API-SPECIFICATION:
 
 1. Client Cart Management:
-   - Buat Cart Context / Zustand store untuk menampung item keranjang, opsi kustomisasi yang dipilih, catatan item, dan kuantitas dengan sinkronisasi LocalStorage.
-   - Drawer / Halaman Keranjang (`/cart`) dengan opsi ubah kuantitas, hapus item, dan input catatan pesanan global.
+   - Buat Cart Context / Zustand store untuk menampung item keranjang, opsi kustomisasi, catatan item, nomor meja (`table_number`), dan kuantitas dengan sinkronisasi LocalStorage.
+   - Drawer / Halaman Keranjang (`/cart` & `/checkout`) dengan tab switch: "⚡ Fast Guest Checkout" (Form: Nama, No. WhatsApp, Email) vs "Sign In Account".
 
 2. Server-Authoritative Price Calculation (`domain/order-calculator.ts`):
    - Fungsi server-side untuk menghitung ulang subtotal, pajak, dan total pesanan murni dari database (menolak harga yang dikirim dari browser).
    - Format mata uang dinamis (`lib/currency.ts`) yang membaca simbol, desimal, dan kode mata uang dari `restaurant_settings`.
 
 3. Pembuatan Pesanan (`POST /api/orders`):
-   - Validasi payload pesanan menggunakan Zod schema.
-   - Transaksi database: simpan snapshot nama dan harga produk ke `order_items` dan `order_item_options`.
+   - Validasi payload pesanan (Zod schema) yang mendukung pesanan Authenticated ATAU Guest (dengan `guestInfo`, `tableNumber`, dan `orderType`).
+   - Transaksi database: simpan snapshot nama dan harga produk ke `order_items` dan `order_item_options`, isi `guest_tracking_token` jika memesan sebagai guest.
    - Generate nomor pesanan unik (misal `#ORD-YYYYMMDD-XXX`) dengan status awal `PENDING`.
 ```
 

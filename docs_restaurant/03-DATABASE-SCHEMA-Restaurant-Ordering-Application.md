@@ -187,11 +187,23 @@ Schema ini diturunkan dari PRD dan System Architecture. PRD menetapkan entitas u
   -------------------------------------------------------------------------------------------------------------
   Column                  Type                                                          Constraint
   ----------------------- ------------------------------------------------------------- -----------------------
-  id                      uuid                                                          PK
+  id                      uuid                                                          PK (Default: gen_random_uuid())
 
   order_number            varchar(30)                                                   UNIQUE NOT NULL
 
-  customer_id             uuid                                                          FK → users.id
+  customer_id             uuid                                                          NULLABLE (FK → users.id)
+
+  guest_name              varchar(150)                                                  NULLABLE (Untuk Guest Checkout)
+
+  guest_email             varchar(255)                                                  NULLABLE (Untuk Notifikasi/Stripe)
+
+  guest_phone             varchar(40)                                                   NULLABLE (Untuk Notifikasi WhatsApp)
+
+  table_number            varchar(20)                                                   NULLABLE (Untuk Dine-in QR Meja)
+
+  order_type              enum('dine_in','takeaway','delivery')                         DEFAULT 'dine_in' NOT NULL
+
+  guest_tracking_token    varchar(100)                                                  UNIQUE NULLABLE (Token akses pelacakan)
 
   status                  enum(pending,confirmed,preparing,ready,completed,cancelled)   NOT NULL
 
@@ -203,13 +215,13 @@ Schema ini diturunkan dari PRD dan System Architecture. PRD menetapkan entitas u
 
   total_minor             bigint                                                        NOT NULL
 
-  currency                char(3)                                                       DEFAULT IDR
+  currency                char(3)                                                       DEFAULT 'IDR' NOT NULL
 
   customer_note           text                                                          NULLABLE
 
-  created_at              timestamptz                                                   NOT NULL
+  created_at              timestamptz                                                   DEFAULT now() NOT NULL
 
-  updated_at              timestamptz                                                   NOT NULL
+  updated_at              timestamptz                                                   DEFAULT now() NOT NULL
   -------------------------------------------------------------------------------------------------------------
 
 ## order_items
@@ -365,6 +377,10 @@ Schema ini diturunkan dari PRD dan System Architecture. PRD menetapkan entitas u
 -   payments.checkout_session_id UNIQUE bila tersedia.
 
 -   Index orders(customer_id, created_at DESC) untuk riwayat customer.
+
+-   Index orders(guest_tracking_token) untuk akses cepat pelacakan pesanan guest.
+
+-   Index orders(table_number, status) untuk antrean meja makan dine-in.
 
 -   Index orders(status, created_at) untuk kitchen/admin queue.
 

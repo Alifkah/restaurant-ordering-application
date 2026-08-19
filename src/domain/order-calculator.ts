@@ -23,6 +23,7 @@ export interface CalculatedOrderItem {
 export interface CalculationResult {
   items: CalculatedOrderItem[];
   subtotalMinor: number;
+  serviceChargeMinor: number;
   taxMinor: number;
   discountMinor: number;
   totalMinor: number;
@@ -40,10 +41,17 @@ export class OrderCalculationError extends Error {
  * Server-Authoritative Order Price Calculator
  * Re-calculates and validates item prices, option deltas, taxes, and totals
  * purely from current database records to prevent client-side price tampering.
+ * 
+ * Formula:
+ * - Subtotal = sum(item * qty)
+ * - Service Charge = 5% of Subtotal
+ * - Tax (PB1) = 10% of (Subtotal + Service Charge)
+ * - Total = Subtotal + Service Charge + Tax - Discount
  */
 export async function calculateOrderPrices(
   rawItems: OrderItemInput[],
-  discountMinor: number = 0
+  discountMinor: number = 0,
+  includeServiceCharge: boolean = true
 ): Promise<CalculationResult> {
   if (!rawItems || rawItems.length === 0) {
     throw new OrderCalculationError("Dining basket cannot be empty.", "EMPTY_ITEMS");
@@ -181,17 +189,22 @@ export async function calculateOrderPrices(
     });
   }
 
-  // 5. Tax (10% standard PB1 resto tax in Indonesia)
-  const taxMinor = Math.round(calculatedSubtotalMinor * 0.1);
+  // 5. Service Charge (5%) & Tax (10% PB1)
+  const serviceChargeMinor = includeServiceCharge
+    ? Math.round(calculatedSubtotalMinor * 0.05)
+    : 0;
+  const taxableBase = calculatedSubtotalMinor + serviceChargeMinor;
+  const taxMinor = Math.round(taxableBase * 0.1);
   const validatedDiscountMinor = Math.max(0, discountMinor);
   const totalMinor = Math.max(
     0,
-    calculatedSubtotalMinor + taxMinor - validatedDiscountMinor
+    calculatedSubtotalMinor + serviceChargeMinor + taxMinor - validatedDiscountMinor
   );
 
   return {
     items: calculatedItems,
     subtotalMinor: calculatedSubtotalMinor,
+    serviceChargeMinor,
     taxMinor,
     discountMinor: validatedDiscountMinor,
     totalMinor,

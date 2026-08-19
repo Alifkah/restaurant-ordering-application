@@ -16,6 +16,9 @@ export const createOrderSchema = z.object({
   tableId: z.string().uuid().optional().nullable(),
   customerNote: z.string().max(500, "Customer note must not exceed 500 characters").optional().nullable(),
   discountMinor: z.number().int().min(0).default(0),
+  guestName: z.string().max(100).optional().nullable(),
+  guestEmail: z.string().email("Invalid email format").optional().nullable(),
+  guestPhone: z.string().max(30).optional().nullable(),
 });
 
 export type OrderItemInput = z.infer<typeof orderItemInputSchema>;

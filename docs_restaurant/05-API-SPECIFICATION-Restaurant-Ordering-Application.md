@@ -75,17 +75,17 @@ Version 1.0 --- 18 August 2026
   -------------------------------------------------------------------------------------------------------------------------
   Method            Endpoint                      Auth                   Purpose
   ----------------- ----------------------------- ---------------------- --------------------------------------------------
-  POST              /api/orders                   Customer               Create order from cart after checkout validation
+  POST              /api/orders                   Customer / Guest       Create order (Authenticated or Guest Fast Checkout)
 
   GET               /api/orders                   Customer/Admin         List own orders or all orders for admin
 
-  GET               /api/orders/:id               Customer/Staff/Admin   Get order detail according to role
+  GET               /api/orders/:id               Customer/Staff/Admin/Guest Get order detail (with guest token for guests)
 
   PATCH             /api/orders/:id/status        Staff/Admin            Transition order status
 
   POST              /api/orders/:id/acknowledge   Staff/Admin            Acknowledge kitchen order
 
-  GET               /api/orders/:id/status        Customer               Get current order tracking status
+  GET               /api/orders/:id/status        Customer / Guest       Get current order tracking status
   -------------------------------------------------------------------------------------------------------------------------
 
 # 6. Realtime API (Server-Sent Events)
@@ -95,19 +95,19 @@ Version 1.0 --- 18 August 2026
   ----------------- ----------------------------- ---------------------- --------------------------------------------------
   GET               /api/realtime/kitchen         Staff/Admin            SSE stream for live kitchen orders & updates
 
-  GET               /api/realtime/orders/:id      Customer/Staff/Admin   SSE stream for live customer order status tracking
+  GET               /api/realtime/orders/:id      Customer/Staff/Guest   SSE stream for live customer/guest order tracking
   -------------------------------------------------------------------------------------------------------------------------
 
 # 7. Payment API (Stripe Multi-Currency)
 
   ------------------------------------------------------------------------------------------------
-  Method            Endpoint                 Auth              Purpose
-  ----------------- ------------------------ ----------------- -----------------------------------
-  POST              /api/payments/checkout   Customer          Create Stripe Checkout session (using settings currency)
+  Method            Endpoint                 Auth                 Purpose
+  ----------------- ------------------------ -------------------- -----------------------------------
+  POST              /api/payments/checkout   Customer / Guest     Create Stripe Checkout session (supports Guest)
 
-  GET               /api/payments/:orderId   Customer/Admin    Get payment status
+  GET               /api/payments/:orderId   Customer/Admin/Guest Get payment status
 
-  POST              /api/webhooks/stripe     Stripe            Receive and verify Stripe webhook
+  POST              /api/webhooks/stripe     Stripe               Receive and verify Stripe webhook
   ------------------------------------------------------------------------------------------------
 
 # 8. Review API
@@ -146,12 +146,19 @@ Version 1.0 --- 18 August 2026
   PATCH             /api/admin/settings          Admin             Update restaurant settings & currency
   ---------------------------------------------------------------------------------------------------------
 
-# 9. Core Request Examples
+# 10. Core Request Examples
 
-## 9.1 Create Order
+## 10.1 Create Order (Supports Authenticated & Guest Checkout)
 
 > POST /api/orders\
 > {\
+> \"orderType\": \"dine_in\", // \"dine_in\" | \"takeaway\" | \"delivery\"\
+> \"tableNumber\": \"08\",    // Opsional untuk dine-in\
+> \"guestInfo\": {            // Diisi jika memesan sebagai Guest (tanpa login)\
+> \"name\": \"Budi Santoso\",\
+> \"email\": \"budi@example.com\",\
+> \"phone\": \"+6281234567890\"\
+> },\
 > \"items\": \[\
 > {\
 > \"productId\": \"uuid\",\
@@ -160,10 +167,10 @@ Version 1.0 --- 18 August 2026
 > \"note\": \"Less spicy\"\
 > }\
 > \],\
-> \"customerNote\": \"Please prepare quickly\"\
+> \"customerNote\": \"Please serve drinks first\"\
 > }
 
-Server harus mengambil harga product/option dari database, menghitung ulang subtotal/total, memeriksa availability, lalu membuat order transactionally.
+Server memverifikasi: jika pengguna login via Auth.js, tautkan `customer_id`. Jika Guest, isi `guest_name`, `guest_email`, `guest_phone`, dan generate `guest_tracking_token`. Server menghitung ulang seluruh harga dari database, memeriksa ketersediaan, lalu membuat order secara transaksional.
 
 ## 9.2 Update Order Status
 

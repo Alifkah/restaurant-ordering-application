@@ -31,7 +31,7 @@ ERD berikut memetakan entitas utama yang ditetapkan dalam PRD dan relasi yang di
   --------------------------------------------------------------------------------------------------------
   Relationship                   Cardinality             Meaning
   ------------------------------ ----------------------- -------------------------------------------------
-  User → Orders                  1 : N                   Satu customer dapat memiliki banyak order.
+  User → Orders                  0..1 : N                Satu customer terdaftar dapat memiliki banyak order; order guest tidak memiliki User.
 
   Category → Products            1 : N                   Satu kategori memiliki banyak produk.
 
